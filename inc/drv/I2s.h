@@ -51,17 +51,13 @@ public:
 
 	typedef enum
 	{
-#if defined(STM32F0) || defined(STM32F1) || defined(STM32F4) || defined(STM32F7)
-		BIT_16BIT = 0,
-		BIT_24BIT,
-		BIT_32BIT
-#elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
-		BIT_8BIT = 0,
-		BIT_16BIT,
-		BIT_24BIT,
-		BIT_32BIT		
-#endif
-	}dataBit_t;
+		WORD_WIDTH_8BIT = 0,
+		WORD_WIDTH_16BIT,
+		WORD_WIDTH_18BIT,
+		WORD_WIDTH_20BIT,
+		WORD_WIDTH_24BIT,
+		WORD_WIDTH_32BIT
+	}wordWidth_t;
 	
 	typedef enum
 	{
@@ -73,24 +69,20 @@ public:
 
 	typedef enum
 	{
-#if defined(STM32F0) || defined(STM32F1) || defined(STM32F4) || defined(STM32F7)
-		STD_PHILIPS = 0,
+		STD_I2S_PHILIPS = 0,
 		STD_MSB_JUSTIFIED,
 		STD_LSB_JUSTIFIED,
-		STD_PCM
-#elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
-		STD_I2S_DATA = 0,
-		STD_MSB_JUSTIFIED,
+		STD_PCM,
 		STD_PCM_MODE_A,
-		STD_PCM_MODE_B
-#endif
+		STD_PCM_MODE_B,
+		STD_DSP
 	}std_t;
 
 	typedef struct
 	{
 #if defined(STM32F0) || defined(STM32F1) || defined(STM32F4) || defined(STM32F7)
 		mode_t mode;
-		dataBit_t dataBit;
+		wordWidth_t wordWidth;
 		chlen_t chlen;
 		std_t std;
 		int32_t sampleRate;
@@ -178,6 +170,10 @@ public:
 	void releaseBuffer(int32_t count) __attribute__((optimize("-O1")));
 
 	uint32_t getChannelFrameSize(void) __attribute__((optimize("-O1")));
+
+	wordWidth_t getWordWidth(void)  __attribute__((optimize("-O1")));
+
+	std_t getI2sStandard(void)  __attribute__((optimize("-O1")));
 	
 	// 아래 함수들은 시스템 함수로 사용자 호출을 금지합니다.
 	typedef struct
@@ -218,7 +214,7 @@ private :
 };
 
 /*
-	아래는 STM32F407 MCU에서 설정의 예입니다.
+	// 아래는 STM32F407 MCU에서 설정의 예입니다.
 
 	gpioC.setAsAltFunc(7, Gpio::PC7_I2S3_MCK);
 	gpioC.setAsAltFunc(10, Gpio::PC10_I2S3_CK);

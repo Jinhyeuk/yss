@@ -34,21 +34,55 @@ I2s::I2s(const Drv::setup_t drvConfig, const setup_t config) : Drv(drvConfig)
 
 error_t I2s::initialize(const config_t &config)
 {
-	uint32_t clock = getClockFrequency(), div1, div2, odd, reg;
+	uint32_t clock = getClockFrequency(), div1, div2, odd, reg, wordWidth, std;
 
-	switch(config.dataBit)
+	switch(config.wordWidth)
 	{
-	case BIT_16BIT :
+	case WORD_WIDTH_16BIT :
+		wordWidth = 0;
 		mDataSize = 2;
 		div2 = 32;
 		div1 = 8;
 		break;
 
-	default :
+	case WORD_WIDTH_24BIT :
+		wordWidth = 1;
 		mDataSize = 4;
 		div2 = 64;
 		div1 = 4;
 		break;
+
+	case WORD_WIDTH_32BIT :
+		wordWidth = 2;
+		mDataSize = 4;
+		div2 = 64;
+		div1 = 4;
+		break;
+
+	default :
+		return error_t::NOT_SUPPORTED_OPTION;
+	}
+
+	switch(config.std)
+	{
+	case STD_I2S_PHILIPS :
+		std = 0;
+		break;
+	
+	case STD_MSB_JUSTIFIED :
+		std = 1;
+		break;
+
+	case STD_LSB_JUSTIFIED :
+		std = 2;
+		break;
+
+	case STD_PCM:
+		std = 3;
+		break;
+	
+	default :
+		return error_t::NOT_SUPPORTED_OPTION;
 	}
 
 	if(!config.mckoe)
@@ -60,7 +94,7 @@ error_t I2s::initialize(const config_t &config)
 	odd = div1 & 0x01;
 	div1 /= 2;
 
-	reg = config.chlen << SPI_I2SCFGR_CHLEN_Pos | config.dataBit << SPI_I2SCFGR_DATLEN_Pos | 0 << SPI_I2SCFGR_CKPOL_Pos | config.std << SPI_I2SCFGR_I2SSTD_Pos | 1 << SPI_I2SCFGR_I2SMOD_Pos;
+	reg = config.chlen << SPI_I2SCFGR_CHLEN_Pos | wordWidth << SPI_I2SCFGR_DATLEN_Pos | 0 << SPI_I2SCFGR_CKPOL_Pos | std << SPI_I2SCFGR_I2SSTD_Pos | 1 << SPI_I2SCFGR_I2SMOD_Pos;
 	switch(config.mode)
 	{
 	case MODE_MAIN_TX :
@@ -182,6 +216,45 @@ uint32_t I2s::getMclkFrequency(void)
 		mclk = 0;
 	
 	return mclk;
+}
+
+I2s::wordWidth_t I2s::getWordWidth(void)
+{
+	switch((mDev->I2SCFGR & SPI_I2SCFGR_DATLEN_Msk) >> SPI_I2SCFGR_DATLEN_Pos)
+	{
+	case 0 :
+		return WORD_WIDTH_16BIT;
+	
+	case 1 :
+		return WORD_WIDTH_24BIT;
+
+	case 2 :
+		return WORD_WIDTH_32BIT;
+
+	default :
+		return WORD_WIDTH_16BIT;
+	}
+}
+
+I2s::std_t I2s::getI2sStandard(void)
+{
+	switch((mDev->I2SCFGR & SPI_I2SCFGR_I2SSTD_Msk) >> SPI_I2SCFGR_I2SSTD_Pos)
+	{
+	case 0 :
+		return STD_I2S_PHILIPS;
+	
+	case 1 :
+		return STD_MSB_JUSTIFIED;
+
+	case 2 :
+		return STD_LSB_JUSTIFIED;
+
+	case 3 :
+		return STD_PCM;
+
+	default :
+		return STD_I2S_PHILIPS;
+	}
 }
 
 #endif
