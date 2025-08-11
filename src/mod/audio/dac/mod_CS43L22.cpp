@@ -77,21 +77,28 @@ error_t CS43L22::initialize(config_t config)
 	}
 
 	data[0] = ID;
+	mI2c->lock();
 	result = mI2c->send(mAddr, data, 1);
 	if(result != error_t::ERROR_NONE)
-		return result;
+		goto error_handler;
 
 	result = mI2c->receive(mAddr, &temp, 1);
-	mI2c->stop();
+
 	if(result != error_t::ERROR_NONE)
-		return result;
+		goto error_handler;
 
 	if((temp & 0xF8) != 0xE0)
-		return error_t::DIFFERENT_DEVICE;
+	{
+		result = error_t::DIFFERENT_DEVICE;
+		goto error_handler;
+	}
 	
 	temp &= 0x07;
 	if(temp > 3)
-		return error_t::DIFFERENT_DEVICE;
+	{
+		result = error_t::DIFFERENT_DEVICE;
+		goto error_handler;
+	}
 	
 	// Required Initialization Settings
 	data[0] = 0x00;
@@ -99,63 +106,63 @@ error_t CS43L22::initialize(config_t config)
 	result = mI2c->send(mAddr, data, 2);
 	mI2c->stop();
 	if(result != error_t::ERROR_NONE)
-		return result;
+		goto error_handler;
 	
 	data[0] = 0x47;
 	data[1] = 0x80;
 	result = mI2c->send(mAddr, data, 2);
 	mI2c->stop();
 	if(result != error_t::ERROR_NONE)
-		return result;
+		goto error_handler;
 
 	data[0] = 0x32;
 	result = mI2c->send(mAddr, data, 1);
 	if(result != error_t::ERROR_NONE)
-		return result;
+		goto error_handler;
 
 	result = mI2c->receive(mAddr, &temp, 1);
 	mI2c->stop();
 	if(result != error_t::ERROR_NONE)
-		return result;
+		goto error_handler;
 
 	data[0] = 0x32;
 	data[1] = temp | 0x80;
 	result = mI2c->send(mAddr, data, 2);
 	mI2c->stop();
 	if(result != error_t::ERROR_NONE)
-		return result;
+		goto error_handler;
 
 	data[0] = 0x32;
 	data[1] = temp & ~0x80;
 	result = mI2c->send(mAddr, data, 2);
 	mI2c->stop();
 	if(result != error_t::ERROR_NONE)
-		return result;
+		goto error_handler;
 
 	data[0] = 0x00;
 	data[1] = 0x00;
 	result = mI2c->send(mAddr, data, 2);
 	mI2c->stop();
 	if(result != error_t::ERROR_NONE)
-		return result;
+		goto error_handler;
 	
 	data[0] = PWR_CTL1;
 	data[1] = 0x9E;
 	result = mI2c->send(mAddr, data, 2);
 	mI2c->stop();
 	if(result != error_t::ERROR_NONE)
-		return result;
+		goto error_handler;
 
 	// Clock Control 설정
 	data[0] = CLOCKING_CTL;
 	result = mI2c->send(mAddr, data, 1);
 	if(result != error_t::ERROR_NONE)
-		return result;
+		goto error_handler;
 
 	result = mI2c->receive(mAddr, &temp, 1);
 	mI2c->stop();
 	if(result != error_t::ERROR_NONE)
-		return result;
+		goto error_handler;
 	
 	temp &= 0x60;
 	lrclk = mI2s->getLrclkFrequency();
@@ -168,25 +175,28 @@ error_t CS43L22::initialize(config_t config)
 	else if(lrclk >= 4000)
 		temp |= 3 << 5;
 	else
-		return error_t::WRONG_CLOCK_FREQUENCY;
+	{
+		result = error_t::WRONG_CLOCK_FREQUENCY;
+		goto error_handler;
+	}
 
 	data[0] = CLOCKING_CTL;
 	data[1] = temp;
 	result = mI2c->send(mAddr, data, 2);
 	mI2c->stop();
 	if(result != error_t::ERROR_NONE)
-		return result;
+		goto error_handler;
 
 	// Interface Control 설정
 	data[0] = INTERFACE_CTL1;
 	result = mI2c->send(mAddr, data, 1);
 	if(result != error_t::ERROR_NONE)
-		return result;
+		goto error_handler;
 
 	result = mI2c->receive(mAddr, &temp, 1);
 	mI2c->stop();
 	if(result != error_t::ERROR_NONE)
-		return result;
+		goto error_handler;
 
 	temp &= ~0x1F;
 	wordWidth = mI2s->getWordWidth();
@@ -220,7 +230,8 @@ error_t CS43L22::initialize(config_t config)
 			break;
 
 		default :
-			return error_t::UNSUPPORTED_MODE;
+			result = error_t::UNSUPPORTED_MODE;
+			goto error_handler;
 		}
 		break;
 
@@ -245,12 +256,14 @@ error_t CS43L22::initialize(config_t config)
 			break;
 
 		default :
-			return error_t::UNSUPPORTED_MODE;
+			result = error_t::UNSUPPORTED_MODE;
+			goto error_handler;
 		}
 		break;
 
 	default :
-		return error_t::UNSUPPORTED_MODE;
+		result = error_t::UNSUPPORTED_MODE;
+		goto error_handler;
 	}
 
 	data[0] = INTERFACE_CTL1;
@@ -258,9 +271,15 @@ error_t CS43L22::initialize(config_t config)
 	result = mI2c->send(mAddr, data, 2);
 	mI2c->stop();
 	if(result != error_t::ERROR_NONE)
-		return result;
+		goto error_handler;
+	
+	mI2c->unlock();
 
 	return error_t::ERROR_NONE;
+
+error_handler :
+	mI2c->unlock();
+	return result;
 }
 
 #endif
