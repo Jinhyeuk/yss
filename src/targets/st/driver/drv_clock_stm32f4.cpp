@@ -176,6 +176,14 @@ static uint32_t gI2sCkinFreq __attribute__((section(".non_init")));
 
 #endif
 
+bool Clock::isSoftReset(void)
+{
+	if(RCC->CSR & RCC_CSR_SFTRSTF_Msk)
+		return true;
+	else
+		return false;
+}
+
 error_t Clock::enableHse(uint32_t hseHz, bool useOsc)
 {
 	gHseFreq = hseHz;
