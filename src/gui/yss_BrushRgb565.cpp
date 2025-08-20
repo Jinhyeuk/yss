@@ -87,4 +87,19 @@ void BrushRgb565::fillRectBase(Position_t pos, Size_t size, uint32_t color)
 	}
 }
 
+error_t BrushRgb565::setSize(uint16_t width, uint16_t height)
+{
+	mSize.width = width;
+	mSize.height = height;
+
+	return error_t::ERROR_NONE;
+}
+
+error_t BrushRgb565::setSize(Size_t size)
+{
+	mSize = size;
+
+	return error_t::ERROR_NONE;
+}
+
 #endif

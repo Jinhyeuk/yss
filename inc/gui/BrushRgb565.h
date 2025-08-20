@@ -27,6 +27,10 @@ public:
 	virtual void drawDot(int16_t x, int16_t y, uint32_t color);
 
 	virtual void fillRectBase(Position_t pos, Size_t size, uint32_t color);
+
+	virtual error_t setSize(uint16_t width, uint16_t height);
+
+	virtual error_t setSize(Size_t size);
 };
 
 #endif
