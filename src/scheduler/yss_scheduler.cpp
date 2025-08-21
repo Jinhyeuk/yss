@@ -259,6 +259,19 @@ void remove(threadId_t id)
 		}
 	}
 
+	if(id == gRoundRobinThreadNum)
+	{
+		do
+		{
+			gRoundRobinThreadNum++;
+			if (gRoundRobinThreadNum >= MAX_THREAD)
+				gRoundRobinThreadNum = 0;
+		}while (!gYssThreadList[gRoundRobinThreadNum].able);
+	}
+
+	if(id == gHoldingThreadNum)
+		gHoldingThreadNum = -1;
+
 	unlockContextSwitch();
 	gMutex.unlock();
 }
@@ -294,6 +307,20 @@ void terminateThread(void)
 	gYssThreadList[gCurrentThreadNum].able = false;
 	gYssThreadList[gCurrentThreadNum].allocated = false;
 	gNumOfThread--;
+
+	if(gCurrentThreadNum == gRoundRobinThreadNum)
+	{
+		do
+		{
+			gRoundRobinThreadNum++;
+			if (gRoundRobinThreadNum >= MAX_THREAD)
+				gRoundRobinThreadNum = 0;
+		}while (!gYssThreadList[gRoundRobinThreadNum].able);
+	}
+
+	if(gCurrentThreadNum == gHoldingThreadNum)
+		gHoldingThreadNum = -1;
+
 	__enable_irq();
 	unlockHmalloc();
 	thread::yield();
@@ -463,6 +490,19 @@ void remove(triggerId_t id)
 			gNumOfThread--;
 		}
 	}
+
+	if(gCurrentThreadNum == gRoundRobinThreadNum)
+	{
+		do
+		{
+			gRoundRobinThreadNum++;
+			if (gRoundRobinThreadNum >= MAX_THREAD)
+				gRoundRobinThreadNum = 0;
+		}while (!gYssThreadList[gRoundRobinThreadNum].able);
+	}
+
+	if(gCurrentThreadNum == gHoldingThreadNum)
+		gHoldingThreadNum = -1;
 
 	unlockContextSwitch();
 	gMutex.unlock();
