@@ -168,6 +168,12 @@ void Brush::drawLine(Position_t start, Position_t end)
 	if (startX > mSize.width || endX > mSize.width || startY > mSize.height || endY > mSize.height)
 		return;
 
+	if(start.x == end.x && start.y == end.y)
+	{
+		drawDot(start.x, start.y);
+		return;
+	}
+
 	if (startX <= endX && startY <= endY)
 	{
 		lenX = endX - startX;
