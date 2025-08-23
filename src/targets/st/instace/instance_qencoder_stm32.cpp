@@ -13,11 +13,7 @@
 #include <drv/Qencoder.h>
 #include <yss.h>
 
-#if defined(STM32F446xx)
-#include <targets/st/bitfield_stm32f446xx.h>
-#elif defined(STM32F746xx)
-#include <targets/st/bitfield_stm32f746xx.h>
-#endif
+#include <targets/st/bitfield.h>
 
 uint32_t getApb1TimerClockFrequency(void);
 uint32_t getApb2TimerClockFrequency(void);
@@ -33,7 +29,7 @@ static void setClock1En(bool en)
 static void setInterrupt1En(bool en)
 {
 	nvic.lock();
-#if defined(STM32F446xx) || defined(STM32F746xx)
+#if defined(STM32F446xx) || defined(STM32F746xx) || defined(STM32F407xx)
 	nvic.enableInterrupt(TIM1_UP_TIM10_IRQn, en);
 #else
 #warning "이 항목을 정상적으로 채우세요."
@@ -77,7 +73,7 @@ static void setClock2En(bool en)
 static void setInterrupt2En(bool en)
 {
 	nvic.lock();
-#if defined(STM32F446xx) || defined(STM32F746xx)
+#if defined(STM32F446xx) || defined(STM32F746xx) || defined(STM32F407xx)
 	nvic.enableInterrupt(TIM2_IRQn, en);
 #else
 #warning "이 항목을 정상적으로 채우세요."
@@ -121,7 +117,7 @@ static void setClock3En(bool en)
 static void setInterrupt3En(bool en)
 {
 	nvic.lock();
-#if defined(STM32F446xx) || defined(STM32F746xx)
+#if defined(STM32F446xx) || defined(STM32F746xx) || defined(STM32F407xx)
 	nvic.enableInterrupt(TIM3_IRQn, en);
 #else
 #warning "이 항목을 정상적으로 채우세요."
@@ -165,7 +161,7 @@ static void setClock4En(bool en)
 static void setInterrupt4En(bool en)
 {
 	nvic.lock();
-#if defined(STM32F446xx) || defined(STM32F746xx)
+#if defined(STM32F446xx) || defined(STM32F746xx) || defined(STM32F407xx)
 	nvic.enableInterrupt(TIM4_IRQn, en);
 #else
 #warning "이 항목을 정상적으로 채우세요."
@@ -209,7 +205,7 @@ static void setClock5En(bool en)
 static void setInterrupt5En(bool en)
 {
 	nvic.lock();
-#if defined(STM32F446xx) || defined(STM32F746xx)
+#if defined(STM32F446xx) || defined(STM32F746xx) || defined(STM32F407xx)
 	nvic.enableInterrupt(TIM5_IRQn, en);
 #else
 #warning "이 항목을 정상적으로 채우세요."
@@ -253,7 +249,7 @@ static void setClock8En(bool en)
 static void setInterrupt8En(bool en)
 {
 	nvic.lock();
-#if defined(STM32F446xx) || defined(STM32F746xx)
+#if defined(STM32F446xx) || defined(STM32F746xx) || defined(STM32F407xx)
 	nvic.enableInterrupt(TIM8_UP_TIM13_IRQn, en);
 #else
 #warning "이 항목을 정상적으로 채우세요."

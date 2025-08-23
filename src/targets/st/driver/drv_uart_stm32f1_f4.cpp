@@ -23,7 +23,6 @@ Uart::Uart(const Drv::setup_t drvSetup, const setup_t setup) : Drv(drvSetup)
 	mRcvBuf = 0;
 	mTail = 0;
 	mHead = 0;
-	mOneWireModeFlag = false;
 }
 
 error_t Uart::initialize(config_t config)
@@ -40,12 +39,10 @@ error_t Uart::initialize(config_t config)
 
 	if(config.mode == MODE_ONE_WIRE)
 	{
-		mOneWireModeFlag = true;
 		setBitData(mDev->CR3, true, USART_CR3_HDSEL_Pos);
 	}
 	else
 	{
-		mOneWireModeFlag = false;
 		setBitData(mDev->CR3, false, USART_CR3_HDSEL_Pos);
 	}
 
@@ -74,6 +71,8 @@ error_t Uart::initialize(config_t config)
 
 	// 장치 활성화
 	mDev->CR1 |= USART_CR1_UE_Msk;
+
+	mMode = config.mode;
 
 	return error_t::ERROR_NONE;
 }
@@ -134,20 +133,10 @@ error_t Uart::send(void *src, int32_t  size)
 
 void Uart::send(int8_t data)
 {
-	if(mOneWireModeFlag)
-	{
-		setBitData(mDev->CR1, false, 2);	// RX 비활성화
-	}
-
 	mDev->SR = ~USART_SR_TC;
 	mDev->DR = data;
 	while (~mDev->SR & USART_SR_TC)
 		thread::yield();
-
-	if(mOneWireModeFlag)
-	{
-		setBitData(mDev->CR1, true, 2);	// RX 활성화
-	}
 }
 
 void Uart::isr(void)

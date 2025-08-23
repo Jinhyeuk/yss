@@ -360,7 +360,7 @@ static const Drv::setup_t gCapture12DrvSetup =
 };
 
 static uint64_t gCapture12UpdateCnt;
-static const Capture::Setup gCapture121Setup = 
+static const Capture::setup_t gCapture121Setup = 
 {
 	TIM12,				//YSS_PWM_Peri *peri;
 	&gCapture12UpdateCnt	//uint64_t *updateCnt;

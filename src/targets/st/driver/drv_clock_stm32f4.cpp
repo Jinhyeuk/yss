@@ -409,6 +409,11 @@ uint32_t Clock::getApb2ClockFrequency(void)
 	return getSystemClockFrequency() / gPpreDiv[((RCC->CFGR & RCC_CFGR_PPRE2_Msk) >> RCC_CFGR_PPRE2_Pos)];
 }
 
+uint32_t Clock::getSdmmcClockFrequency(void)
+{
+	return getMainPllQFrequency();
+}
+
 uint8_t Clock::getPowerScale(void)
 {
 #if defined(STM32F407xx)

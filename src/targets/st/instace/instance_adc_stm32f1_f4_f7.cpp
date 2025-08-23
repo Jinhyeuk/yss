@@ -15,19 +15,7 @@
 
 #include <targets/st/bitfield.h>
 
-#if defined(STM32F446xx)
-#define ADC1_IRQn		ADC_IRQn
-#define ADC2_IRQn		ADC_IRQn
-#define ADC3_IRQn		ADC_IRQn
-#elif defined(STM32F429xx)
-#define ADC1_IRQn		ADC_IRQn
-#define ADC2_IRQn		ADC_IRQn
-#define ADC3_IRQn		ADC_IRQn
-#elif defined(STM32F746xx)
-#define ADC1_IRQn		ADC_IRQn
-#define ADC2_IRQn		ADC_IRQn
-#define ADC3_IRQn		ADC_IRQn
-#elif defined(STM32F767xx)
+#if defined(STM32F446xx) || defined(STM32F407xx) || defined(STM32F429xx) || defined(STM32F746xx) ||  defined(STM32F767xx)
 #define ADC1_IRQn		ADC_IRQn
 #define ADC2_IRQn		ADC_IRQn
 #define ADC3_IRQn		ADC_IRQn

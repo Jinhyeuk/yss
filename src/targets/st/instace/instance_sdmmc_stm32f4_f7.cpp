@@ -32,6 +32,8 @@ static void setClockEn(bool en)
 	clock.lock();
 #if defined(STM32F7)
 	clock.enableApb2Clock(RCC_APB2ENR_SDMMC1EN_Pos, en);
+#elif defined(STM32F4)
+	clock.enableApb2Clock(RCC_APB2ENR_SDIOEN_Pos, en);
 #endif
 	clock.unlock();
 }
@@ -41,6 +43,8 @@ static void reset(void)
 	clock.lock();
 #if defined(STM32F7)
 	clock.resetApb2(RCC_APB2RSTR_SDMMC1RST_Pos);
+#elif defined(STM32F4)
+	clock.resetApb2(RCC_APB2RSTR_SDIORST_Pos);
 #endif
 	clock.unlock();
 }
@@ -51,6 +55,8 @@ static uint32_t getClockFrequency(void)
 	return clock.getSdmmcClockFrequency();
 #elif defined(GD32F4)
 	return getAhbClockFrequency() / 4;
+#elif defined(STM32F4)
+	return clock.getSdmmcClockFrequency();
 #else
 	return 0;
 #endif
