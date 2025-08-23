@@ -8,9 +8,9 @@
 #include <yss.h>
 #include <config.h>
 
-#if defined(STM32F0) || defined(STM32F7)
+#if defined(STM32F0) || defined(STM32F7) || defined(STM32F4)
 
-#if defined(STM32F0) || defined(STM32F7)
+#if defined(STM32F0) || defined(STM32F7) || defined(STM32F4)
 #include <targets/st/bitfield.h>
 #endif
 
@@ -32,7 +32,7 @@ void memcpyd(void* des, const void* src, uint32_t size)
 		0xF << (4 * 4),												// uint32_t controlRegister2
 		0x0 << (4 * 4),												// uint32_t controlRegister3
 		(void*)src													//void *dataRegister;
-#elif defined(STM32F7)
+#elif defined(STM32F7) || defined(STM32F4)
 		(define::dma::burst::SINGLE << DMA_SxCR_MBURST_Pos) |		// uint32_t controlRegister1
 		(define::dma::burst::SINGLE << DMA_SxCR_PBURST_Pos) | 
 		(define::dma::priorityLevel::LOW << DMA_SxCR_PL_Pos) |
@@ -72,7 +72,7 @@ void memsetd(void* des, uint8_t data, uint32_t size)
 		0xF << (4 * 4),												// uint32_t controlRegister2
 		0x0 << (4 * 4),												// uint32_t controlRegister3
 		&data														//void *dataRegister;
-#elif defined(STM32F7)
+#elif defined(STM32F7) || defined(STM32F4)
 		(define::dma::burst::SINGLE << DMA_SxCR_MBURST_Pos) |		// uint32_t controlRegister1
 		(define::dma::burst::SINGLE << DMA_SxCR_PBURST_Pos) | 
 		(define::dma::priorityLevel::LOW << DMA_SxCR_PL_Pos) |
@@ -112,7 +112,7 @@ void memsethwd(void* des, uint16_t data, uint32_t size)
 		0xF << (4 * 4),												// uint32_t controlRegister2
 		0x0 << (4 * 4),												// uint32_t controlRegister3
 		&data														//void *dataRegister;
-#elif defined(STM32F7)
+#elif defined(STM32F7) || defined(STM32F4)
 		(define::dma::burst::SINGLE << DMA_SxCR_MBURST_Pos) |		// uint32_t controlRegister1
 		(define::dma::burst::SINGLE << DMA_SxCR_PBURST_Pos) | 
 		(define::dma::priorityLevel::LOW << DMA_SxCR_PL_Pos) |
@@ -150,7 +150,7 @@ void memsetwd(void* des, uint32_t data, uint32_t size)
 		0xF << (4 * 4),												// uint32_t controlRegister2
 		0x0 << (4 * 4),												// uint32_t controlRegister3
 		&data														//void *dataRegister;
-#elif defined(STM32F7)
+#elif defined(STM32F7) || defined(STM32F4)
 		(define::dma::burst::SINGLE << DMA_SxCR_MBURST_Pos) |		// uint32_t controlRegister1
 		(define::dma::burst::SINGLE << DMA_SxCR_PBURST_Pos) | 
 		(define::dma::priorityLevel::LOW << DMA_SxCR_PL_Pos) |

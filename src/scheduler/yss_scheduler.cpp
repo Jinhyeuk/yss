@@ -258,6 +258,19 @@ void remove(threadId_t id)
 		}
 	}
 
+	if(id == gRoundRobinThreadNum)
+	{
+		do
+		{
+			gRoundRobinThreadNum++;
+			if (gRoundRobinThreadNum >= MAX_THREAD)
+				gRoundRobinThreadNum = 0;
+		}while (!gYssThreadList[gRoundRobinThreadNum].able);
+	}
+
+	if(id == gHoldingThreadNum)
+		gHoldingThreadNum = -1;
+
 	unlockContextSwitch();
 	gMutex.unlock();
 }
@@ -293,6 +306,20 @@ void terminateThread(void)
 	gYssThreadList[gCurrentThreadNum].able = false;
 	gYssThreadList[gCurrentThreadNum].allocated = false;
 	gNumOfThread--;
+
+	if(gCurrentThreadNum == gRoundRobinThreadNum)
+	{
+		do
+		{
+			gRoundRobinThreadNum++;
+			if (gRoundRobinThreadNum >= MAX_THREAD)
+				gRoundRobinThreadNum = 0;
+		}while (!gYssThreadList[gRoundRobinThreadNum].able);
+	}
+
+	if(gCurrentThreadNum == gHoldingThreadNum)
+		gHoldingThreadNum = -1;
+
 	__enable_irq();
 	unlockHmalloc();
 	thread::yield();
@@ -373,10 +400,8 @@ finish :
 void yield(void) __attribute__((optimize("-O1")));
 void yield(void)
 {
-#if !defined(YSS__MCU_SMALL_SRAM_NO_SCHEDULE)
 #if defined(YSS__CORE_CM3_CM4_CM7_H_GENERIC) || defined(YSS__CORE_CM33_H_GENERIC) || defined(YSS__CORE_CM0_H_GENERIC)
 	SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
-#endif
 #endif
 }
 }
@@ -450,12 +475,8 @@ void remove(triggerId_t id)
 			thread::yield();
 		lockContextSwitch();
 	}
-
 	gMutex.lock();
-	while (gYssThreadList[id].lockCnt)
-	{
-		thread::yield();
-	}
+
 	if (id != gCurrentThreadNum && id > 0)
 	{
 		if (gYssThreadList[id].allocated == true)
@@ -468,6 +489,19 @@ void remove(triggerId_t id)
 			gNumOfThread--;
 		}
 	}
+
+	if(gCurrentThreadNum == gRoundRobinThreadNum)
+	{
+		do
+		{
+			gRoundRobinThreadNum++;
+			if (gRoundRobinThreadNum >= MAX_THREAD)
+				gRoundRobinThreadNum = 0;
+		}while (!gYssThreadList[gRoundRobinThreadNum].able);
+	}
+
+	if(gCurrentThreadNum == gHoldingThreadNum)
+		gHoldingThreadNum = -1;
 
 	unlockContextSwitch();
 	gMutex.unlock();
@@ -697,6 +731,20 @@ extern "C"
 #endif
 		asm("bx lr");
 	}
+}
+
+#else
+
+namespace thread
+{
+extern "C"
+{
+void yield(void) __attribute__((optimize("-O1")));
+void yield(void)
+{
+
+}
+}
 }
 
 #endif

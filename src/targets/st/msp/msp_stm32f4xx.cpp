@@ -7,7 +7,7 @@
 
 #include <drv/mcu.h>
 
-#if defined(STM32F4)
+#if defined(STM32F4) && !(STM32F407xx)
 
 #include <config.h>
 #include <yss/instance.h>
@@ -56,13 +56,13 @@ void __WEAK initializeSystem(void)
 	);
 
 	flash.setLatency(144000000, 33);
-#elif defined(STM32F407xx)
+#elif defined(STM32F411xE)
 	clock.enableMainPll(
 		pll::src::HSE,				// uint8_t src
 		HSE_CLOCK_FREQ / 1000000,	// uint8_t m
-		288,						// uint16_t n
+		192,						// uint16_t n
 		pll::pdiv::DIV2,			// uint8_t pDiv Sysclk
-		pll::qdiv::DIV6,			// uint8_t qDiv
+		pll::qdiv::DIV4,			// uint8_t qDiv
 		pll::rdiv::DIV7				// uint8_t rDiv	
 	);
 

@@ -27,6 +27,7 @@
 
 #define DEFAULT_CLOCK_SPEED	16000000
 #define YSS__CORE_CM3_CM4_CM7_H_GENERIC
+#define YSS_MEMDMA_SUPPORT
 
 #elif defined(STM32F446xx) || defined(STM32F429xx)
 
@@ -130,6 +131,15 @@
 #define YSS__NUM_OF_DMA_CH		16
 #elif defined(__M4xx_FAMILY)
 #define YSS__NUM_OF_DMA_CH		9
+#endif
+
+#elif defined(__M2xx_FAMILY)
+#define YSS__CORE_CM0_H_GENERIC
+#define YSS__RUNTIME_SUPPORT
+#define YSS__DMA_ALLOCATION
+
+#if defined(__M25x_SUBFAMILY)
+#define YSS__NUM_OF_DMA_CH		8
 #endif
 
 #else

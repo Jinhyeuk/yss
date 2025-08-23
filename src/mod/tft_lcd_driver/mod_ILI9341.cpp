@@ -40,11 +40,9 @@ void ILI9341::setWindows(uint16_t x, uint16_t y, uint16_t width, uint16_t height
 void ILI9341::setDirection(bool xMirror, bool yMirror, bool rotate)
 {
 	enable();
-	int8_t memAccCtrl[] = {0x00};
+	int8_t memAccCtrl[] = {0x08};
 	if(rotate)
 	{
-		memAccCtrl[0] |= 0x20;
-
 		if(xMirror)
 			memAccCtrl[0] |= 0x80;
 		if(yMirror)
@@ -52,6 +50,8 @@ void ILI9341::setDirection(bool xMirror, bool yMirror, bool rotate)
 	}
 	else
 	{
+		memAccCtrl[0] |= 0x20;
+
 		if(xMirror)
 			memAccCtrl[0] |= 0x40;
 		if(yMirror)

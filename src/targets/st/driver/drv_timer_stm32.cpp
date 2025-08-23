@@ -88,7 +88,7 @@ error_t Timer::changeFrequency(uint32_t freq)
 	mDev->PSC = psc;
 	mDev->ARR = arr;
 
-        return error_t::ERROR_NONE;
+	return error_t::ERROR_NONE;
 }
 
 #endif

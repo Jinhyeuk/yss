@@ -83,9 +83,9 @@ uint16_t Font::getStringWidth(const char *str)
 				if(fontInfo != 0)
 				{
 					if(fontInfo->xpos == 0)
-						buf = fontInfo->width + fontInfo->xpos + 1;
+						buf = fontInfo->width + (int8_t)fontInfo->xpos + 1;
 					else
-						buf = fontInfo->width + fontInfo->xpos;
+						buf = fontInfo->width + (int8_t)fontInfo->xpos;
 				}
 			}
 
@@ -108,9 +108,9 @@ uint16_t Font::getStringWidth(const char *str)
 				if(fontInfo != 0)
 				{
 					if(fontInfo->xpos == 0)
-						width += fontInfo->width + fontInfo->xpos + 1;
+						width += fontInfo->width + (int8_t)fontInfo->xpos + 1;
 					else
-						width += fontInfo->width + fontInfo->xpos;
+						width += fontInfo->width + (int8_t)fontInfo->xpos;
 				}
 			}
 		}
