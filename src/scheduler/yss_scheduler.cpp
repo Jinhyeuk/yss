@@ -16,6 +16,7 @@
 #include <yss/thread.h>
 #include <yss/instance.h>
 #include <drv/Timer.h>
+#include <string.h>
 
 #define PREOCCUPY_DEPTH		(MAX_THREAD * 2)
 
