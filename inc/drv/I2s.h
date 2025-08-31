@@ -89,7 +89,7 @@ public:
 		bool mckoe;
 #elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
 		mode_t mode;
-		dataBit_t dataBit;
+		wordWidth_t wordWidth;
 		std_t std;
 		int32_t sampleRate;
 #endif
