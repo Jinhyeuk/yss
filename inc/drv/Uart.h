@@ -55,7 +55,7 @@ public:
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
 		STOP_1BIT = 0,
 		STOP_2BIT = 1
-#elif defined(STM32F0) || defined(STM32F4)
+#elif defined(STM32F0) || defined(STM32F4) || defined(STM32F7)
 		STOP_1BIT = 0,
 		STOP_2BIT = 2
 #endif

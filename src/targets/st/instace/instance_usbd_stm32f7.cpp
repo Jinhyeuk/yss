@@ -6,7 +6,7 @@
  */
 
 #include <drv/mcu.h>
-
+/*
 #if defined(STM32F7)
 
 #include <yss/instance.h>
@@ -65,4 +65,6 @@ Usbd usbd1(gDrvUsbFsSetup, gUsbFsSetup);
 #endif
 
 #endif
+
+*/
 

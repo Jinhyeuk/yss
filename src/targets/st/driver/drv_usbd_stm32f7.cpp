@@ -6,7 +6,7 @@
  */
 
 #include <drv/mcu.h>
-
+/*
 #if defined(STM32F7)
 
 #include <drv/peripheral.h>
@@ -204,3 +204,4 @@ error_t Usbd::initialize(const config_t confg)
 
 #endif
 
+*/

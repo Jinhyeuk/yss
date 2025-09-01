@@ -138,12 +138,12 @@ static uint32_t gI2sCkinFreq __attribute__((section(".non_init")));
 
 #endif
 
-bool Clock::enableHse(uint32_t hseHz, bool useOsc)
+error_t Clock::enableHse(uint32_t hseHz, bool useOsc)
 {
 	gHseFreq = hseHz;
 
 	if (hseHz < HSE_MIN_FREQ && HSE_MAX_FREQ < hseHz)
-		return false;
+		return error_t::WRONG_CLOCK_FREQUENCY;
 
 	if (useOsc)
 		RCC->CR |= RCC_CR_HSEON_Msk | RCC_CR_HSEBYP_Msk;
@@ -153,10 +153,10 @@ bool Clock::enableHse(uint32_t hseHz, bool useOsc)
 	for (uint32_t i = 0; i < 1000000; i++)
 	{
 		if (RCC->CR & RCC_CR_HSERDY_Msk)
-			return true;
+			return error_t::ERROR_NONE;
 	}
 
-	return false;
+	return error_t::TIMEOUT;
 }
 
 bool Clock::enableMainPll(uint8_t src, uint8_t m, uint16_t n, uint8_t pDiv, uint8_t qDiv, uint8_t rDiv)
