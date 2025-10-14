@@ -11,7 +11,12 @@
 
 #include <config.h>
 #include <yss/instance.h>
+
+#if defined(__M46x_SUBFAMILY)
+#include <targets/nuvoton/bitfield_m46x.h>
+#elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
 #include <targets/nuvoton/bitfield_m4xx.h>
+#endif
 
 #if defined(__M480_FAMILY)
 #define FBDIV_VALUE		46
@@ -64,10 +69,19 @@ void __WEAK initializeSystem(void)
 	CLK->CLKSEL1 = reg;
 
 	// SPI0, SPI1, SPI2, SPI3의 클럭 소스를 PLL로 변경
+#if defined(__M46x_SUBFAMILY)
+
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	reg = CLK->CLKSEL2;
 	reg &= ~(CLK_CLKSEL2_SPI0SEL_Msk | CLK_CLKSEL2_SPI1SEL_Msk | CLK_CLKSEL2_SPI2SEL_Msk | CLK_CLKSEL2_SPI3SEL_Msk);
 	reg |= (1 << CLK_CLKSEL2_SPI0SEL_Pos) | (1 << CLK_CLKSEL2_SPI1SEL_Pos) | (1 << CLK_CLKSEL2_SPI2SEL_Pos) | (1 << CLK_CLKSEL2_SPI3SEL_Pos);
 	CLK->CLKSEL2 = reg;
+#endif
+
+	// GPIO 활성화
+#if defined(__M46x_SUBFAMILY)
+	CLK->AHBCLK0 |= CLK_AHBCLK0_GPACKEN_Msk | CLK_AHBCLK0_GPBCKEN_Msk | CLK_AHBCLK0_GPCCKEN_Msk | CLK_AHBCLK0_GPDCKEN_Msk | CLK_AHBCLK0_GPECKEN_Msk | CLK_AHBCLK0_GPFCKEN_Msk | CLK_AHBCLK0_GPGCKEN_Msk | CLK_AHBCLK0_GPHCKEN_Msk;
+#endif
 }
 
 void initializeDma(void)

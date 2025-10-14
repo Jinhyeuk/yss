@@ -37,7 +37,12 @@ const static Drv::setup_t gDrvSetupGpioA =
 const static Gpio::setup_t gConfigGpioA =
 {
 	PA,				// YSS_GPIO_Peri *dev;
+#if defined(__M46x_SUBFAMILY)
+	&SYS->GPA_MFP0	// volatile uint32_t *mfp;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	&SYS->GPA_MFPL	// volatile uint32_t *mfp;
+#endif
+
 };
 
 Gpio gpioA(gDrvSetupGpioA, gConfigGpioA);
@@ -71,7 +76,11 @@ const static Drv::setup_t gDrvSetupGpioB =
 const static Gpio::setup_t gConfigGpioB =
 {
 	PB,				// YSS_GPIO_Peri *dev;
+#if defined(__M46x_SUBFAMILY)
+	&SYS->GPB_MFP0	// volatile uint32_t *mfp;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	&SYS->GPB_MFPL	// volatile uint32_t *mfp;
+#endif
 };
 
 Gpio gpioB(gDrvSetupGpioB, gConfigGpioB);
@@ -105,7 +114,11 @@ const static Drv::setup_t gDrvSetupGpioC =
 const static Gpio::setup_t gConfigGpioC =
 {
 	PC,				// YSS_GPIO_Peri *dev;
+#if defined(__M46x_SUBFAMILY)
+	&SYS->GPC_MFP0	// volatile uint32_t *mfp;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	&SYS->GPC_MFPL	// volatile uint32_t *mfp;
+#endif
 };
 
 Gpio gpioC(gDrvSetupGpioC, gConfigGpioC);
@@ -139,7 +152,11 @@ const static Drv::setup_t gDrvSetupGpioD =
 const static Gpio::setup_t gConfigGpioD =
 {
 	PD,				// YSS_GPIO_Peri *dev;
+#if defined(__M46x_SUBFAMILY)
+	&SYS->GPD_MFP0	// volatile uint32_t *mfp;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	&SYS->GPD_MFPL	// volatile uint32_t *mfp;
+#endif
 };
 
 Gpio gpioD(gDrvSetupGpioD, gConfigGpioD);
@@ -173,7 +190,11 @@ const static Drv::setup_t gDrvSetupGpioE =
 const static Gpio::setup_t gConfigGpioE =
 {
 	PE,				// YSS_GPIO_Peri *dev;
+#if defined(__M46x_SUBFAMILY)
+	&SYS->GPE_MFP0	// volatile uint32_t *mfp;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	&SYS->GPE_MFPL	// volatile uint32_t *mfp;
+#endif
 };
 
 Gpio gpioE(gDrvSetupGpioE, gConfigGpioE);
@@ -207,7 +228,11 @@ const static Drv::setup_t gDrvSetupGpioF =
 const static Gpio::setup_t gConfigGpioF =
 {
 	PF,				// YSS_GPIO_Peri *dev;
+#if defined(__M46x_SUBFAMILY)
+	&SYS->GPF_MFP0	// volatile uint32_t *mfp;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	&SYS->GPF_MFPL	// volatile uint32_t *mfp;
+#endif
 };
 
 Gpio gpioF(gDrvSetupGpioF, gConfigGpioF);
@@ -241,7 +266,11 @@ const static Drv::setup_t gDrvSetupGpioG =
 const static Gpio::setup_t gConfigGpioG =
 {
 	PG,				// YSS_GPIO_Peri *dev;
+#if defined(__M46x_SUBFAMILY)
+	&SYS->GPG_MFP0	// volatile uint32_t *mfp;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	&SYS->GPG_MFPL	// volatile uint32_t *mfp;
+#endif
 };
 
 Gpio gpioG(gDrvSetupGpioG, gConfigGpioG);
@@ -275,7 +304,11 @@ const static Drv::setup_t gDrvSetupGpioH =
 const static Gpio::setup_t gConfigGpioH =
 {
 	PH,				//YSS_GPIO_Peri *dev;
+#if defined(__M46x_SUBFAMILY)
+	&SYS->GPH_MFP0	// volatile uint32_t *mfp;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	&SYS->GPH_MFPL	// volatile uint32_t *mfp;
+#endif
 };
 
 Gpio gpioH(gDrvSetupGpioH, gConfigGpioH);

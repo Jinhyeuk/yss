@@ -46,23 +46,12 @@ class I2c : public Drv
 		SPEED_FAST_PLUS
 	}speed_t;
 
-	typedef enum
-	{
-		MODE_MAIN = 0,
-		MODE_SUB,
-	}mode_t;
-
 	typedef struct
 	{
-		mode_t mode;			// 통신 모드 (Main 전용)
 		speed_t speed;			// 통신 속도 (Main 전용)
-		uint8_t addr1;			// Sub Address1 (Sub 전용)
-		uint8_t addr2;			// Sub Address2 (Sub 전용)
-		void *rcvBuf;			// Sub 수신 버퍼 (Sub 전용)
-		uint16_t rcvBufSize;	// Sub 수신 버퍼 크기 (Sub 전용)
-	}config_t;
+	}mainConfig_t;
 
-	error_t initialize(config_t config) __attribute__((optimize("-O1")));
+	error_t initialize(mainConfig_t config) __attribute__((optimize("-O1")));
 
 	error_t send(uint8_t addr, void *src, uint32_t size, uint32_t timeout = 500) __attribute__((optimize("-O1")));
 

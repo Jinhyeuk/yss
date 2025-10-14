@@ -32,7 +32,14 @@ static void enableDma1Clock(bool en)
 static void enableDma1Stream0Interrupt(bool en)
 {
 	// enableInterrupt() 함수 내부에서 인터럽트를 끄기 때문에 Mutex lock(), unlock()을 하지 않음.
+
+#if defined(__M46x_SUBFAMILY)
+	nvic.enableInterrupt(PDMA0_IRQn, en);
+	nvic.enableInterrupt(PDMA1_IRQn, en);
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	nvic.enableInterrupt(PDMA_IRQn, en);
+#endif
+
 }
 
 
@@ -48,8 +55,13 @@ const Drv::setup_t gDrvDmaChannel1Setup =
 
 const Dma::setup_t gDma1Setup = 
 {
+#if defined(__M46x_SUBFAMILY)
+	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
+	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[0]	// YSS_DMA_Channel_Peri *peri;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
 	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[0]	// YSS_DMA_Channel_Peri *peri;
+#endif
 };
 
 DmaChannel1 dmaChannel1(gDrvDmaChannel1Setup, gDma1Setup);
@@ -68,8 +80,13 @@ const Drv::setup_t gDrvDmaDummySetup =
 
 const Dma::setup_t gDma2Setup = 
 {
+#if defined(__M46x_SUBFAMILY)
+	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
+	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[1]	// YSS_DMA_Channel_Peri *peri;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
 	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[1]	// YSS_DMA_Channel_Peri *peri;
+#endif
 };
 
 DmaChannel2 dmaChannel2(gDrvDmaDummySetup, gDma2Setup);
@@ -80,8 +97,13 @@ DmaChannel2 dmaChannel2(gDrvDmaDummySetup, gDma2Setup);
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
 const Dma::setup_t gDma3Setup = 
 {
+#if defined(__M46x_SUBFAMILY)
+	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
+	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[2]	// YSS_DMA_Channel_Peri *peri;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
 	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[2]	// YSS_DMA_Channel_Peri *peri;
+#endif
 };
 
 DmaChannel3 dmaChannel3(gDrvDmaDummySetup, gDma3Setup);
@@ -92,8 +114,13 @@ DmaChannel3 dmaChannel3(gDrvDmaDummySetup, gDma3Setup);
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
 const Dma::setup_t gDma4Setup = 
 {
+#if defined(__M46x_SUBFAMILY)
+	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
+	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[3]	// YSS_DMA_Channel_Peri *peri;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
 	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[3]	// YSS_DMA_Channel_Peri *peri;
+#endif
 };
 
 DmaChannel4 dmaChannel4(gDrvDmaDummySetup, gDma4Setup);
@@ -104,8 +131,13 @@ DmaChannel4 dmaChannel4(gDrvDmaDummySetup, gDma4Setup);
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
 const Dma::setup_t gDma5Setup = 
 {
+#if defined(__M46x_SUBFAMILY)
+	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
+	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[4]	// YSS_DMA_Channel_Peri *peri;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
 	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[4]	// YSS_DMA_Channel_Peri *peri;
+#endif
 };
 
 DmaChannel5 dmaChannel5(gDrvDmaDummySetup, gDma5Setup);
@@ -116,8 +148,13 @@ DmaChannel5 dmaChannel5(gDrvDmaDummySetup, gDma5Setup);
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
 const Dma::setup_t gDma6Setup = 
 {
+#if defined(__M46x_SUBFAMILY)
+	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
+	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[5]	// YSS_DMA_Channel_Peri *peri;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
 	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[5]	// YSS_DMA_Channel_Peri *peri;
+#endif
 };
 
 DmaChannel6 dmaChannel6(gDrvDmaDummySetup, gDma6Setup);
@@ -128,8 +165,13 @@ DmaChannel6 dmaChannel6(gDrvDmaDummySetup, gDma6Setup);
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
 const Dma::setup_t gDma7Setup = 
 {
+#if defined(__M46x_SUBFAMILY)
+	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
+	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[6]	// YSS_DMA_Channel_Peri *peri;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
 	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[6]	// YSS_DMA_Channel_Peri *peri;
+#endif
 };
 
 DmaChannel7 dmaChannel7(gDrvDmaDummySetup, gDma7Setup);
@@ -140,8 +182,13 @@ DmaChannel7 dmaChannel7(gDrvDmaDummySetup, gDma7Setup);
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
 const Dma::setup_t gDma8Setup = 
 {
+#if defined(__M46x_SUBFAMILY)
+	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
+	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[7]	// YSS_DMA_Channel_Peri *peri;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
 	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[7]	// YSS_DMA_Channel_Peri *peri;
+#endif
 };
 
 DmaChannel8 dmaChannel8(gDrvDmaDummySetup, gDma8Setup);
@@ -152,8 +199,13 @@ DmaChannel8 dmaChannel8(gDrvDmaDummySetup, gDma8Setup);
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
 const Dma::setup_t gDma9Setup = 
 {
+#if defined(__M46x_SUBFAMILY)
+	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
+	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[8]	// YSS_DMA_Channel_Peri *peri;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
 	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[8]	// YSS_DMA_Channel_Peri *peri;
+#endif
 };
 
 DmaChannel9 dmaChannel9(gDrvDmaDummySetup, gDma9Setup);
@@ -161,11 +213,16 @@ DmaChannel9 dmaChannel9(gDrvDmaDummySetup, gDma9Setup);
 
 
 
-#if defined(__M480_FAMILY)
+#if defined(__M480_FAMILY) || defined(__M46x_SUBFAMILY)
 const Dma::setup_t gDma10Setup = 
 {
+#if defined(__M46x_SUBFAMILY)
+	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
+	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[9]	// YSS_DMA_Channel_Peri *peri;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
 	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[9]	// YSS_DMA_Channel_Peri *peri;
+#endif
 };
 
 DmaChannel10 dmaChannel10(gDrvDmaDummySetup, gDma10Setup);
@@ -173,11 +230,16 @@ DmaChannel10 dmaChannel10(gDrvDmaDummySetup, gDma10Setup);
 
 
 
-#if defined(__M480_FAMILY)
+#if defined(__M480_FAMILY) || defined(__M46x_SUBFAMILY)
 const Dma::setup_t gDma11Setup = 
 {
+#if defined(__M46x_SUBFAMILY)
+	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
+	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[10]	// YSS_DMA_Channel_Peri *peri;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
 	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[10]	// YSS_DMA_Channel_Peri *peri;
+#endif
 };
 
 DmaChannel11 dmaChannel11(gDrvDmaDummySetup, gDma11Setup);
@@ -185,11 +247,16 @@ DmaChannel11 dmaChannel11(gDrvDmaDummySetup, gDma11Setup);
 
 
 
-#if defined(__M480_FAMILY)
+#if defined(__M480_FAMILY) || defined(__M46x_SUBFAMILY)
 const Dma::setup_t gDma12Setup = 
 {
+#if defined(__M46x_SUBFAMILY)
+	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
+	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[11]	// YSS_DMA_Channel_Peri *peri;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
 	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[11]	// YSS_DMA_Channel_Peri *peri;
+#endif
 };
 
 DmaChannel12 dmaChannel12(gDrvDmaDummySetup, gDma12Setup);
@@ -197,11 +264,16 @@ DmaChannel12 dmaChannel12(gDrvDmaDummySetup, gDma12Setup);
 
 
 
-#if defined(__M480_FAMILY)
+#if defined(__M480_FAMILY) || defined(__M46x_SUBFAMILY)
 const Dma::setup_t gDma13Setup = 
 {
+#if defined(__M46x_SUBFAMILY)
+	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
+	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[12]	// YSS_DMA_Channel_Peri *peri;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
 	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[12]	// YSS_DMA_Channel_Peri *peri;
+#endif
 };
 
 DmaChannel13 dmaChannel13(gDrvDmaDummySetup, gDma13Setup);
@@ -209,11 +281,16 @@ DmaChannel13 dmaChannel13(gDrvDmaDummySetup, gDma13Setup);
 
 
 
-#if defined(__M480_FAMILY)
+#if defined(__M480_FAMILY) || defined(__M46x_SUBFAMILY)
 const Dma::setup_t gDma14Setup = 
 {
+#if defined(__M46x_SUBFAMILY)
+	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
+	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[13]	// YSS_DMA_Channel_Peri *peri;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
 	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[13]	// YSS_DMA_Channel_Peri *peri;
+#endif
 };
 
 DmaChannel14 dmaChannel14(gDrvDmaDummySetup, gDma14Setup);
@@ -221,11 +298,16 @@ DmaChannel14 dmaChannel14(gDrvDmaDummySetup, gDma14Setup);
 
 
 
-#if defined(__M480_FAMILY)
+#if defined(__M480_FAMILY) || defined(__M46x_SUBFAMILY)
 const Dma::setup_t gDma15Setup = 
 {
+#if defined(__M46x_SUBFAMILY)
+	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
+	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[14]	// YSS_DMA_Channel_Peri *peri;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
 	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[14]	// YSS_DMA_Channel_Peri *peri;
+#endif
 };
 
 DmaChannel15 dmaChannel15(gDrvDmaDummySetup, gDma15Setup);
@@ -233,11 +315,16 @@ DmaChannel15 dmaChannel15(gDrvDmaDummySetup, gDma15Setup);
 
 
 
-#if defined(__M480_FAMILY)
+#if defined(__M480_FAMILY) || defined(__M46x_SUBFAMILY)
 const Dma::setup_t gDma16Setup = 
 {
+#if defined(__M46x_SUBFAMILY)
+	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
+	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[15]	// YSS_DMA_Channel_Peri *peri;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
 	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[15]	// YSS_DMA_Channel_Peri *peri;
+#endif
 };
 
 DmaChannel16 dmaChannel16(gDrvDmaDummySetup, gDma16Setup);
@@ -245,6 +332,9 @@ DmaChannel16 dmaChannel16(gDrvDmaDummySetup, gDma16Setup);
 
 extern "C"
 {
+#if defined(__M46x_SUBFAMILY)
+
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	void PDMA_IRQHandler(void)
 	{
 		uint32_t tdsts = PDMA->TDSTS;
@@ -380,6 +470,7 @@ extern "C"
 #endif
 		}
 	}
+#endif
 }
 
 #endif

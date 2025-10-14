@@ -24,7 +24,7 @@ I2c::I2c(const Drv::setup_t drvSetup, const setup_t setup) : Drv(drvSetup)
 	mDev = setup.dev;
 }
 
-error_t I2c::initialize(config_t config)
+error_t I2c::initialize(mainConfig_t config)
 {
 	int32_t div = getClockFrequency() / 4;
 	
@@ -152,8 +152,10 @@ void I2c::isr(void)
 	
 	case 0x50 : // Master Receive Data ACK
 		*mDataBuf++ = mDev->DAT;
+		mDataCount--;
 		if(mDataCount == 1)
 			mDev->CTL0 &= ~I2C_CTL0_AA_Msk;
+		mDev->CTL0 |= I2C_CTL0_SI_Msk;
 		break;
 	
 	case 0x58 : // Master Receive Data NACK

@@ -52,8 +52,6 @@ error_t Gpio::setAsOutput(uint8_t pin, otype_t otype)
 	setAsAltFunc(pin, ALTFUNC_GPIO);
 
 	__disable_irq();
-	mMfp[reg] &= ~(0xF << pinf);
-
 	pin <<= 1;
 	reg = mDev->MODE;
 	reg &= ~(0x3 << pin);
@@ -75,7 +73,17 @@ error_t Gpio::setAsAltFunc(uint8_t pin, altFunc_t altfunc, otype_t otype)
 
 	if(pin > 15)
 		return error_t::OUT_OF_PIN_INDEX_RANGE;
+#if defined(__M46x_SUBFAMILY)
+	index = pin / 4;
+	pin = (pin << 3) & 0x1F;
 	
+	__disable_irq();
+	reg = mMfp[index];
+	reg &= ~(0x1F << pin);
+	reg |= altfunc << pin;
+	mMfp[index] = reg;
+	__enable_irq();
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	index = pin / 8;
 	pin = (pin << 2) & 0x1F;
 	
@@ -85,6 +93,7 @@ error_t Gpio::setAsAltFunc(uint8_t pin, altFunc_t altfunc, otype_t otype)
 	reg |= altfunc << pin;
 	mMfp[index] = reg;
 	__enable_irq();
+#endif
 
 	return error_t::ERROR_NONE;
 }
