@@ -204,6 +204,7 @@ float Pid::getTarget(void)
 void Pid::reset(void)
 {
 	mIsum = 0;
+	mBeforeError = 0;
 #if !(defined(__CORE_CM0PLUS_H_GENERIC) || defined(__CORE_CM0_H_GENERIC))
 	mLastTime = runtime::getUsec();
 #else
