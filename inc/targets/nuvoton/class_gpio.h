@@ -11,6 +11,7 @@
 #include <yss/error.h>
 #include <drv/peripheral.h>
 #include <drv/Drv.h>
+#include <yss/thread.h>
 
 class Gpio : public Drv
 {
@@ -543,6 +544,8 @@ public:
 	//		출력핀의 출력 종류를 설정합니다.
 	error_t setAsOutput(uint8_t pin, otype_t otype = PUSH_PULL) __attribute__((optimize("-O1")));
 
+	error_t setAsInput(uint8_t pin) __attribute__((optimize("-O1")));
+
 	// 핀의 출력 값을 설정합니다.
 	// 
 	// uint8_t pin
@@ -584,6 +587,20 @@ public:
 	error_t enablInterrupt(uint8_t pin, source_t src, void (*isr)(void));
 
 	/*
+	 *	GPIO를 엣지 또는 레벨 인터럽트로 활성화합니다.
+	 *	ISR 함수에서는 문맥전환을 유발하는 모든 함수의 호출을 금지합니다.
+	 *	yss.h 파일에서 문맥전환을 유발하는 함수 유형의 설명을 참고하세요.
+	 *	yss.h 파일에서 ISR 함수와 Callback 함수에 대한 구분 설명을 참고하세요. 
+	 *	.
+	 *	@ return : 에러를 반환합니다.
+	 *	.
+	 *	@ pin : 인터럽트를 설정한 포트의 핀 번호를 설정합니다.
+	 *	@ edge : 인터럽트를 감지할 엣지를 설정합니다.
+	 *	@ * isr : ISR 함수의 포인터를 설정합니다.
+	 */
+	error_t enablInterrupt(uint8_t pin, source_t src, triggerId_t trigger);
+
+	/*
 	 *	GPIO 핀의 현재 상태를 읽어옵니다.
 	 *	.
 	 *	@ return : 핀의 상태에 따라 High는 true, Low는 false를 반환합니다.
@@ -605,6 +622,8 @@ private:
 	YSS_GPIO_Peri *mDev;
 	volatile uint32_t *mMfp, *mOutputReg;
 	void (*mIsr[16])(void);
+	bool mTriggerFlag[16];
+	int32_t  mTriggerNum[16];
 };
 
 #endif

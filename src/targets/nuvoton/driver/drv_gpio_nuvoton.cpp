@@ -33,22 +33,10 @@ Gpio::Gpio(const Drv::setup_t drvSetup, const setup_t setup) : Drv(drvSetup)
 error_t Gpio::setAsOutput(uint8_t pin, otype_t otype)
 {
 	uint32_t reg;
-	uint8_t pinf;
 
 	if(pin > 15)
 		return error_t::OUT_OF_PIN_INDEX_RANGE;
 	
-	if(pin > 8)
-	{
-		reg = 1;
-		pinf = (pin - 8) << 2;
-	}
-	else
-	{
-		reg = 0;
-		pinf = pin << 2;
-	}
-
 	setAsAltFunc(pin, ALTFUNC_GPIO);
 
 	__disable_irq();
@@ -61,6 +49,25 @@ error_t Gpio::setAsOutput(uint8_t pin, otype_t otype)
 
 	return error_t::ERROR_NONE;
 }
+
+error_t Gpio::setAsInput(uint8_t pin)
+{
+	uint32_t reg;
+
+	if(pin > 15)
+		return error_t::OUT_OF_PIN_INDEX_RANGE;
+	
+	__disable_irq();
+	pin <<= 1;
+	reg = mDev->MODE;
+	reg &= ~(0x3 << pin);
+	mDev->MODE = reg;
+	__enable_irq();
+	 
+		
+	return error_t::ERROR_NONE;
+}
+
 
 void Gpio::setOutput(uint8_t pin, bool data)
 {
@@ -124,7 +131,47 @@ error_t Gpio::enablInterrupt(uint8_t pin, source_t src, void (*isr)(void))
 
 	bool level = false;
 
+	mTriggerFlag[pin] = false;
 	mIsr[pin] = isr;
+
+	switch((uint8_t)src)
+	{
+	case EDGE_BOTH :
+		setBitData(mDev->INTEN, true, pin);
+		
+	case EDGE_RISING :
+		setBitData(mDev->INTEN, true, (pin + 16));
+		break;
+	
+	case EDGE_FALLING :
+		setBitData(mDev->INTEN, true, pin);
+		break;
+
+	case LEVEL_HIGH :
+		setBitData(mDev->INTEN, true, (pin + 16));
+		level = true;
+		break;
+	
+	case LEVEL_LOW :
+		setBitData(mDev->INTEN, true, pin);
+		level = true;
+		break;
+	}
+
+	setBitData(mDev->INTTYPE, level, pin);
+
+	return error_t::ERROR_NONE;
+}
+
+error_t Gpio::enablInterrupt(uint8_t pin, source_t src, triggerId_t trigger)
+{
+	if(pin >= 16)
+		return error_t::OUT_OF_PIN_INDEX_RANGE;
+
+	bool level = false;
+	
+	mTriggerFlag[pin] = true;
+	mTriggerNum[pin] = trigger;
 
 	switch((uint8_t)src)
 	{
@@ -163,9 +210,11 @@ void Gpio::isr(void)
 	{
 		if(mDev->INTSRC & comp)
 		{
-			if(mIsr[i])
+			if (mTriggerFlag[i])
+				trigger::run(mTriggerNum[i]);
+			else if(mIsr[i])
 				mIsr[i]();
-		
+
 			mDev->INTSRC |= comp;
 		}
 

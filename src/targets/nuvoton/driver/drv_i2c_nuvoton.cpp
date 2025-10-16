@@ -26,24 +26,24 @@ I2c::I2c(const Drv::setup_t drvSetup, const setup_t setup) : Drv(drvSetup)
 
 error_t I2c::initialize(mainConfig_t config)
 {
-	int32_t div = getClockFrequency() / 4;
+	uint32_t busClock;
+	int32_t div = getClockFrequency();
 	
 	switch(config.speed)
 	{
 	case SPEED_STANDARD :
-		div /= 100000;
-		div -= 1;
+		busClock = 100000;
 		break;
 	
 	case SPEED_FAST :
-		div /= 400000;
-		div -= 1;
+		busClock = 400000;
 		break;
 
 	default :
 		return error_t::NOT_SUPPORTED_YET;
 	}
-
+	
+	div = (uint32_t)(((div * 10) / (busClock * 4) + 5) / 10 - 1);;
 	if(div < 4)
 		return error_t::WRONG_CLOCK_FREQUENCY;
 
@@ -138,12 +138,13 @@ void I2c::isr(void)
 		{
 			mDataCount--;
 			mDev->DAT = *mDataBuf++;
+			mDev->CTL0 |= I2C_CTL0_SI_Msk;
 		}
 		else
 		{
 			mComplete = true;
+			mDev->CTL0 |= I2C_CTL0_SI_Msk | I2C_CTL0_STO_Msk;
 		}
-		mDev->CTL0 |= I2C_CTL0_SI_Msk;
 		break;
 
 	case 0x40 : // Master Receive Address ACK
@@ -159,9 +160,13 @@ void I2c::isr(void)
 		break;
 	
 	case 0x58 : // Master Receive Data NACK
-		*mDataBuf++ = mDev->DAT;
+		if(mDataCount)
+		{
+			mDataCount--;
+			*mDataBuf++ = mDev->DAT;
+		}
 		mComplete = true;
-		mDev->CTL0 |= I2C_CTL0_SI_Msk;
+		mDev->CTL0 |= I2C_CTL0_SI_Msk | I2C_CTL0_STO_Msk;
 		break;
 
 	case 0x00 : // Bus error
