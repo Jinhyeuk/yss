@@ -31,35 +31,46 @@ I2s::I2s(const Drv::setup_t drvSetup, const setup_t setup) : Drv(drvSetup)
 error_t I2s::initialize(const config_t &spec)
 {
 	int32_t clk, mclk, bclk, div = 1;
-	uint32_t ctl = (spec.std << SPI_I2SCTL_FORMAT_Pos) | (spec.dataBit << SPI_I2SCTL_WDWIDTH_Pos) | SPI_I2SCTL_MCLKEN_Msk | SPI_I2SCTL_I2SEN_Msk ;
+	uint32_t ctl, wordWidth;
 	
 	clk = bclk = getClockFrequency();
 	mCurrentDma = allocateDma();
 	if(mCurrentDma == nullptr)
 		return error_t::DMA_ALLOCATION_FAILED;
 
-	switch(spec.dataBit)
+	switch(spec.wordWidth)
 	{
-	case BIT_8BIT :
+	case WORD_WIDTH_8BIT :
 		div = 16;
 		mDataSize = 1;
+		wordWidth = 0;
 		break;
-	case BIT_16BIT :
+	case WORD_WIDTH_16BIT :
 		div = 32;
 		mTxDmaInfo.ctl |= PDMA_WIDTH_32;
 		mRxDmaInfo.ctl |= PDMA_WIDTH_32;
 		mDataSize = 2;
+		wordWidth = 1;
 		break;
 
-	case BIT_24BIT :
-	case BIT_32BIT :
+	case WORD_WIDTH_24BIT :
 		div = 64;
 		mTxDmaInfo.ctl |= PDMA_WIDTH_32;
 		mRxDmaInfo.ctl |= PDMA_WIDTH_32;
 		mDataSize = 4;
+		wordWidth = 2;
+
+	case WORD_WIDTH_32BIT :
+		div = 64;
+		mTxDmaInfo.ctl |= PDMA_WIDTH_32;
+		mRxDmaInfo.ctl |= PDMA_WIDTH_32;
+		mDataSize = 4;
+		wordWidth = 3;
 		break;
 	}
 	
+	ctl = (spec.std << SPI_I2SCTL_FORMAT_Pos) | (wordWidth << SPI_I2SCTL_WDWIDTH_Pos) | SPI_I2SCTL_MCLKEN_Msk | SPI_I2SCTL_I2SEN_Msk ;
+
 	bclk /= div * 2;	
 	mclk = bclk / 4;
 	bclk = bclk / spec.sampleRate;
