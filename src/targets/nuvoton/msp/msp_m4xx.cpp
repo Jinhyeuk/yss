@@ -18,7 +18,9 @@
 #include <targets/nuvoton/bitfield_m4xx.h>
 #endif
 
-#if defined(__M480_FAMILY)
+#if defined(__M46x_SUBFAMILY)
+#define FBDIV_VALUE		43
+#elif defined(__M480_FAMILY)
 #define FBDIV_VALUE		46
 #elif defined(__M4xx_FAMILY)
 #define FBDIV_VALUE		34
