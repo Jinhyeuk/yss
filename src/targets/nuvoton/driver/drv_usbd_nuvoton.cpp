@@ -18,12 +18,6 @@
 #include <util/Timeout.h>
 #include <string.h>
 
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
-//#include <targets/nuvoton/bitfield_m4xx.h>
-#elif defined(__M25x_SUBFAMILY)
-#include <targets/nuvoton/bitfield_m2xx.h>
-#endif
-
 Usbd::Usbd(const Drv::setup_t drvSetup, const setup_t setup) : Drv(drvSetup)
 {
 	mDev = setup.dev;

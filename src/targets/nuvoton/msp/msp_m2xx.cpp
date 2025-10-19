@@ -11,7 +11,6 @@
 
 #include <config.h>
 #include <yss/instance.h>
-#include <targets/nuvoton/bitfield_m2xx.h>
 
 #if defined(__M2xx_FAMILY)
 #define FBDIV_VALUE		24
