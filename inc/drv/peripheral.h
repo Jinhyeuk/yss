@@ -74,7 +74,8 @@
 
 #elif defined(__M46x_SUBFAMILY)
 
-#include <targets/nuvoton/M46x.h>
+//#include <targets/nuvoton/M46x.h>
+#include <NuMicro.h>
 
 #elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
 

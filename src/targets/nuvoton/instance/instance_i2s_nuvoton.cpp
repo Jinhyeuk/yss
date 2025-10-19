@@ -12,9 +12,6 @@
 #include <yss/instance.h>
 #include <config.h>
 #include <yss.h>
-#include <targets/nuvoton/bitfield_m4xx.h>
-
-
 
 #if I2S0_ENABLE && defined(SPI0)
 static void enableSpi0Clock(bool en)

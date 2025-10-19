@@ -13,12 +13,6 @@
 #include <yss/instance.h>
 
 #if defined(__M46x_SUBFAMILY)
-#include <targets/nuvoton/bitfield_m46x.h>
-#elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
-#include <targets/nuvoton/bitfield_m4xx.h>
-#endif
-
-#if defined(__M46x_SUBFAMILY)
 #define FBDIV_VALUE		43
 #elif defined(__M480_FAMILY)
 #define FBDIV_VALUE		46

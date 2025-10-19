@@ -14,11 +14,6 @@
 #include <drv/Uart.h>
 #include <yss/thread.h>
 #include <yss/reg.h>
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
-#include <targets/nuvoton/bitfield_m4xx.h>
-#elif defined(__M2xx_FAMILY)
-#include <targets/nuvoton/bitfield_m2xx.h>
-#endif
 
 Uart::Uart(const Drv::setup_t drvSetup, const setup_t setup) : Drv(drvSetup)
 {

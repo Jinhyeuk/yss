@@ -11,17 +11,18 @@
 #include <yss/debug.h>
 #include <std_ext/string.h>
 
-#if !defined(YSS_DRV_I2C_UNSUPPORTED) && !defined(YSS_DRV_EXTI_UNSUPPORTED)
+#if !defined(YSS_DRV_I2C_UNSUPPORTED) && (!defined(YSS_DRV_EXTI_UNSUPPORTED) || defined(__M4xx_FAMILY))
 
 #define ADDR			0xBA
 
-#define REG_CHECKSUM	0xFF80
-#define REG_PID			0x4081
-#define REG_COORD		0x4E81
-#define REG_CFG			0x4780
-#define REG_FRESH		0x0081
-#define REG_CMD			0x4080
-#define REG_CMD_CHK		0x4680
+#define REG_CHECKSUM	0x80FF
+#define REG_PID			0x8140
+#define REG_STATUS		0x814E
+#define REG_P1_COORD	0x815F
+#define REG_CFG			0x8047
+#define REG_FRESH		0x8100
+#define REG_CMD			0x8040
+#define REG_CMD_CHK		0x8046
 
 struct Gt911config_t
 {
@@ -151,7 +152,7 @@ error_t GT911::initialize(const config_t config)
 		thread::delay(5);
 		mIsr.port->setAsInput(mIsr.pin);
 	}
-	thread::delay(200);
+	thread::delay(50);
 	
 	result = getMultiByte(REG_PID, data, 4);
 	if(result != error_t::ERROR_NONE)
@@ -164,13 +165,13 @@ error_t GT911::initialize(const config_t config)
 		result = error_t::UNKNOWN_DEVICE;
 		goto error_handler;
 	}
-
+	memset(gt911Config, 0, sizeof(Gt911config_t));
 	result = getMultiByte(REG_CFG, gt911Config, sizeof(Gt911config_t));
 	if(result != error_t::ERROR_NONE)
 	{
 		goto error_handler;
 	}
-
+/*
 	gt911Config->version = 0x5B;
 	gt911Config->xOutputMax = 800;
 	gt911Config->yOutputMax = 480;
@@ -196,7 +197,7 @@ error_t GT911::initialize(const config_t config)
 	gt911Config->stretchR1 = 0x00;
 	gt911Config->stretchR2 = 0x00;
 	gt911Config->stretchRM = 0x00;
-	gt911Config->drvGroupANum = 0x87;
+	gt911Config->drvGroupANum = 0x80;
 	gt911Config->drvGroupBNum = 0x29;
 	gt911Config->sensorNum = 0x0A;
 	gt911Config->freqAFactor = 0x2D;
@@ -318,7 +319,9 @@ error_t GT911::initialize(const config_t config)
 
 	thread::delay(100);
 
-	setCommand(0x00);
+	result = getMultiByte(REG_CFG, gt911Config, sizeof(Gt911config_t));
+*/
+	setCommand(0x22);
 
 	mTriggerId = trigger::add(trigger_handler, this, 1024);
 
@@ -327,10 +330,13 @@ error_t GT911::initialize(const config_t config)
 		result = error_t::FAILED_THREAD_ADDING;
 		goto error_handler;
 	}
-
+#if defined(__M4xx_FAMILY)
+	result = mIsr.port->enablInterrupt(mIsr.pin, Gpio::EDGE_FALLING, mTriggerId);
+#else
 	result = exti.add(*mIsr.port, mIsr.pin, Exti::FALLING, mTriggerId);
 	if(result == error_t::ERROR_NONE)
 		exti.enable(mIsr.pin);
+#endif
 
 error_handler :
 
@@ -352,14 +358,16 @@ uint8_t GT911::calculateChksum(void *src)
 
 int8_t GT911::getByte(uint16_t addr)
 {
+	addr = translateAddress(addr);
+
 	mPeri->lock();
 	mPeri->send(ADDR, (int8_t*)&addr, 2, 100);
-	thread::delay(1);
+	//thread::delay(1);
 	mPeri->receive(ADDR, (int8_t*)&addr, 1, 100);
 	mPeri->stop();
 	mPeri->unlock();
 
-	return addr;
+	return (int8_t)addr;
 }
 
 error_t GT911::setCommand(uint8_t cmd)
@@ -381,7 +389,7 @@ uint8_t GT911::getCommand(void)
 
 	if(mPeri->send(ADDR, data, 2, 100) == error_t::ERROR_NONE)
 	{
-		thread::delay(1);
+		//thread::delay(1);
 		mPeri->receive(ADDR, data, 1, 100);
 		return data[0];
 	}
@@ -389,14 +397,26 @@ uint8_t GT911::getCommand(void)
 		return 0;
 }
 
+uint16_t GT911::translateAddress(uint16_t addr)
+{
+	uint8_t buf = (uint8_t)addr;
+
+	addr >>= 8;
+	addr |= (uint16_t)buf << 8;
+
+	return addr;
+}
+
 error_t GT911::getMultiByte(uint16_t addr, void *des, uint8_t size)
 {
 	error_t rt = error_t::UNKNOWN;
 
+	addr = translateAddress(addr);
+
 	mPeri->lock();
 	if(mPeri->send(ADDR, &addr, 2, 100) == error_t::ERROR_NONE)
 	{
-		thread::delay(1);
+		//thread::delay(1);
 		rt = mPeri->receive(ADDR, des, size, 100);
 	}
 	mPeri->stop();
@@ -409,6 +429,8 @@ error_t GT911::setMultiByte(uint16_t addr, void *src, uint8_t size)
 {
 	error_t result = error_t::UNKNOWN;
 	uint8_t *data = new uint8_t[size + 2];
+
+	addr = translateAddress(addr);
 
 	if(data != nullptr)
 	{
@@ -443,30 +465,31 @@ error_t GT911::setByte(uint16_t addr, uint8_t data)
 	return result;
 }
 
+GT911::coordinate_t coord;
 
 void GT911::isr(void)
 {
 	//static bool penDown = false;
-	//uint16_t x, y;
+	uint16_t x, y;
 	//uint8_t data[8*5], event, status, count;
-	uint8_t data[8*5], status;
+	uint8_t status;
 
-	status = getByte(REG_COORD);
+	status = getByte(REG_STATUS);
 	if(status & 0x80)
 	{
-		getMultiByte(REG_COORD + 0x100, data, 8*5);
+		getMultiByte(REG_P1_COORD, &coord, sizeof(coord));
 //		debug_printf("0x%02X, 0x%02X, 0x%02X, 0x%02X\n", data[0], data[1], data[2], data[3]);
 	}
 
-	//if(data[0] <= 1)
-	//{
-	//	event = data[1] >> 6;
+//	if(data[0] <= 1)
+//	{
+//		//event = data[1] >> 6;
 		
-	//	data[1] &= 0x0F;
-	//	y = (uint16_t)data[1] << 8;
-	//	y |= data[2];
-	//	x = (uint16_t)data[3] << 8;
-	//	x |= data[4];
+//		data[1] &= 0x0F;
+//		y = (uint16_t)data[1] << 8;
+//		y |= data[2];
+//		x = (uint16_t)data[3] << 8;
+//		x |= data[4];
 
 	//	if((event == 0x00) && (penDown == false))
 	//	{

@@ -11,9 +11,21 @@
 
 #include <drv/Flash.h>
 #include <yss/reg.h>
-#include <targets/nuvoton/bitfield_m4xx.h>
 #include <util/Timeout.h>
 #include <yss/thread.h>
+
+#define FMC_ISPCMD_FLASH_READ					(0x00)
+#define FMC_ISPCME_FLASH_READ_64BIT				(0x40)
+#define FMC_ISPCMD_READ_UNIQUE_ID				(0x04)
+#define FMC_ISPCMD_READ_FLASH_ALL_ONE_READ		(0x08)
+#define FMC_ISPCMD_READ_COMPANY_ID				(0x0B)
+#define FMC_ISPCMD_READ_DEVICE_ID				(0x0C)
+#define FMC_ISPCMD_READ_CHECKSUM				(0x0D)
+#define FMC_ISPCMD_FLASH_32BIT_PROGRAM			(0x21)
+#define FMC_ISPCMD_FLASH_PAGE_ERASE				(0x22)
+#define FMC_ISPCMD_FLASH_BANK_ERASE				(0x23)
+#define FMC_ISPCMD_FLASH_BLOCK_ERASE			(0x25)
+#define FMC_ISPCMD_FLASH_MULTI_WORD				(0x27)
 
 error_t Flash::erasePage(uint16_t page)
 {

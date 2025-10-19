@@ -16,7 +16,6 @@
 #include <yss/thread.h>
 #include <yss/reg.h>
 #include <yss/debug.h>
-#include <targets/nuvoton/bitfield_m4xx.h>
 #include <util/Timeout.h>
 
 I2c::I2c(const Drv::setup_t drvSetup, const setup_t setup) : Drv(drvSetup)

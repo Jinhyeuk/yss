@@ -12,12 +12,6 @@
 #include <util/runtime.h>
 #include <drv/peripheral.h>
 
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
-#include <targets/nuvoton/bitfield_m4xx.h>
-#elif defined(__M2xx_FAMILY)
-#include <targets/nuvoton/bitfield_m2xx.h>
-#endif
-
 #define TOP				0xFFFFFF
 
 #if YSS_TIMER == RUNTIME_TIMER0

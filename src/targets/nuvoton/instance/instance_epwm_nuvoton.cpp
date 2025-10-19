@@ -13,7 +13,6 @@
 #include <config.h>
 #include <yss.h>
 #include <yss/reg.h>
-#include <targets/nuvoton/bitfield_m4xx.h>
 
 #if EPWM0_ENABLE && defined(EPWM0)
 

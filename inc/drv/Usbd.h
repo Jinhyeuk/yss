@@ -13,7 +13,7 @@
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M25x_SUBFAMILY)
 
 typedef volatile USBD_T				YSS_USB_Device_TypeDef;
-#define USBD_MAX_EP					8
+#define USBD_MAX_EP_COUNT			8
 
 #else
 
@@ -31,7 +31,7 @@ typedef volatile uint32_t			YSS_USB_Device_TypeDef;
 
 /*
 	USBD를 사용자가 직접 사용하지 않습니다.
-	자세한 사항은 /inc/UsbClass 폴더의 내의 정의된 USB Class들을 참고하세요. 
+	자세한 사항은 /inc/UsbClass 폴더에 정의된 USB Class들을 참고하세요. 
 */
 class Usbd : public Drv
 {
@@ -75,10 +75,10 @@ private :
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M25x_SUBFAMILY)
 	YSS_USB_Device_TypeDef *mDev;
 	uint8_t *mSetupRxBuffer;
-	uint8_t mMaxPayload[USBD_MAX_EP_BUF];
-	uint8_t mInEpAllocTable[USBD_MAX_EP];
-	uint8_t mOutEpAllocTable[USBD_MAX_EP];
-	uint8_t mOutRxSize[USBD_MAX_EP_BUF];
+	uint8_t mMaxPayload[USBD_MAX_EP];
+	uint8_t mInEpAllocTable[USBD_MAX_EP_COUNT];
+	uint8_t mOutEpAllocTable[USBD_MAX_EP_COUNT];
+	uint8_t mOutRxSize[USBD_MAX_EP];
 	uint16_t mInSendingSize;
 	uint8_t *mInSendingBuffer;
 	uint8_t mNewAddress;

@@ -24,6 +24,14 @@ public :
 		Size_t size;
 	};
 
+	struct coordinate_t
+	{
+		uint8_t id;
+		uint16_t x;
+		uint16_t y;
+		uint16_t size;
+	};
+
 	error_t initialize(const config_t config);
 
 	int8_t getByte(uint16_t addr);
@@ -38,9 +46,12 @@ public :
 
 	uint8_t getCommand(void);
 
+	uint16_t translateAddress(uint16_t);
+
 	void isr(void);
 
 private :
+
 	I2c *mPeri;
 	pin_t mIsr;
 	int32_t mTriggerId;

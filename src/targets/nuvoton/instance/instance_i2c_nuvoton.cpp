@@ -12,9 +12,6 @@
 #include <yss/instance.h>
 #include <config.h>
 #include <yss.h>
-#include <targets/nuvoton/bitfield_m4xx.h>
-
-
 
 #if I2C0_ENABLE && defined(I2C0)
 static void enableI2c0Clock(bool en)

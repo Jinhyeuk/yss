@@ -9,14 +9,10 @@
 
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
 
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
-#include <targets/nuvoton/bitfield_m4xx.h>
-#elif defined(__M2xx_FAMILY)
-#include <targets/nuvoton/bitfield_m2xx.h>
-#endif
-
 #if defined(__M480_FAMILY)
 Dma *gDmaChannel[YSS__NUM_OF_DMA_CH] = {&dmaChannel1, &dmaChannel2, &dmaChannel3, &dmaChannel4, &dmaChannel5, &dmaChannel6, &dmaChannel7, &dmaChannel8, &dmaChannel9, &dmaChannel10, &dmaChannel11, &dmaChannel12, &dmaChannel13, &dmaChannel14, &dmaChannel15, &dmaChannel16};
+#elif defined(__M46x_SUBFAMILY)
+Dma *gDmaChannel[YSS__NUM_OF_DMA_CH] = {&dmaChannel1, &dmaChannel2, &dmaChannel3, &dmaChannel4, &dmaChannel5, &dmaChannel6, &dmaChannel7, &dmaChannel8, &dmaChannel9};
 #elif defined(__M4xx_FAMILY)
 Dma *gDmaChannel[YSS__NUM_OF_DMA_CH] = {&dmaChannel1, &dmaChannel2, &dmaChannel3, &dmaChannel4, &dmaChannel5, &dmaChannel6, &dmaChannel7, &dmaChannel8, &dmaChannel9};
 #elif defined(__M2xx_FAMILY)
@@ -26,7 +22,13 @@ Dma *gDmaChannel[YSS__NUM_OF_DMA_CH] = {&dmaChannel1, &dmaChannel2, &dmaChannel3
 static void enableDma1Clock(bool en)
 {
 	// enableApb0Clock() 함수 내부에서 인터럽트를 끄기 때문에 Mutex lock(), unlock()을 하지 않음.
+
+#if defined(__M46x_SUBFAMILY)
+	clock.enableAhbClock(CLK_AHBCLK0_PDMA0CKEN_Pos, en);
+	clock.enableAhbClock(CLK_AHBCLK0_PDMA1CKEN_Pos, en);
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	clock.enableAhbClock(CLK_AHBCLK_PDMACKEN_Pos, en);
+#endif
 }
 
 static void enableDma1Stream0Interrupt(bool en)
@@ -60,7 +62,7 @@ const Dma::setup_t gDma1Setup =
 	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[0]	// YSS_DMA_Channel_Peri *peri;
 #elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[0]	// YSS_DMA_Channel_Peri *peri;
+	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[0]	// YSS_DMA_Channel_Peri *peri; 
 #endif
 };
 

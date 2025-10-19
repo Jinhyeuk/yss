@@ -15,7 +15,6 @@
 #include <drv/Timer.h>
 #include <yss/thread.h>
 #include <yss/reg.h>
-#include <targets/nuvoton/bitfield_m4xx.h>
 
 Timer::Timer(const Drv::setup_t drvSetup, const setup_t setup) : Drv(drvSetup)
 {

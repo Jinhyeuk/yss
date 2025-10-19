@@ -11,7 +11,6 @@
 
 #include <drv/Pwm.h>
 #include <yss/reg.h>
-#include <targets/nuvoton/bitfield_m4xx.h>
 
 Pwm::Pwm(const Drv::setup_t drvSetup, const setup_t setup) : Drv(drvSetup)
 {

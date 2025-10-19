@@ -13,7 +13,6 @@
 #include <config.h>
 #include <yss.h>
 #include <yss/reg.h>
-#include <targets/nuvoton/bitfield_m4xx.h>
 
 #if defined(TIMER0) && TIMER0_ENABLE
 #if YSS_TIMER == RUNTIME_TIM0

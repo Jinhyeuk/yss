@@ -44,11 +44,11 @@ namespace bit
 {
 enum
 {
-	BIT12 = 19,
-	BIT13 = 18,
-	BIT14 = 17,
-	BIT15 = 16,
-	BIT16 = 15,
+	RES_BIT12 = 19,
+	RES_BIT13 = 18,
+	RES_BIT14 = 17,
+	RES_BIT15 = 16,
+	RES_BIT16 = 15,
 };
 }
 }

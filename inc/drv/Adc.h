@@ -77,11 +77,11 @@ public :
 
 	typedef enum
 	{
-		BIT12 = 19,
-		BIT13 = 18,
-		BIT14 = 17,
-		BIT15 = 16,
-		BIT16 = 15,
+		RES_BIT12 = 19,
+		RES_BIT13 = 18,
+		RES_BIT14 = 17,
+		RES_BIT15 = 16,
+		RES_BIT16 = 15,
 	}bit_t;
 
 	/*
@@ -91,7 +91,7 @@ public :
 		@ lpfLv : Low Pass Filter 레벨을 설정합니다. LPF_LV0은 Low Pass Filter가 적용되지 않은 상태입니다.
 		@ bit : ADC의 해상도를 설정합니다.
 	*/
-	void add(uint8_t channel, lpfLv_t lpfLv = LPF_LV0, bit_t bit = BIT12);
+	void add(uint8_t channel, lpfLv_t lpfLv = LPF_LV0, bit_t bit = RES_BIT12);
 	
 	/*
 		설정된 channel의 ADC 결과 값을 반환합니다.

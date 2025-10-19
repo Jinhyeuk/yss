@@ -13,12 +13,6 @@
 #include <config.h>
 #include <yss.h>
 
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
-#include <targets/nuvoton/bitfield_m4xx.h>
-#elif defined(__M25x_SUBFAMILY)
-#include <targets/nuvoton/bitfield_m2xx.h>
-#endif
-
 #if defined(USBD) && USBD_ENABLE
 static void enableUsbdClock(bool en)
 {
