@@ -20,6 +20,8 @@ Button::Button(void)
 	mUpHandler = 0;
 	mPushHandler = 0;
 	mText = 0;
+	mFontColor.setColor(0xFF, 0xFF, 0xFF);
+	mBgColor.setColor(0x80, 0x80, 0x80);
 }
 
 Button::~Button(void)
@@ -37,7 +39,7 @@ void Button::paint(void)
 	Size_t size = mFrameBuffer->getSize();
 	Font *font = mFrameBuffer->getFont();
 
-	mFrameBuffer->setBackgroundColor(128, 128, 128);
+	mFrameBuffer->setBackgroundColor(mBgColor);
 	if (mState)
 	{
 		mFrameBuffer->clear();
@@ -89,12 +91,16 @@ void Button::paint(void)
 		mFrameBuffer->drawLine(Position_t{0, (int16_t)(size.height - 1)}, Position_t{(int16_t)(size.width - 1), (int16_t)(size.height - 1)});
 	}
 
-	//if (mText && font->isAble())
-	//{
-	//	width = font->getStringWidth((char *)mText);
-	//	height = font->getStringHeight((char *)mText);
-	//	mFrameBuffer->drawString(Position_t{(int16_t)(size.width / 2 - width / 2), (int16_t)(size.height / 2 - height / 2)}, (char *)mText);
-	//}
+	if (mText && font)
+	{
+		width = font->getStringWidth((char*)mText);
+		height = font->getStringHeight();
+		mFrameBuffer->setFontColor(mFontColor);
+		if (mState)
+			mFrameBuffer->drawString(Position_t{(int16_t)(size.width / 2 - width / 2 + 2), (int16_t)(size.height / 2 - height / 2 + 2)}, (char *)mText);
+		else
+			mFrameBuffer->drawString(Position_t{(int16_t)(size.width / 2 - width / 2), (int16_t)(size.height / 2 - height / 2)}, (char *)mText);
+	}
 }
 
 void Button::setPushEventHandler(void (*handler)(void))
@@ -143,14 +149,28 @@ void Button::setFont(Font &font)
 
 void Button::setColor(Color color)
 {
-	mFrameBuffer->setBackgroundColor(color);
+	mBgColor = color;
 	paint();
 	update();
 }
 
 void Button::setColor(uint8_t red, uint8_t green, uint8_t blue)
 {
-	mFrameBuffer->setBackgroundColor(red, green, blue);
+	mBgColor.setColor(red, green, blue);
+	paint();
+	update();
+}
+
+void Button::setFontColor(Color color)
+{
+	mFontColor = color;
+	paint();
+	update();
+}
+
+void Button::setFontColor(uint8_t red, uint8_t green, uint8_t blue)
+{
+	mFontColor.setColor(red, green, blue);
 	paint();
 	update();
 }

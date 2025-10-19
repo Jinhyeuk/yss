@@ -16,7 +16,9 @@
 ImageButton::ImageButton(const Bitmap_t *normal, const Bitmap_t *push)
 {
 	uint16_t width = 0, height = 0;
-
+	
+	mPushHandler = nullptr;
+	mUpHandler = nullptr;
 	mNormalImage = normal;
 	mPushImage = push;
 	mState = false;
