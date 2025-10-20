@@ -9,7 +9,6 @@
 #define YSS_DRV_BPWM__H_
 
 #include <drv/peripheral.h>
-
 #include <drv/Drv.h>
 #include <yss/error.h>
 

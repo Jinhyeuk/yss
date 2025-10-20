@@ -8,21 +8,10 @@
 #ifndef YSS_DRV_EPWM__H_
 #define YSS_DRV_EPWM__H_
 
-#include "peripheral.h"
-
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
 
-typedef EPWM_T				YSS_EPWM_Peri;
-
-#else
-
-#define YSS_DRV_BPWM_UNSUPPORTED
-
-#endif
-
-#ifndef YSS_DRV_BPWM_UNSUPPORTED
-
-#include "Drv.h"
+#include <drv/peripheral.h>
+#include <drv/Drv.h>
 #include <yss/error.h>
 
 /*
@@ -121,7 +110,7 @@ public:
 	// 아래 함수들은 시스템 함수로 사용자의 호출을 금지합니다.
 	struct setup_t
 	{
-		YSS_EPWM_Peri *dev;
+		EPWM_T *dev;
 		uint32_t (*getClock01Func)(void);
 		uint32_t (*getClock23Func)(void);
 		uint32_t (*getClock45Func)(void);
@@ -130,7 +119,7 @@ public:
 	Epwm(const Drv::setup_t drvSetup, const setup_t setup) __attribute__((optimize("-O1")));
 
   protected:
-	YSS_EPWM_Peri *mDev;
+	EPWM_T *mDev;
 	uint32_t (*mGetClock01Func)(void);
 	uint32_t (*mGetClock23Func)(void);
 	uint32_t (*mGetClock45Func)(void);

@@ -49,6 +49,8 @@ extern DmaChannel9 dmaChannel9;
 #endif
 
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
+#include "Epwm.h"
+
 extern Epwm epwm0;
 extern Epwm epwm1;
 #endif
