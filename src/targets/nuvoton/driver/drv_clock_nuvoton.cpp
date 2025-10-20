@@ -426,6 +426,16 @@ void Clock::enableApb1Clock(uint32_t position, bool en)
 	__enable_irq();
 }
 
+void Clock::enableApb2Clock(uint32_t position, bool en)
+{
+	__disable_irq();	
+	if(en)
+		CLK->APBCLK2 |= 1 << position;
+	else
+		CLK->APBCLK2 &= ~(1 << position);		
+	__enable_irq();
+}
+
 uint32_t Clock::getHclkClockFrequency(void)
 {
 	uint32_t clk;

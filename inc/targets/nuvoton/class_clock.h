@@ -145,6 +145,14 @@ public:
 		@ en : APB1 버스의 position에서 설정한 장치를 켜거(true)나 끕(false)니다.
 	*/
 	void enableApb1Clock(uint32_t position, bool en = true) __attribute__((optimize("-O1")));
+
+	/*
+		APB2 버스 장치의 클럭을 활성화/비활성화 합니다.
+		.
+		@ position : APB2 버스의 활성화할 비트필드의 비트 번호를 설정합니다.
+		@ en : APB2 버스의 position에서 설정한 장치를 켜거(true)나 끕(false)니다.
+	*/
+	void enableApb2Clock(uint32_t position, bool en = true) __attribute__((optimize("-O1")));
 	
 	/*
 		Power Down 모드로 진입합니다.
