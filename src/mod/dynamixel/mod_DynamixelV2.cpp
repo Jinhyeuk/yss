@@ -119,7 +119,7 @@ error_t DynamixelV2::send(cmd_t cmd, uint16_t len, void *parm)
 	crc = calculateCrc16(sendBuf, sizeof(sendBuf), crc);
 	crc = calculateCrc16(parm, len, crc);
 
-	result = mUart->send(mHeader, sizeof(mHeader));
+	result = mUart->send((void*)mHeader, sizeof(mHeader));
 	if (result != error_t::ERROR_NONE)
 		return result;
 
@@ -147,7 +147,7 @@ error_t DynamixelV2::send(cmd_t cmd, uint16_t addr, uint16_t len, void *parm)
 	crc = calculateCrc16(caddr, 2, crc);
 	crc = calculateCrc16(parm, len, crc);
 
-	result = mUart->send(mHeader, sizeof(mHeader));
+	result = mUart->send((void*)mHeader, sizeof(mHeader));
 	if (result != error_t::ERROR_NONE)
 		return result;
 

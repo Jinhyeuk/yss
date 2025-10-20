@@ -97,20 +97,20 @@ void Xmodem::process(void)
 
 	mUart->lock();
 	mUart->flush();
-	mUart->send(&nak, 1);
+	mUart->send((void*)&nak, 1);
 
 	while (1)
 	{
 		switch (receiveOnePacket())
 		{
 		case NAK:
-			mUart->send(&nak, 1);
+			mUart->send((void*)&nak, 1);
 			retryCount++;
 			if (retryCount > mRetryNum)
 				goto complete;
 			break;
 		case ACK:
-			mUart->send(&ack, 1);
+			mUart->send((void*)&ack, 1);
 			break;
 		case EOT:
 #pragma GCC diagnostic push
@@ -119,7 +119,7 @@ void Xmodem::process(void)
 #pragma GCC diagnostic pop
 			// 의도한 떨어짐
 		case CAN:
-			mUart->send(&ack, 1);
+			mUart->send((void*)&ack, 1);
 			goto complete;
 		}
 	}

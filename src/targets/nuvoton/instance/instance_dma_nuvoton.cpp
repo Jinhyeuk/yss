@@ -335,7 +335,109 @@ DmaChannel16 dmaChannel16(gDrvDmaDummySetup, gDma16Setup);
 extern "C"
 {
 #if defined(__M46x_SUBFAMILY)
+	void PDMA0_IRQHandler(void)
+	{
+		uint32_t tdsts = PDMA0->TDSTS;
 
+		if(PDMA0->INTSTS & PDMA_INTSTS_TDIF_Msk)
+		{
+			if(tdsts & PDMA_TDSTS_TDIF0_Msk)
+			{
+				dmaChannel1.isr();
+				PDMA0->TDSTS = PDMA_TDSTS_TDIF0_Msk;
+			}
+
+			if(tdsts & PDMA_TDSTS_TDIF1_Msk)
+			{
+				dmaChannel2.isr();
+				PDMA0->TDSTS = PDMA_TDSTS_TDIF1_Msk;
+			}
+
+			if(tdsts & PDMA_TDSTS_TDIF2_Msk)
+			{
+				dmaChannel3.isr();
+				PDMA0->TDSTS = PDMA_TDSTS_TDIF2_Msk;
+			}
+
+			if(tdsts & PDMA_TDSTS_TDIF3_Msk)
+			{
+				dmaChannel4.isr();
+				PDMA0->TDSTS = PDMA_TDSTS_TDIF3_Msk;
+			}
+
+			if(tdsts & PDMA_TDSTS_TDIF4_Msk)
+			{
+				dmaChannel5.isr();
+				PDMA0->TDSTS = PDMA_TDSTS_TDIF4_Msk;
+			}
+
+			if(tdsts & PDMA_TDSTS_TDIF5_Msk)
+			{
+				dmaChannel6.isr();
+				PDMA0->TDSTS = PDMA_TDSTS_TDIF5_Msk;
+			}
+
+			if(tdsts & PDMA_TDSTS_TDIF6_Msk)
+			{
+				dmaChannel7.isr();
+				PDMA0->TDSTS = PDMA_TDSTS_TDIF6_Msk;
+			}
+
+			if(tdsts & PDMA_TDSTS_TDIF7_Msk)
+			{
+				dmaChannel8.isr();
+				PDMA0->TDSTS = PDMA_TDSTS_TDIF7_Msk;
+			}
+
+			if(tdsts & PDMA_TDSTS_TDIF8_Msk)
+			{
+				dmaChannel9.isr();
+				PDMA0->TDSTS = PDMA_TDSTS_TDIF8_Msk;
+			}
+
+			if(tdsts & PDMA_TDSTS_TDIF9_Msk)
+			{
+				dmaChannel10.isr();
+				PDMA0->TDSTS = PDMA_TDSTS_TDIF9_Msk;
+			}
+
+			if(tdsts & PDMA_TDSTS_TDIF10_Msk)
+			{
+				dmaChannel11.isr();
+				PDMA0->TDSTS = PDMA_TDSTS_TDIF10_Msk;
+			}
+
+			if(tdsts & PDMA_TDSTS_TDIF11_Msk)
+			{
+				dmaChannel12.isr();
+				PDMA0->TDSTS = PDMA_TDSTS_TDIF11_Msk;
+			}
+
+			if(tdsts & PDMA_TDSTS_TDIF12_Msk)
+			{
+				dmaChannel13.isr();
+				PDMA0->TDSTS = PDMA_TDSTS_TDIF12_Msk;
+			}
+
+			if(tdsts & PDMA_TDSTS_TDIF13_Msk)
+			{
+				dmaChannel14.isr();
+				PDMA0->TDSTS = PDMA_TDSTS_TDIF13_Msk;
+			}
+
+			if(tdsts & PDMA_TDSTS_TDIF14_Msk)
+			{
+				dmaChannel15.isr();
+				PDMA0->TDSTS = PDMA_TDSTS_TDIF14_Msk;
+			}
+
+			if(tdsts & PDMA_TDSTS_TDIF15_Msk)
+			{
+				dmaChannel16.isr();
+				PDMA0->TDSTS = PDMA_TDSTS_TDIF15_Msk;
+			}
+		}
+	}
 #elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
 	void PDMA_IRQHandler(void)
 	{

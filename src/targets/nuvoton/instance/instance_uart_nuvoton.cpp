@@ -13,6 +13,12 @@
 #include <config.h>
 #include <yss.h>
 
+/*---------------------------------------------------------------------------------------------------------*/
+/*  Transfer Direction Definitions                                                                         */
+/*---------------------------------------------------------------------------------------------------------*/
+#define PDMA_DIR_MEM_TO_PERI 0x00004000UL            /*!<DMA Single Request  \hideinitializer */
+#define PDMA_DIR_PERI_TO_MEM 0x00000000UL            /*!<DMA Burst Request  \hideinitializer */
+
 #if defined(UART0) && UART0_ENABLE
 static void enableUart0Clock(bool en)
 {
@@ -73,13 +79,13 @@ static Dma::dmaInfo_t gUart0TxDmaInfo =
 	(void*)&UART0->DAT,	// void *cpar;
 };
 
-static const Uart::setup_t gUart0Setup = 
+static const NuvotonUart::setup_t gUart0Setup = 
 {
-	(YSS_USART_Typedef*)UART0,	// YSS_SPI_Peri *peri;
-	gUart0TxDmaInfo				// Dma::dmaInfo_t txDmaInfo;
+	UART0,				// YSS_SPI_Peri *peri;
+	gUart0TxDmaInfo		// Dma::dmaInfo_t txDmaInfo;
 };
 
-Uart uart0(gDrvUart0Setup, gUart0Setup);
+NuvotonUart uart0(gDrvUart0Setup, gUart0Setup);
 
 extern "C"
 {

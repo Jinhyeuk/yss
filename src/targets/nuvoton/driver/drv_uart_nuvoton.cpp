@@ -11,21 +11,22 @@
 
 #include <yss.h>
 #include <drv/peripheral.h>
-#include <drv/Uart.h>
+#include <targets/nuvoton/Uart.h>
 #include <yss/thread.h>
 #include <yss/reg.h>
 
-Uart::Uart(const Drv::setup_t drvSetup, const setup_t setup) : Drv(drvSetup)
+NuvotonUart::NuvotonUart(const Drv::setup_t drvSetup, const setup_t setup) : Uart(drvSetup)
 {
 	mDev = setup.dev;
 	mTxDmaInfo = setup.txDmaInfo;
 }
 
-error_t Uart::initialize(config_t config)
+error_t NuvotonUart::initialize(config_t config)
 {
 	error_t result;
+	uint32_t stopbit;
 
-	if(config.mode == MODE_ONE_WIRE)
+	if(config.mode == UART_MODE_ONE_WIRE)
 		return error_t::NOT_SUPPORTED_YET;
 	
 	// 보레이트 설정
@@ -37,9 +38,24 @@ error_t Uart::initialize(config_t config)
 	setFieldData(mDev->LINE, UART_LINE_WLS_Msk, 0x3, UART_LINE_WLS_Pos);
 	
 	// Stop bit 설정
+	switch(config.stopbit)
+	{
+	case UART_STOP_1BIT :
+		stopbit =  0;
+		break;
+	
+	default :
+	case UART_STOP_2BIT :
+		stopbit =  1;
+		break;
+	}
 	setFieldData(mDev->LINE, UART_LINE_NSB_Msk, config.stopbit, UART_LINE_NSB_Pos);
+	
+	// ISR 설정
+	mIsrFrameError = config.isrFrameError;
+	mIsrRxData = config.isrRxData;
 
-	if(config.mode != MODE_TX_ONLY)
+	if(config.mode != UART_MODE_TX_ONLY)
 	{
 		// RX 인터럽트 활성화
 		setBitData(mDev->INTEN, true, UART_INTEN_RDAIEN_Pos);
@@ -54,7 +70,7 @@ error_t Uart::initialize(config_t config)
 		mRcvBufSize = config.rcvBufSize;
 	}
 	
-	if(config.mode != MODE_RX_ONLY)
+	if(config.mode != UART_MODE_RX_ONLY)
 	{
 		mTxDma = allocateDma();
 		if(mTxDma == nullptr)
@@ -68,7 +84,7 @@ error_t Uart::initialize(config_t config)
 	return error_t::ERROR_NONE;
 }
 
-error_t Uart::changeBaudrate(int32_t baud)
+error_t NuvotonUart::changeBaudrate(int32_t baud)
 {
 	int32_t  clk = Drv::getClockFrequency(), brd;
 
@@ -82,7 +98,7 @@ error_t Uart::changeBaudrate(int32_t baud)
 	return error_t::ERROR_NONE;
 }
 
-error_t Uart::send(void *src, int32_t  size)
+error_t NuvotonUart::send(void *src, int32_t  size)
 {
 	if(size == 0)
 		return error_t::ERROR_NONE;
@@ -92,16 +108,19 @@ error_t Uart::send(void *src, int32_t  size)
 	return error_t::ERROR_NONE;
 }
 
-void Uart::send(int8_t data)
+void NuvotonUart::send(int8_t data)
 {
 	mDev->DAT = data;
 	while (~mDev->INTSTS & UART_INTSTS_TXENDIF_Msk)
 		thread::yield();
 }
 
-void Uart::isr(void)
+void NuvotonUart::isr(void)
 {
-	push(mDev->DAT);
+	if(mIsrRxData)
+		mIsrRxData(mDev->DAT);
+	else
+		push(mDev->DAT);
 }
 #endif
 

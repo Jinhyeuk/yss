@@ -113,10 +113,12 @@ extern Uart uart5;
 extern Uart uart6;
 extern Uart uart7;
 #elif defined(__M4xx_FAMILY)
-extern Uart uart0;
-extern Uart uart1;
-extern Uart uart2;
-extern Uart uart3;
+#include "Uart.h"
+
+extern NuvotonUart uart0;
+extern NuvotonUart uart1;
+extern NuvotonUart uart2;
+extern NuvotonUart uart3;
 #endif
 
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
