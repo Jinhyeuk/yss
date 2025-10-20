@@ -8,21 +8,9 @@
 #ifndef YSS_DRV_BPWM__H_
 #define YSS_DRV_BPWM__H_
 
-#include "peripheral.h"
+#include <drv/peripheral.h>
 
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
-
-typedef BPWM_T				YSS_BPWM_Peri;
-
-#else
-
-#define YSS_DRV_BPWM_UNSUPPORTED
-
-#endif
-
-#ifndef YSS_DRV_BPWM_UNSUPPORTED
-
-#include "Drv.h"
+#include <drv/Drv.h>
 #include <yss/error.h>
 
 /*
@@ -104,13 +92,13 @@ public:
 	// 아래 함수들은 시스템 함수로 사용자의 호출을 금지합니다.
 	struct setup_t
 	{
-		YSS_BPWM_Peri *dev;
+		BPWM_T *dev;
 	};
 
 	Bpwm(const Drv::setup_t drvSetup, const setup_t setup) __attribute__((optimize("-O1")));
 
-  protected:
-	YSS_BPWM_Peri *mDev;
+protected:
+	BPWM_T *mDev;
 };
 
 /* BPWM0 초기화 예제 코드
@@ -133,7 +121,5 @@ public:
 	bpwm0.setDutyRatio(2, 0.3);						// BPWM0 CH0의 출력 듀티비를 30%로 설정
 	bpwm0.setDutyRatio(3, 0.4);						// BPWM0 CH0의 출력 듀티비를 40%로 설정
 */
-#endif
-
 #endif
 

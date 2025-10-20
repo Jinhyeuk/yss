@@ -11,6 +11,8 @@
 #include <drv/peripheral.h>
 
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
+#include "Bpwm.h"
+
 extern Bpwm bpwm0;
 extern Bpwm bpwm1;
 #endif

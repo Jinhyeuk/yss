@@ -9,7 +9,7 @@
 
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
 
-#include <drv/Bpwm.h>
+#include <targets/nuvoton/Bpwm.h>
 #include <yss/reg.h>
 
 Bpwm::Bpwm(const Drv::setup_t drvSetup, const setup_t setup) : Drv(drvSetup)

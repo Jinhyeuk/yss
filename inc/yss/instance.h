@@ -11,7 +11,6 @@
 #include <drv/peripheral.h>
 
 #include <drv/Adc.h>
-#include <drv/Bpwm.h>
 #include <drv/Can.h>
 #include <drv/Capture.h>
 #include <drv/Clock.h>
