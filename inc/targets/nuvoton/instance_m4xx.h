@@ -67,12 +67,16 @@ extern Gpio gpioG;
 extern Gpio gpioH;
 
 #if defined(__M480_FAMILY)
-extern I2c i2c0;
-extern I2c i2c1;
-extern I2c i2c2;
+#include "I2c.h"
+
+extern NuvotonI2c i2c0;
+extern NuvotonI2c i2c1;
+extern NuvotonI2c i2c2;
 #elif defined(__M4xx_FAMILY)
-extern I2c i2c0;
-extern I2c i2c1;
+#include "I2c.h"
+
+extern NuvotonI2c i2c0;
+extern NuvotonI2c i2c1;
 #endif
 
 #if defined(__M480_FAMILY)

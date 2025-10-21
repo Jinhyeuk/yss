@@ -1,5 +1,13 @@
-#include "../inc/drv/Uart.h"
+/*
+ * Copyright (c) 2025 Yoon-Ki Hong
+ *
+ * This file is subject to the terms and conditions of the MIT License.
+ * See the file "LICENSE" in the main directory of this archive for more details.
+ */
+
+#include <drv/Uart.h>
 #include <util/Timeout.h>
+#include <yss/thread.h>
 
 Uart::Uart(const Drv::setup_t drvSetup) : Drv(drvSetup)
 {
@@ -126,12 +134,3 @@ void Uart::releaseRxBuffer(uint32_t count)
 #endif
 }
 
-void Uart::setIsrForRxData(void (*isr)(uint8_t rxData))
-{
-	//mIsrForRxData = isr;
-}
-
-void Uart::setIsrForFrameError(void (*isr)(void))
-{
-	//mIsrForFrameError = isr;
-}

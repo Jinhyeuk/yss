@@ -21,7 +21,6 @@
 #include <drv/Exti.h>
 #include <drv/Flash.h>
 #include <drv/Gpio.h>
-#include <drv/I2c.h>
 #include <drv/I2s.h>
 #include <drv/Ltdc.h>
 #include <drv/Nvic.h>

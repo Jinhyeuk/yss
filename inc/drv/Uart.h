@@ -8,10 +8,7 @@
 #ifndef YSS_DRV_UART__H_
 #define YSS_DRV_UART__H_
 
-#include "peripheral.h"
-
 #include "Drv.h"
-#include "Dma.h"
 #include <yss/error.h>
 
 class Uart : public Drv
@@ -112,26 +109,6 @@ public:
 		수신 버퍼를 비웁니다.
 	*/
 	void flush(void) __attribute__((optimize("-O1")));
-	
-	/*
-		Frame Error에 대한 ISR 함수를 등록합니다.
-		ISR 함수에서는 문맥전환을 유발하는 모든 함수의 호출을 금지합니다.
-		yss.h 파일에서 문맥전환을 유발하는 함수 유형의 설명을 참고하세요.
-		yss.h 파일에서 ISR 함수와 Callback 함수에 대한 구분 설명을 참고하세요. 
-		.
-		@ isr : ISR 함수의 포인터를 설정합니다.
-	*/
-	void setIsrForFrameError(void (*isr)(void)) __attribute__((optimize("-O1")));
-	
-	/*
-		데이터 수신에 대한 ISR 함수를 등록합니다.
-		ISR 함수에서는 문맥전환을 유발하는 모든 함수의 호출을 금지합니다.
-		yss.h 파일에서 문맥전환을 유발하는 함수 유형의 설명을 참고하세요.
-		yss.h 파일에서 ISR 함수와 Callback 함수에 대한 구분 설명을 참고하세요. 
-		.
-		@ isr : ISR 함수의 포인터를 설정합니다.
-	*/
-	void setIsrForRxData(void (*isr)(uint8_t rxData)) __attribute__((optimize("-O1")));
 	
 	/*
 		복수의 데이터를 송신합니다.

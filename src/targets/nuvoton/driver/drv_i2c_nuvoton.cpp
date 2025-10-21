@@ -12,18 +12,18 @@
 #include <yss.h>
 #include <stdint.h>
 #include <drv/peripheral.h>
-#include <drv/I2c.h>
+#include <targets/nuvoton/I2c.h>
 #include <yss/thread.h>
 #include <yss/reg.h>
 #include <yss/debug.h>
 #include <util/Timeout.h>
 
-I2c::I2c(const Drv::setup_t drvSetup, const setup_t setup) : Drv(drvSetup)
+NuvotonI2c::NuvotonI2c(const Drv::setup_t drvSetup, const setup_t setup) : I2c(drvSetup)
 {
 	mDev = setup.dev;
 }
 
-error_t I2c::initialize(mainConfig_t config)
+error_t NuvotonI2c::initialize(mainConfig_t config)
 {
 	uint32_t busClock;
 	int32_t div = getClockFrequency();
@@ -53,7 +53,7 @@ error_t I2c::initialize(mainConfig_t config)
 	return error_t::ERROR_NONE;
 }
 
-error_t I2c::send(uint8_t addr, void *src, uint32_t size, uint32_t timeout)
+error_t NuvotonI2c::send(uint8_t addr, void *src, uint32_t size, uint32_t timeout)
 {
 	Timeout tout(timeout);
 
@@ -83,7 +83,7 @@ error_t I2c::send(uint8_t addr, void *src, uint32_t size, uint32_t timeout)
 		return mError;
 }
 
-error_t I2c::receive(uint8_t addr, void *des, uint32_t size, uint32_t timeout)
+error_t NuvotonI2c::receive(uint8_t addr, void *des, uint32_t size, uint32_t timeout)
 {
 	Timeout tout(timeout);
 
@@ -108,7 +108,7 @@ error_t I2c::receive(uint8_t addr, void *des, uint32_t size, uint32_t timeout)
 		return mError;
 }
 
-void I2c::stop(void)
+void NuvotonI2c::stop(void)
 {
 	if(mDev->STATUS1 & I2C_STATUS1_ONBUSY_Msk)
 	{
@@ -116,7 +116,7 @@ void I2c::stop(void)
 	}
 }
 
-void I2c::isr(void)
+void NuvotonI2c::isr(void)
 {
 	switch(mDev->STATUS0)
 	{

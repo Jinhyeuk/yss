@@ -43,12 +43,12 @@ static const Drv::setup_t gDrvI2c0Setup =
 	getI2c0ClockFrequency	//uint32_t (*getClockFreq)(void);
 };
 
-static const I2c::setup_t gI2c0Setup = 
+static const NuvotonI2c::setup_t gI2c0Setup = 
 {
 	I2C0			//YSS_SPI_Peri *peri;
 };
 
-I2c i2c0(gDrvI2c0Setup, gI2c0Setup);
+NuvotonI2c i2c0(gDrvI2c0Setup, gI2c0Setup);
 
 extern "C"
 {
@@ -92,12 +92,12 @@ static const Drv::setup_t gDrvI2c1Setup =
 	getI2c1ClockFrequency	//uint32_t (*getClockFreq)(void);
 };
 
-static const I2c::setup_t gI2c1Setup = 
+static const NuvotonI2c::setup_t gI2c1Setup = 
 {
 	I2C1			//YSS_SPI_Peri *peri;
 };
 
-I2c i2c1(gDrvI2c1Setup, gI2c1Setup);
+NuvotonI2c i2c1(gDrvI2c1Setup, gI2c1Setup);
 
 extern "C"
 {
