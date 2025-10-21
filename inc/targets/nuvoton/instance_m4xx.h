@@ -10,6 +10,12 @@
 
 #include <drv/peripheral.h>
 
+// YSS OS RUNTIME 설정 관련 정의
+#define RUNTIME_TIMER0		1
+#define RUNTIME_TIMER1		2
+#define RUNTIME_TIMER2		3
+#define RUNTIME_TIMER3		4
+
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
 #include "NuvotonBpwm.h"
 
@@ -80,17 +86,17 @@ extern NuvotonI2c i2c1;
 #endif
 
 #if defined(__M480_FAMILY)
-#include "NuvotonI2sOfSpi.h"
+#include "NuvotonI2sInSpi.h"
 
-extern NuvotonI2sOfSpi i2s0;
-extern NuvotonI2sOfSpi i2s1;
-extern NuvotonI2sOfSpi i2s2;
-extern NuvotonI2sOfSpi i2s3;
+extern NuvotonI2sInSpi i2s0;
+extern NuvotonI2sInSpi i2s1;
+extern NuvotonI2sInSpi i2s2;
+extern NuvotonI2sInSpi i2s3;
 #elif defined(__M4xx_FAMILY)
-#include "NuvotonI2sOfSpi.h"
+#include "NuvotonI2sInSpi.h"
 
-extern NuvotonI2sOfSpi i2s0;
-extern NuvotonI2sOfSpi i2s1;
+extern NuvotonI2sInSpi i2s0;
+extern NuvotonI2sInSpi i2s1;
 #endif
 
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
@@ -110,10 +116,12 @@ extern Spi spi0;
 extern Spi spi1;
 #endif
 
-extern Timer timer0;
-extern Timer timer1;
-extern Timer timer2;
-extern Timer timer3;
+#include "NuvotonTmr.h"
+
+extern NuvotonTmr timer0;
+extern NuvotonTmr timer1;
+extern NuvotonTmr timer2;
+extern NuvotonTmr timer3;
 
 #if defined(__M480_FAMILY)
 extern Uart uart0;

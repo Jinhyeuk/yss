@@ -12,7 +12,7 @@
 #include <drv/I2s.h>
 #include <drv/Dma.h>
 
-class NuvotonI2sOfSpi : public I2s
+class NuvotonI2sInSpi : public I2s
 {
 public :
 	error_t initialize(const config_t &config) __attribute__((optimize("-O1")));
@@ -47,7 +47,7 @@ public :
 		Dma::dmaInfo_t rxDmaInfo;
 	}setup_t;
 
-	NuvotonI2sOfSpi(const Drv::setup_t drvSetup, const setup_t setup) __attribute__((optimize("-O1")));
+	NuvotonI2sInSpi(const Drv::setup_t drvSetup, const setup_t setup) __attribute__((optimize("-O1")));
 
 	void isr(void) __attribute__((optimize("-O1")));
 

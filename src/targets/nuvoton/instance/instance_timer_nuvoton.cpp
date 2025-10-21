@@ -159,12 +159,12 @@ static const Drv::setup_t gDrvTimer1Setup =
 	getTimer1ClockFrequency	//uint32_t (*getClockFunc)(void);
 };
 
-static const Timer::setup_t gTimer1Setup = 
+static const NuvotonTmr::setup_t gTimer1Setup = 
 {
-	(YSS_TIMER_Dev*)TIMER1	// YSS_TIMER_Dev *dev;
+	TIMER1	// YSS_TIMER_Dev *dev;
 };
 
-Timer timer1(gDrvTimer1Setup, gTimer1Setup);
+NuvotonTmr timer1(gDrvTimer1Setup, gTimer1Setup);
 
 extern "C"
 {

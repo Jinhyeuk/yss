@@ -96,14 +96,14 @@ static Dma::dmaInfo_t gSpi0RxDmaInfo =
 	(void*)&SPI0->RX,	// void *cpar;
 };
 
-static NuvotonI2sOfSpi::setup_t gSpi0Setup = 
+static NuvotonI2sInSpi::setup_t gSpi0Setup = 
 {
 	SPI0,			//YSS_SPI_Peri *peri;
 	gSpi0TxDmaInfo,	//Dma::dmaInfo_t txDmaInfo;
 	gSpi0RxDmaInfo	//Dma::dmaInfo_t rxDmaInfo;
 };
 
-NuvotonI2sOfSpi i2s0(gDrvSpi0Setup, gSpi0Setup);
+NuvotonI2sInSpi i2s0(gDrvSpi0Setup, gSpi0Setup);
 
 #endif
 
@@ -186,14 +186,14 @@ static const Dma::dmaInfo_t gSpi1RxDmaInfo =
 	(void*)&SPI1->RX,	// void *cpar;
 };
 
-static const NuvotonI2sOfSpi::setup_t gSpi1Setup = 
+static const NuvotonI2sInSpi::setup_t gSpi1Setup = 
 {
 	SPI1,			//YSS_SPI_Peri *peri;
 	gSpi1TxDmaInfo,	//Dma::dmaInfo_t txDmaInfo;
 	gSpi1RxDmaInfo	//Dma::dmaInfo_t rxDmaInfo;
 };
 
-NuvotonI2sOfSpi i2s1(gDrvSpi1Setup, gSpi1Setup);
+NuvotonI2sInSpi i2s1(gDrvSpi1Setup, gSpi1Setup);
 
 #endif
 
