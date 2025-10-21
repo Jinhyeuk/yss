@@ -11,12 +11,11 @@
 
 #include <yss.h>
 #include <stdint.h>
-#include <drv/peripheral.h>
-#include <drv/Spi.h>
+#include <targets/nuvoton/NuvotonI2sOfSpi.h>
 #include <yss/thread.h>
 #include <yss/reg.h>
 
-I2s::I2s(const Drv::setup_t drvSetup, const setup_t setup) : Drv(drvSetup)
+NuvotonI2sOfSpi::NuvotonI2sOfSpi(const Drv::setup_t drvSetup, const setup_t setup) : I2s(drvSetup)
 {
 	mDev = setup.dev;
 	mTxDmaInfo = setup.txDmaInfo;
@@ -27,7 +26,7 @@ I2s::I2s(const Drv::setup_t drvSetup, const setup_t setup) : Drv(drvSetup)
 	mMclk = 0;
 }
 
-error_t I2s::initialize(const config_t &spec)
+error_t NuvotonI2sOfSpi::initialize(const config_t &spec)
 {
 	int32_t clk, mclk, bclk, div = 1;
 	uint32_t ctl, wordWidth;
@@ -121,17 +120,17 @@ error_t I2s::initialize(const config_t &spec)
 	return error_t::ERROR_NONE;
 }
 
-uint32_t I2s::getLrclkFrequency(void)
+uint32_t NuvotonI2sOfSpi::getLrclkFrequency(void)
 {
 	return mLrclk;
 }
 
-uint32_t I2s::getMclkFrequency(void)
+uint32_t NuvotonI2sOfSpi::getMclkFrequency(void)
 {
 	return mMclk;
 }
 
-error_t I2s::transfer(void *src, uint16_t count)
+error_t NuvotonI2sOfSpi::transfer(void *src, uint16_t count)
 {
 	if(count == 0)
 		return error_t::ERROR_NONE;
@@ -145,17 +144,17 @@ error_t I2s::transfer(void *src, uint16_t count)
 		return mCurrentDma->transferAsCircularMode(mRxDmaInfo, src, count);
 }
 
-void* I2s::getCurrentBuffer(void)
+void* NuvotonI2sOfSpi::getCurrentBuffer(void)
 {
 	return mCurrentDma->getCircularModePreviouslyTransmittedDataBuffer();
 }
 
-void I2s::stop(void)
+void NuvotonI2sOfSpi::stop(void)
 {
 	mCurrentDma->stop();
 }
 
-uint32_t I2s::getTxCount(void)
+uint32_t NuvotonI2sOfSpi::getTxCount(void)
 {
 	if(mReleasedSentCount != mCurrentDma->getCircularModeSentCount())
 		return mTransferBufferSize / 2;
@@ -163,7 +162,7 @@ uint32_t I2s::getTxCount(void)
 		return 0;
 }
 
-uint32_t I2s::getRxCount(void)
+uint32_t NuvotonI2sOfSpi::getRxCount(void)
 {
 	if(mReleasedSentCount != mCurrentDma->getCircularModeSentCount())
 		return mTransferBufferSize / 2;
@@ -171,9 +170,21 @@ uint32_t I2s::getRxCount(void)
 		return 0;
 }
 
-void I2s::releaseBuffer(int32_t count)
+void NuvotonI2sOfSpi::releaseBuffer(int32_t count)
 {
 	mReleasedSentCount++;
+}
+
+I2s::wordWidth_t NuvotonI2sOfSpi::getWordWidth(void)
+{
+#warning "임시로 작성된 내용임 수정필요"
+	return WORD_WIDTH_16BIT;
+}
+
+I2s::std_t NuvotonI2sOfSpi::getI2sStandard(void)
+{
+#warning "임시로 작성된 내용임 수정필요"
+	return STD_I2S_PHILIPS;
 }
 
 #endif

@@ -12,7 +12,7 @@
 #include <yss.h>
 #include <stdint.h>
 #include <drv/peripheral.h>
-#include <targets/nuvoton/I2c.h>
+#include <targets/nuvoton/NuvotonI2c.h>
 #include <yss/thread.h>
 #include <yss/reg.h>
 #include <yss/debug.h>

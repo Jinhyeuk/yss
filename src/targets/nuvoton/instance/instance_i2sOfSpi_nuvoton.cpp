@@ -13,6 +13,12 @@
 #include <config.h>
 #include <yss.h>
 
+/*---------------------------------------------------------------------------------------------------------*/
+/*  Transfer Direction Definitions                                                                         */
+/*---------------------------------------------------------------------------------------------------------*/
+#define PDMA_DIR_MEM_TO_PERI 0x00004000UL            /*!<DMA Single Request  \hideinitializer */
+#define PDMA_DIR_PERI_TO_MEM 0x00000000UL            /*!<DMA Burst Request  \hideinitializer */
+
 #if I2S0_ENABLE && defined(SPI0)
 static void enableSpi0Clock(bool en)
 {
@@ -90,14 +96,14 @@ static Dma::dmaInfo_t gSpi0RxDmaInfo =
 	(void*)&SPI0->RX,	// void *cpar;
 };
 
-static I2s::setup_t gSpi0Setup = 
+static NuvotonI2sOfSpi::setup_t gSpi0Setup = 
 {
 	SPI0,			//YSS_SPI_Peri *peri;
 	gSpi0TxDmaInfo,	//Dma::dmaInfo_t txDmaInfo;
 	gSpi0RxDmaInfo	//Dma::dmaInfo_t rxDmaInfo;
 };
 
-I2s i2s0(gDrvSpi0Setup, gSpi0Setup);
+NuvotonI2sOfSpi i2s0(gDrvSpi0Setup, gSpi0Setup);
 
 #endif
 
@@ -180,14 +186,14 @@ static const Dma::dmaInfo_t gSpi1RxDmaInfo =
 	(void*)&SPI1->RX,	// void *cpar;
 };
 
-static const I2s::setup_t gSpi1Setup = 
+static const NuvotonI2sOfSpi::setup_t gSpi1Setup = 
 {
 	SPI1,			//YSS_SPI_Peri *peri;
 	gSpi1TxDmaInfo,	//Dma::dmaInfo_t txDmaInfo;
 	gSpi1RxDmaInfo	//Dma::dmaInfo_t rxDmaInfo;
 };
 
-I2s i2s1(gDrvSpi1Setup, gSpi1Setup);
+NuvotonI2sOfSpi i2s1(gDrvSpi1Setup, gSpi1Setup);
 
 #endif
 

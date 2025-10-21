@@ -11,7 +11,7 @@
 
 #include <yss.h>
 #include <drv/peripheral.h>
-#include <targets/nuvoton/Uart.h>
+#include <targets/nuvoton/NuvotonUart.h>
 #include <yss/thread.h>
 #include <yss/reg.h>
 

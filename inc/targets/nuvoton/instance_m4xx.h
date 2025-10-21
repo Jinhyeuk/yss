@@ -11,7 +11,7 @@
 #include <drv/peripheral.h>
 
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
-#include "Bpwm.h"
+#include "NuvotonBpwm.h"
 
 extern Bpwm bpwm0;
 extern Bpwm bpwm1;
@@ -49,7 +49,7 @@ extern DmaChannel9 dmaChannel9;
 #endif
 
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
-#include "Epwm.h"
+#include "NuvotonEpwm.h"
 
 extern Epwm epwm0;
 extern Epwm epwm1;
@@ -67,26 +67,30 @@ extern Gpio gpioG;
 extern Gpio gpioH;
 
 #if defined(__M480_FAMILY)
-#include "I2c.h"
+#include "NuvotonI2c.h"
 
 extern NuvotonI2c i2c0;
 extern NuvotonI2c i2c1;
 extern NuvotonI2c i2c2;
 #elif defined(__M4xx_FAMILY)
-#include "I2c.h"
+#include "NuvotonI2c.h"
 
 extern NuvotonI2c i2c0;
 extern NuvotonI2c i2c1;
 #endif
 
 #if defined(__M480_FAMILY)
-extern I2s i2s0;
-extern I2s i2s1;
-extern I2s i2s2;
-extern I2s i2s3;
+#include "NuvotonI2sOfSpi.h"
+
+extern NuvotonI2sOfSpi i2s0;
+extern NuvotonI2sOfSpi i2s1;
+extern NuvotonI2sOfSpi i2s2;
+extern NuvotonI2sOfSpi i2s3;
 #elif defined(__M4xx_FAMILY)
-extern I2s i2s0;
-extern I2s i2s1;
+#include "NuvotonI2sOfSpi.h"
+
+extern NuvotonI2sOfSpi i2s0;
+extern NuvotonI2sOfSpi i2s1;
 #endif
 
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
@@ -121,7 +125,7 @@ extern Uart uart5;
 extern Uart uart6;
 extern Uart uart7;
 #elif defined(__M4xx_FAMILY)
-#include "Uart.h"
+#include "NuvotonUart.h"
 
 extern NuvotonUart uart0;
 extern NuvotonUart uart1;

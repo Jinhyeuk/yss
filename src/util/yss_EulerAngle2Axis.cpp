@@ -13,8 +13,6 @@
 #include <util/Timeout.h>
 #include <util/Lpf.h>
 
-#define PI 3.14159265
-
 EulerAngle2Axis::EulerAngle2Axis(void)
 {
 	mAngle.roll = 0;
@@ -77,8 +75,8 @@ void EulerAngle2Axis::thread(void)
 
 					if(mUnit == UNIT_DEGREE)
 					{
-						angle.roll = angle.roll * 180 / PI;
-						angle.pitch = angle.pitch * 180 / PI;
+						angle.roll = angle.roll * 180 / M_PI;
+						angle.pitch = angle.pitch * 180 / M_PI;
 					}
 
 					mAngle = angle;

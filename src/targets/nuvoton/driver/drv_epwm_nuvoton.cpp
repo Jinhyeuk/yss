@@ -9,7 +9,7 @@
 
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
 
-#include <targets/nuvoton/Epwm.h>
+#include <targets/nuvoton/NuvotonEpwm.h>
 #include <yss/reg.h>
 
 Epwm::Epwm(const Drv::setup_t drvSetup, const setup_t setup) : Drv(drvSetup)
