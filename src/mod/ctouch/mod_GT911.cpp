@@ -10,19 +10,16 @@
 #include <drv/Exti.h>
 #include <yss/debug.h>
 #include <std_ext/string.h>
+#include <util/ElapsedTime.h>
 
 #if !defined(YSS_DRV_I2C_UNSUPPORTED) && (!defined(YSS_DRV_EXTI_UNSUPPORTED) || defined(__M4xx_FAMILY))
 
 #define ADDR			0xBA
 
-#define REG_CHECKSUM	0x80FF
 #define REG_PID			0x8140
 #define REG_STATUS		0x814E
-#define REG_P1_COORD	0x815F
+#define REG_P1_COORD	0x814F
 #define REG_CFG			0x8047
-#define REG_FRESH		0x8100
-#define REG_CMD			0x8040
-#define REG_CMD_CHK		0x8046
 
 struct Gt911config_t
 {
@@ -130,6 +127,7 @@ struct Gt911config_t
 }__attribute__((packed));
 
 static void trigger_handler(void *peri);
+static void thread_process(void *var);
 
 error_t GT911::initialize(const config_t config)
 {
@@ -139,6 +137,7 @@ error_t GT911::initialize(const config_t config)
 	
 	mPeri = &config.peri;
 	mIsr = config.isrPin;
+	mPenDownFlag = false;
 
 	if(config.resetPin.port)
 	{
@@ -171,159 +170,9 @@ error_t GT911::initialize(const config_t config)
 	{
 		goto error_handler;
 	}
-/*
-	gt911Config->version = 0x5B;
-	gt911Config->xOutputMax = 800;
-	gt911Config->yOutputMax = 480;
-	gt911Config->touchNumber = 5;
-	gt911Config->moduleSwitch1 = 0x0D;
-	gt911Config->moduleSwitch2 = 0x00;
-	gt911Config->shakeCount = 0x02;
-	gt911Config->filter = 0x0F;
-	gt911Config->largeTouch = 0x28;
-	gt911Config->noiseReduction = 0x0F;
-	gt911Config->screenTouchLevel = 0x50;
-	gt911Config->screenLeaveLevel = 0x32;
-	gt911Config->lowPowerControl = 0x03;
-	gt911Config->refreshRate = 0x05;
-	gt911Config->xThreshold = 0x00;
-	gt911Config->yThreshold = 0x00;
-	gt911Config->reserved1[0] = 0x00;
-	gt911Config->reserved1[1] = 0x00;
-	gt911Config->space[0] = 0x00;
-	gt911Config->space[1] = 0x00;
-	gt911Config->miniFilter = 0x00;
-	gt911Config->stretchR0 = 0x00;
-	gt911Config->stretchR1 = 0x00;
-	gt911Config->stretchR2 = 0x00;
-	gt911Config->stretchRM = 0x00;
-	gt911Config->drvGroupANum = 0x80;
-	gt911Config->drvGroupBNum = 0x29;
-	gt911Config->sensorNum = 0x0A;
-	gt911Config->freqAFactor = 0x2D;
-	gt911Config->freqBFactor = 0x2F;
-	gt911Config->pannelBitFreq = 0x0A0F;
-	gt911Config->pannelSensorTime = 0x0000;
-	gt911Config->pannelTxGain = 0x00;
-	gt911Config->pannelRxGain = 0x02;
-	gt911Config->pannelDumpShift = 0x02;
-	gt911Config->drvFrameControl = 0x1D;
-	gt911Config->chargingLevelUp = 0x00;
-	gt911Config->moduleSwitch3 = 0x00;
-	gt911Config->gestureDis = 0x00;
-	gt911Config->gestureLongPressTime = 0x00;
-	gt911Config->xySlopeAdjust = 0x00;
-	gt911Config->gestureControl = 0x03;
-	gt911Config->gestureSwitch1 = 0x64;
-	gt911Config->gestureSwitch2 = 0x32;
-	gt911Config->gestureRefreshRate = 0x00;
-	gt911Config->gestureTouchLevel = 0x00;
-	gt911Config->freqHoppingStart = 0x1E;
-	gt911Config->freqHoppingEnd = 0x50;
-	gt911Config->noiseDetectTimes = 0x94;
-	gt911Config->hoppingFlag = 0xC5;
-	gt911Config->hoppingThreshold = 0x02;
-	gt911Config->noiseThreshold = 0x07;
-	gt911Config->noiseMinThreshold = 0x00;
-	gt911Config->reserved2 = 0x00;
-	gt911Config->hoppingSensorGroup = 0x04;
-	gt911Config->hoppingSeg1Normalize = 0xA3;
-	gt911Config->hoppingSeg1Factor = 0x21;
-	gt911Config->mainClockAdjust = 0x00;
-	gt911Config->hoppingSeg2Normalize = 0x8C;
-	gt911Config->hoppingSeg2Factor = 0x28;
-	gt911Config->reserved3 = 0x00;
-	gt911Config->hoppingSeg3Normalize = 0x78;
-	gt911Config->hoppingSeg3Factor = 0x31;
-	gt911Config->reserved4 = 0x00;
-	gt911Config->hoppingSeg4Normalize = 0x69;
-	gt911Config->hoppingSeg4Factor = 0x3B;
-	gt911Config->reserved5 = 0x00;
-	gt911Config->hoppingSeg5Normalize = 0x5D;
-	gt911Config->hoppingSeg5Factor = 0x48;
-	gt911Config->reserved6 = 0x00;
-	gt911Config->hoppingSeg6Normalize = 0x5D;
-	gt911Config->key1 = 0x00;
-	gt911Config->key2 = 0x00;
-	gt911Config->key3 = 0x00;
-	gt911Config->key4 = 0x00;
-	gt911Config->keyArea = 0x00;
-	gt911Config->keyTouchLevel = 0x00;
-	gt911Config->keyLeaveLevel = 0x00;
-	gt911Config->keySens[0] = 0x00;
-	gt911Config->keySens[1] = 0x00;
-	gt911Config->keyRestrain = 0x00;
-	gt911Config->keyRestrainTime = 0x00;
-	gt911Config->gestureLargeTouch = 0x00;
-	gt911Config->reserved7[0] = 0x00;
-	gt911Config->reserved7[1] = 0x00;
-	gt911Config->hotknotNoiseMap = 0x00;
-	gt911Config->linkThreshold = 0x00;
-	gt911Config->pXyThreshold = 0x00;
-	gt911Config->gHotDumpShift = 0x00;
-	gt911Config->gHotRxGain = 0x00;
-	gt911Config->freqGain0 = 0x00;
-	gt911Config->freqGain1 = 0x00;
-	gt911Config->freqGain2 = 0x00;
-	gt911Config->freqGain3 = 0x00;
-	memset(gt911Config->reserved8, 0x00, sizeof(gt911Config->reserved8));
-	gt911Config->combineDis = 0x00;
-	gt911Config->splitSet = 0x00;
-	gt911Config->reserved9[0] = 0x00;
-	gt911Config->reserved9[1] = 0x00;
-	gt911Config->sensorCh[0] = 0x02;
-	gt911Config->sensorCh[1] = 0x04;
-	gt911Config->sensorCh[2] = 0x06;
-	gt911Config->sensorCh[3] = 0x08;
-	gt911Config->sensorCh[4] = 0x0A;
-	gt911Config->sensorCh[5] = 0x0C;
-	gt911Config->sensorCh[6] = 0x0E;
-	gt911Config->sensorCh[7] = 0x10;
-	gt911Config->sensorCh[8] = 0x12;
-	gt911Config->sensorCh[9] = 0x14;
-	gt911Config->sensorCh[10] = 0xFF;
-	gt911Config->sensorCh[11] = 0xFF;
-	gt911Config->sensorCh[12] = 0xFF;
-	gt911Config->sensorCh[13] = 0xFF;
-	memset(gt911Config->reserved10, 0x00, sizeof(gt911Config->reserved10));
-	gt911Config->driverCh[0] = 0x00;
-	gt911Config->driverCh[1] = 0x02;
-	gt911Config->driverCh[2] = 0x04;
-	gt911Config->driverCh[3] = 0x06;
-	gt911Config->driverCh[4] = 0x08;
-	gt911Config->driverCh[5] = 0x0A;
-	gt911Config->driverCh[6] = 0x0C;
-	gt911Config->driverCh[7] = 0x1D;
-	gt911Config->driverCh[8] = 0x1E;
-	gt911Config->driverCh[9] = 0x1F;
-	gt911Config->driverCh[10] = 0x20;
-	gt911Config->driverCh[11] = 0x21;
-	gt911Config->driverCh[12] = 0x22;
-	gt911Config->driverCh[13] = 0x24;
-	gt911Config->driverCh[14] = 0x26;
-	gt911Config->driverCh[15] = 0x28;
-	gt911Config->driverCh[16] = 0xFF;
-	gt911Config->driverCh[17] = 0xFF;
-	gt911Config->driverCh[18] = 0xFF;
-	gt911Config->driverCh[19] = 0xFF;
-	gt911Config->driverCh[20] = 0xFF;
-	gt911Config->driverCh[21] = 0xFF;
-	gt911Config->driverCh[22] = 0xFF;
-	gt911Config->driverCh[23] = 0xFF;
-	gt911Config->driverCh[24] = 0xFF;
-	gt911Config->driverCh[25] = 0xFF;
-	memset(gt911Config->reserved11, 0x00, sizeof(gt911Config->reserved11));
-	gt911Config->configFresh = 1;
-	gt911Config->chksum = calculateChksum(gt911Config);
-	result = setMultiByte(REG_CFG, gt911Config, sizeof(Gt911config_t));
 
-	thread::delay(100);
-
-	result = getMultiByte(REG_CFG, gt911Config, sizeof(Gt911config_t));
-*/
-	setCommand(0x22);
-
-	mTriggerId = trigger::add(trigger_handler, this, 1024);
+	mTriggerId = trigger::add(trigger_handler, this, 512);
+	mThreadId = thread::add(thread_process, this, 512);
 
 	if(mTriggerId == 0)
 	{
@@ -362,39 +211,11 @@ int8_t GT911::getByte(uint16_t addr)
 
 	mPeri->lock();
 	mPeri->send(ADDR, (int8_t*)&addr, 2, 100);
-	//thread::delay(1);
 	mPeri->receive(ADDR, (int8_t*)&addr, 1, 100);
 	mPeri->stop();
 	mPeri->unlock();
 
 	return (int8_t)addr;
-}
-
-error_t GT911::setCommand(uint8_t cmd)
-{
-	uint8_t data[3] = {0x80, 0x40, cmd};
-	error_t result;
-
-	mPeri->lock();
-	result = mPeri->send(ADDR, data, 3, 100);
-	mPeri->stop();
-	mPeri->unlock();
-
-	return result;
-}
-
-uint8_t GT911::getCommand(void)
-{
-	uint8_t data[2] = {0x80, 0x46};
-
-	if(mPeri->send(ADDR, data, 2, 100) == error_t::ERROR_NONE)
-	{
-		//thread::delay(1);
-		mPeri->receive(ADDR, data, 1, 100);
-		return data[0];
-	}
-	else
-		return 0;
 }
 
 uint16_t GT911::translateAddress(uint16_t addr)
@@ -465,52 +286,57 @@ error_t GT911::setByte(uint16_t addr, uint8_t data)
 	return result;
 }
 
-GT911::coordinate_t coord;
-
 void GT911::isr(void)
 {
-	//static bool penDown = false;
-	uint16_t x, y;
-	//uint8_t data[8*5], event, status, count;
-	uint8_t status;
-
+	uint8_t data[8], status;
+	
+	mMutex.lock();
 	status = getByte(REG_STATUS);
 	if(status & 0x80)
 	{
-		getMultiByte(REG_P1_COORD, &coord, sizeof(coord));
-//		debug_printf("0x%02X, 0x%02X, 0x%02X, 0x%02X\n", data[0], data[1], data[2], data[3]);
+		setByte(REG_STATUS, 0);
+		getMultiByte(REG_P1_COORD, data, sizeof(data));
+
+		mX = (uint16_t)data[2] << 8 | (uint16_t)data[1];
+		mY = (uint16_t)data[4] << 8 | (uint16_t)data[3];
+
+		if(!mPenDownFlag)
+		{
+			mPenDownFlag = true;
+			push(mX, mY, event::TOUCH_DOWN);
+		}
+		else 
+		{
+			push(mX, mY, event::TOUCH_DRAG);
+		}
 	}
 
-//	if(data[0] <= 1)
-//	{
-//		//event = data[1] >> 6;
-		
-//		data[1] &= 0x0F;
-//		y = (uint16_t)data[1] << 8;
-//		y |= data[2];
-//		x = (uint16_t)data[3] << 8;
-//		x |= data[4];
+	mLastUpdateTime.reset();
+	mMutex.unlock();
+}
 
-	//	if((event == 0x00) && (penDown == false))
-	//	{
-	//		penDown = true;
-	//		push(x, y, event::TOUCH_DOWN);
-	//	}
-	//	else if((event == 0x02) && penDown == true)
-	//	{
-	//		push(x, y, event::TOUCH_DRAG);
-	//	}
-	//	else if((event == 0x01) && penDown == true)
-	//	{
-	//		penDown = false;
-	//		push(x, y, event::TOUCH_UP);
-	//	}
-	//}
+void GT911::process(void)
+{
+	while(1)
+	{
+		mMutex.lock();
+		if(mPenDownFlag && mLastUpdateTime.getMsec() >= 30)
+		{
+			mPenDownFlag = false;
+			push(mX, mY, event::TOUCH_UP);
+		}
+		mMutex.unlock();
+	}
 }
 
 static void trigger_handler(void *var)
 {
 	((GT911*)var)->isr();
+}
+
+static void thread_process(void *var)
+{
+	((GT911*)var)->process();
 }
 
 #endif

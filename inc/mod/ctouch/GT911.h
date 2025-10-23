@@ -13,6 +13,8 @@
 
 #if !(defined(YSS_DRV_I2C_UNSUPPORTED) || defined(YSS_DRV_GPIO_UNSUPPORTED))
 
+class ElapsedTime;
+
 class GT911 : public sac::Touch
 {
 public :
@@ -21,32 +23,11 @@ public :
 		I2c &peri;
 		pin_t isrPin;
 		pin_t resetPin;
-		Size_t size;
-	};
-
-	struct coordinate_t
-	{
-		uint8_t id;
-		uint16_t x;
-		uint16_t y;
-		uint16_t size;
 	};
 
 	error_t initialize(const config_t config);
 
-	int8_t getByte(uint16_t addr);
-
-	error_t setByte(uint16_t addr, uint8_t data);
-
-	error_t getMultiByte(uint16_t addr, void *des, uint8_t size);
-
-	error_t setMultiByte(uint16_t addr, void *src, uint8_t size);
-
-	error_t setCommand(uint8_t cmd);
-
-	uint8_t getCommand(void);
-
-	uint16_t translateAddress(uint16_t);
+	void process(void);
 
 	void isr(void);
 
@@ -54,9 +35,24 @@ private :
 
 	I2c *mPeri;
 	pin_t mIsr;
-	int32_t mTriggerId;
+	triggerId_t mTriggerId;
+	threadId_t mThreadId;
+	bool mPenDownFlag;
+	Mutex mMutex;
+	ElapsedTime mLastUpdateTime;
+	uint16_t mX, mY;
 
 	uint8_t calculateChksum(void *src);
+
+	uint16_t translateAddress(uint16_t);
+
+	error_t getMultiByte(uint16_t addr, void *des, uint8_t size);
+
+	error_t setMultiByte(uint16_t addr, void *src, uint8_t size);
+
+	int8_t getByte(uint16_t addr);
+
+	error_t setByte(uint16_t addr, uint8_t data);
 };
 
 #endif
