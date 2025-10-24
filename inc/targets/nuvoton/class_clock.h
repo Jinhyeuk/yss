@@ -123,12 +123,22 @@ public:
 	error_t setHclkClockSource(hclkSrc_t src, uint8_t hclkDiv, uint8_t pclk0Div, uint8_t pclk1Div) __attribute__((optimize("-O1")));
 	
 	/*
-		AHB 버스 장치의 클럭을 활성화/비활성화 합니다.
+		AHB0 버스 장치의 클럭을 활성화/비활성화 합니다.
+		AHB0, AHB1로 구분하지 않는 AHB로만 된 명칭의 MCU는 AHB0으로 사용합니다.
 		.
 		@ position : AHB 버스의 활성화할 비트필드의 비트 번호를 설정합니다.
 		@ en : AHB 버스의 position에서 설정한 장치를 켜거(true)나 끕(false)니다.
 	*/
-	void enableAhbClock(uint32_t position, bool en = true) __attribute__((optimize("-O1")));
+	void enableAhb0Clock(uint32_t position, bool en = true) __attribute__((optimize("-O1")));
+
+	/*
+		AHB1 버스 장치의 클럭을 활성화/비활성화 합니다.
+		AHB0, AHB1로 구분하지 않는 AHB로만 된 명칭의 MCU는 AHB0으로 사용합니다.
+		.
+		@ position : AHB1 버스의 활성화할 비트필드의 비트 번호를 설정합니다.
+		@ en : AHB 버스의 position에서 설정한 장치를 켜거(true)나 끕(false)니다.
+	*/
+	void enableAhb1Clock(uint32_t position, bool en = true) __attribute__((optimize("-O1")));
 	
 	/*
 		APB0 버스 장치의 클럭을 활성화/비활성화 합니다.

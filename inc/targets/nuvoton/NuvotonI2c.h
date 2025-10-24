@@ -23,10 +23,10 @@ public:
 	virtual void stop(void) __attribute__((optimize("-O1")));
 
 	// 여기부터 아래 내용들은 사용자가 호출할 필요가 없는 함수입니다.
-	struct setup_t
+	typedef struct
 	{
 		I2C_T *dev;
-	};
+	}setup_t;
 
 	NuvotonI2c(const Drv::setup_t drvSetup, const setup_t setup) __attribute__((optimize("-O1")));
 

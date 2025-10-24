@@ -119,7 +119,7 @@ error_t Gpio::setPullUpDown(uint8_t pin, pupd_t pupd)
 	return error_t::ERROR_NONE;
 }
 
-error_t Gpio::enablInterrupt(uint8_t pin, source_t src, void (*isr)(void))
+error_t Gpio::setGpioInterrupt(uint8_t pin, source_t src, void (*isr)(void))
 {
 	if(pin >= 16)
 		return error_t::OUT_OF_PIN_INDEX_RANGE;
@@ -158,7 +158,7 @@ error_t Gpio::enablInterrupt(uint8_t pin, source_t src, void (*isr)(void))
 	return error_t::ERROR_NONE;
 }
 
-error_t Gpio::enablInterrupt(uint8_t pin, source_t src, triggerId_t trigger)
+error_t Gpio::setGpioInterrupt(uint8_t pin, source_t src, triggerId_t trigger)
 {
 	if(pin >= 16)
 		return error_t::OUT_OF_PIN_INDEX_RANGE;

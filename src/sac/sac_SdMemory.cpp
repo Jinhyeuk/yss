@@ -61,9 +61,9 @@ namespace sac
 	{
 		mDetectPin = pin;
 		mDetectPolarity = detectPolarity;
-
-		if(autoConnect)
-			exti.add(*pin.port, pin.pin, (Exti::mode_t)(Exti::FALLING | Exti::RISING), mTriggerId);
+#warning  "이곳 다시 원복해야 함"
+		//if(autoConnect)
+		//	exti.add(*pin.port, pin.pin, (Exti::mode_t)(Exti::FALLING | Exti::RISING), mTriggerId);
 	}
 
 	bool SdMemory::isDetected(void)

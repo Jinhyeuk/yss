@@ -56,8 +56,6 @@ public:
 
 	SdMemory(void);
 
-	// 소멸자를 호출할 일이 없으므로 소멸자는 생략
-	
 	error_t connect(void);
 
 	error_t disconnect(void);
@@ -182,7 +180,4 @@ private :
 }
 
 #endif
-
-// 해결해야 할 숙제
-//	- SD 메모리 전송 타이밍을 읽어서 적용 시키는 작업
 

@@ -322,5 +322,81 @@ extern "C"
 }
 #endif
 
+
+
+#if defined(PI)
+static void enableGpioIInterrupt(bool en)
+{
+	// enableInterrupt() 함수 내부에서 인터럽트를 끄기 때문에 Mutex lock(), unlock()을 하지 않음.
+	nvic.enableInterrupt(GPI_IRQn, en);
+}
+
+const static Drv::setup_t gDrvSetupGpioI =
+{
+	0,						// void (*clockFunc)(bool en);
+	enableGpioIInterrupt,	// void (*nvicFunc)(bool en);
+	0,						// void (*resetFunc)(void);
+	0						// uint32_t (*getClockFunc)(void);
+};
+
+const static Gpio::setup_t gConfigGpioI =
+{
+	PH,				//YSS_GPIO_Peri *dev;
+#if defined(__M46x_SUBFAMILY)
+	&SYS->GPI_MFP0	// volatile uint32_t *mfp;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
+	&SYS->GPI_MFPL	// volatile uint32_t *mfp;
+#endif
+};
+
+Gpio gpioI(gDrvSetupGpioH, gConfigGpioH);
+
+extern "C"
+{
+	void GPI_IRQHandler(void)
+	{
+		gpioH.isr();
+	}
+}
+#endif
+
+
+
+#if defined(PJ)
+static void enableGpioJInterrupt(bool en)
+{
+	// enableInterrupt() 함수 내부에서 인터럽트를 끄기 때문에 Mutex lock(), unlock()을 하지 않음.
+	nvic.enableInterrupt(GPJ_IRQn, en);
+}
+
+const static Drv::setup_t gDrvSetupGpioJ =
+{
+	0,						// void (*clockFunc)(bool en);
+	enableGpioJInterrupt,	// void (*nvicFunc)(bool en);
+	0,						// void (*resetFunc)(void);
+	0						// uint32_t (*getClockFunc)(void);
+};
+
+const static Gpio::setup_t gConfigGpioJ =
+{
+	PJ,				//YSS_GPIO_Peri *dev;
+#if defined(__M46x_SUBFAMILY)
+	&SYS->GPJ_MFP0	// volatile uint32_t *mfp;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
+	&SYS->GPJ_MFPL	// volatile uint32_t *mfp;
+#endif
+};
+
+Gpio gpioJ(gDrvSetupGpioH, gConfigGpioH);
+
+extern "C"
+{
+	void GPJ_IRQHandler(void)
+	{
+		gpioH.isr();
+	}
+}
+#endif
+
 #endif
 

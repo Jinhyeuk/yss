@@ -233,6 +233,59 @@ public:
 		PB14_I2C2_SMBSUS = 8,
 #endif
 
+#if defined(__M46x_SUBFAMILY)
+		PB1_SD0_CLK = 3,
+		PE6_SD0_CLK = 3,
+
+		PB0_SD0_CMD = 3,
+		PE7_SD0_CMD = 3,
+
+		PB2_SD0_DAT0 = 3,
+		PE2_SD0_DAT0 = 3,
+
+		PB3_SD0_DAT1 = 3,
+		PE3_SD0_DAT1 = 3,
+
+		PB4_SD0_DAT2 = 3,
+		PE4_SD0_DAT2 = 3,
+
+		PB5_SD0_DAT3 = 3,
+		PE5_SD0_DAT3 = 3,
+
+		PD13_SD0_nCD = 3,
+		PB12_SD0_nCD = 9,
+#endif
+
+#if defined(__M46x_SUBFAMILY)
+		PG14_SD1_CLK = 3,
+		PA4_SD1_CLK = 5,
+		PB6_SD1_CLK = 7,
+
+		PG13_SD1_CMD = 3,
+		PA5_SD1_CMD = 5,
+		PB7_SD1_CMD = 5,
+
+		PG12_SD1_DAT0 = 3,
+		PA0_SD1_DAT0 = 5,
+		PA8_SD1_DAT0 = 5,
+
+		PG11_SD1_DAT1 = 3,
+		PA1_SD1_DAT1 = 5,
+		PA9_SD1_DAT1 = 5,
+
+		PG10_SD1_DAT2 = 3,
+		PA2_SD1_DAT2 = 5,
+		PA10_SD1_DAT2 = 5,
+
+		PG9_SD1_DAT3 = 3,
+		PA3_SD1_DAT3 = 5,
+		PA11_SD1_DAT3 = 5,
+
+		PG15_SD1_nCD = 3,
+		PA6_SD1_nCD = 5,
+		PE14_SD1_nCD = 5,
+#endif
+
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
 		PA2_SPI0_CLK = 4,
 		PA2_SPI0_I2S_BCLK = 4,
@@ -584,7 +637,7 @@ public:
 	 *	@ edge : 인터럽트를 감지할 엣지를 설정합니다.
 	 *	@ * isr : ISR 함수의 포인터를 설정합니다.
 	 */
-	error_t enablInterrupt(uint8_t pin, source_t src, void (*isr)(void));
+	error_t setGpioInterrupt(uint8_t pin, source_t src, void (*isr)(void));
 
 	/*
 	 *	GPIO를 엣지 또는 레벨 인터럽트로 활성화합니다.
@@ -598,7 +651,7 @@ public:
 	 *	@ edge : 인터럽트를 감지할 엣지를 설정합니다.
 	 *	@ * isr : ISR 함수의 포인터를 설정합니다.
 	 */
-	error_t enablInterrupt(uint8_t pin, source_t src, triggerId_t trigger);
+	error_t setGpioInterrupt(uint8_t pin, source_t src, triggerId_t trigger);
 
 	/*
 	 *	GPIO 핀의 현재 상태를 읽어옵니다.

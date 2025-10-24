@@ -8,7 +8,7 @@
 #ifndef YSS_INSTANCE_M48X__H_
 #define YSS_INSTANCE_M48X__H_
 
-#include <drv/peripheral.h>
+#include <yss/instance.h>
 
 // YSS OS RUNTIME 설정 관련 정의
 #define RUNTIME_TIMER0		1
@@ -63,14 +63,36 @@ extern Epwm epwm1;
 
 extern Flash flash;
 
+#if defined(PA)
 extern Gpio gpioA;
+#endif
+#if defined(PB)
 extern Gpio gpioB;
+#endif
+#if defined(PC)
 extern Gpio gpioC;
+#endif
+#if defined(PD)
 extern Gpio gpioD;
+#endif
+#if defined(PE)
 extern Gpio gpioE;
+#endif
+#if defined(PF)
 extern Gpio gpioF;
+#endif
+#if defined(PG)
 extern Gpio gpioG;
+#endif
+#if defined(PH)
 extern Gpio gpioH;
+#endif
+#if defined(PI)
+extern Gpio gpioI;
+#endif
+#if defined(PJ)
+extern Gpio gpioJ;
+#endif
 
 #if defined(__M480_FAMILY)
 #include "NuvotonI2c.h"
@@ -104,6 +126,13 @@ extern PwmCh1 pwm0;
 extern PwmCh1 pwm1;
 extern PwmCh1 pwm2;
 extern PwmCh1 pwm3;
+#endif
+
+#if defined(__M46x_SUBFAMILY)
+#include "NuvotonSdh.h"
+
+extern NuvotonSdh sdh0;
+extern NuvotonSdh sdh1;
 #endif
 
 #if defined(__M480_FAMILY)

@@ -180,7 +180,7 @@ error_t GT911::initialize(const config_t config)
 		goto error_handler;
 	}
 #if defined(__M4xx_FAMILY)
-	result = mIsr.port->enablInterrupt(mIsr.pin, Gpio::EDGE_FALLING, mTriggerId);
+	result = mIsr.port->setGpioInterrupt(mIsr.pin, Gpio::EDGE_FALLING, mTriggerId);
 #else
 	result = exti.add(*mIsr.port, mIsr.pin, Exti::FALLING, mTriggerId);
 	if(result == error_t::ERROR_NONE)

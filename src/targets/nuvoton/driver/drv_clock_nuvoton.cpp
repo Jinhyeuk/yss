@@ -387,7 +387,7 @@ error_t Clock::setHclkClockSource(hclkSrc_t src, uint8_t hclkDiv, uint8_t pclk0D
 	return error_t::ERROR_NONE;
 }
 
-void Clock::enableAhbClock(uint32_t position, bool en)
+void Clock::enableAhb0Clock(uint32_t position, bool en)
 {
 #if defined(__M46x_SUBFAMILY)
 	__disable_irq();	
@@ -403,6 +403,19 @@ void Clock::enableAhbClock(uint32_t position, bool en)
 	else
 		CLK->AHBCLK &= ~(1 << position);		
 	__enable_irq();
+#endif
+}
+
+void Clock::enableAhb1Clock(uint32_t position, bool en)
+{
+#if defined(__M46x_SUBFAMILY)
+	__disable_irq();	
+	if(en)
+		CLK->AHBCLK1 |= 1 << position;
+	else
+		CLK->AHBCLK1 &= ~(1 << position);		
+	__enable_irq();
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 #endif
 }
 

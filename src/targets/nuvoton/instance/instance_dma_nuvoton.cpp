@@ -24,8 +24,8 @@ static void enableDma1Clock(bool en)
 	// enableApb0Clock() 함수 내부에서 인터럽트를 끄기 때문에 Mutex lock(), unlock()을 하지 않음.
 
 #if defined(__M46x_SUBFAMILY)
-	clock.enableAhbClock(CLK_AHBCLK0_PDMA0CKEN_Pos, en);
-	clock.enableAhbClock(CLK_AHBCLK0_PDMA1CKEN_Pos, en);
+	clock.enableAhb0Clock(CLK_AHBCLK0_PDMA0CKEN_Pos, en);
+	clock.enableAhb0Clock(CLK_AHBCLK0_PDMA1CKEN_Pos, en);
 #elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
 	clock.enableAhbClock(CLK_AHBCLK_PDMACKEN_Pos, en);
 #endif
