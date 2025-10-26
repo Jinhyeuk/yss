@@ -25,21 +25,16 @@ Gpio::Gpio(const Drv::setup_t drvSetup, const setup_t setup) : Drv(drvSetup)
 		mIsr[i] = nullptr;
 }
 
-error_t Gpio::setAsOutput(uint8_t pin, otype_t otype)
+error_t Gpio::setAsOutput(uint8_t pin, otype_t otype, slewrate_t slewrate)
 {
-	uint32_t reg;
-
 	if(pin > 15)
 		return error_t::OUT_OF_PIN_INDEX_RANGE;
 	
-	setAsAltFunc(pin, ALTFUNC_GPIO);
+	setAsAltFunc(pin, ALTFUNC_GPIO, AF_PUSH_PULL, slewrate);
 
-	__disable_irq();
 	pin <<= 1;
-	reg = mDev->MODE;
-	reg &= ~(0x3 << pin);
-	reg |= otype << pin;
-	mDev->MODE = reg;
+	__disable_irq();
+	setFieldData(mDev->MODE, 0x03 << pin, otype, pin);
 	__enable_irq();
 
 	return error_t::ERROR_NONE;
@@ -52,11 +47,9 @@ error_t Gpio::setAsInput(uint8_t pin)
 	if(pin > 15)
 		return error_t::OUT_OF_PIN_INDEX_RANGE;
 	
-	__disable_irq();
 	pin <<= 1;
-	reg = mDev->MODE;
-	reg &= ~(0x3 << pin);
-	mDev->MODE = reg;
+	__disable_irq();
+	setFieldData(mDev->MODE, 0x03 << pin, 0x00, pin);
 	__enable_irq();
 	 
 		
@@ -69,33 +62,78 @@ void Gpio::setOutput(uint8_t pin, bool data)
 	mOutputReg[pin] = data;
 }
 
-error_t Gpio::setAsAltFunc(uint8_t pin, altFunc_t altfunc, otype_t otype)
+error_t Gpio::setAsAltFunc(uint8_t pin, altFunc_t altfunc, atype_t atype, slewrate_t slewrate)
 {
 	uint32_t reg, index;
+	volatile uint32_t *des;
 
 	if(pin > 15)
 		return error_t::OUT_OF_PIN_INDEX_RANGE;
 #if defined(__M46x_SUBFAMILY)
-	index = pin / 4;
-	pin = (pin << 3) & 0x1F;
-	
 	__disable_irq();
-	reg = mMfp[index];
-	reg &= ~(0x1F << pin);
-	reg |= altfunc << pin;
-	mMfp[index] = reg;
+	des = &SYS->GPA_MFOS;
+	des = &des[((uint32_t)mDev - GPIOA_BASE) / 0x10];
+	setBitData(*des, atype, pin);
+
+	index = pin << 1;
+	setFieldData(mDev->SLEWCTL, 0x03 << index, slewrate, index);
+
+	index = pin >> 2;
+	pin = (pin << 3) & 0x1F;
+	des = &SYS->GPA_MFP0;
+	des = &des[((uint32_t)mDev - GPIOA_BASE) / 0x10];
+	setFieldData(des[index], 0x1F << pin, altfunc, pin);
 	__enable_irq();
 #elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
-	index = pin / 8;
-	pin = (pin << 2) & 0x1F;
-	
 	__disable_irq();
-	reg = mMfp[index];
-	reg &= ~(0xF << pin);
-	reg |= altfunc << pin;
-	mMfp[index] = reg;
+	des = &SYS->GPA_MFOS;
+	des = &des[((uint32_t)mDev - GPIOA_BASE) / 0x10];
+	setBitData(*des, atype, pin);
+
+	index = pin << 1;
+	setFieldData(mDev->SLEWCTL, 0x03 << index, slewrate, index);
+
+	index = pin >> 4;
+	pin = (pin << 2) & 0x1F;
+	des = &SYS->GPA_MFP0;
+	des = &des[((uint32_t)mDev - GPIOA_BASE) / 0x10];
+	setFieldData(des[index], 0x0F << pin, altfunc, pin);
 	__enable_irq();
 #endif
+
+	return error_t::ERROR_NONE;
+}
+
+error_t Gpio::setPackageAsAltFunc(altFuncPackage_t *package, uint8_t count, atype_t atype, slewrate_t slewrate)
+{
+	GPIO_T *port;
+	uint8_t pin, pinOffset;
+	uint32_t reg, index;
+	volatile uint32_t *des;
+	
+	for (uint8_t i = 0; i < count; i++)
+	{
+		port = package[i].port;
+		pin = package[i].pin;
+	
+		if(pin > 15)
+			return error_t::OUT_OF_PIN_INDEX_RANGE;
+		
+#if defined(__M46x_SUBFAMILY)
+		des = &SYS->GPA_MFOS;
+		des = &des[((uint32_t)port - GPIOA_BASE) / 0x10];
+		setBitData(*des, atype, pin);
+
+		index = pin << 1;
+		setFieldData(port->SLEWCTL, 0x03 << index, slewrate, index);
+
+		index = pin >> 2;
+		pin = (pin << 3) & 0x1F;
+		des = &SYS->GPA_MFP0;
+		des = &des[((uint32_t)port - GPIOA_BASE) / 0x10];
+		setFieldData(des[index], 0x1F << pin, package[i].func, pin);
+#endif
+	}
 
 	return error_t::ERROR_NONE;
 }

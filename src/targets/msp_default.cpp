@@ -33,7 +33,7 @@ extern "C"
 #endif
 	{
 		// STM32 Cube IDE에서 FPU 초기화에 사용됩니다.
-#if defined(ST_CUBE_IDE) && (__FPU_PRESENT == 1) && (__FPU_USED == 1)
+#if (__FPU_PRESENT == 1) && (__FPU_USED == 1)
 		SCB->CPACR |= ((3UL << 10*2)|(3UL << 11*2));  /* set CP10 and CP11 Full Access */
 #endif
 		// 시스템 클럭 및 외부 메모리를 초기화 한다.

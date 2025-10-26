@@ -5,8 +5,6 @@
  * See the file "LICENSE" in the main directory of this archive for more details.
  */
 
-#include <drv/mcu.h>
-
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
 
 #include <yss.h>

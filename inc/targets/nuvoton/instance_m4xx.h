@@ -63,6 +63,7 @@ extern Epwm epwm1;
 
 extern Flash flash;
 
+#include "class_gpio.h"
 #if defined(PA)
 extern Gpio gpioA;
 #endif
@@ -94,17 +95,20 @@ extern Gpio gpioI;
 extern Gpio gpioJ;
 #endif
 
-#if defined(__M480_FAMILY)
-#include "NuvotonI2c.h"
+#include "NuvotonHbi.h"
+#if defined(HBI)
+extern NuvotonHbi hbi;
+#endif
 
+#include "NuvotonI2c.h"
+#if defined(I2C0)
 extern NuvotonI2c i2c0;
+#endif
+#if defined(I2C1)
 extern NuvotonI2c i2c1;
+#endif
+#if defined(I2C2)
 extern NuvotonI2c i2c2;
-#elif defined(__M4xx_FAMILY)
-#include "NuvotonI2c.h"
-
-extern NuvotonI2c i2c0;
-extern NuvotonI2c i2c1;
 #endif
 
 #if defined(__M480_FAMILY)

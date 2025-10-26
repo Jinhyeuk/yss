@@ -28,9 +28,22 @@ public:
 	
 	typedef enum
 	{
+		AF_PUSH_PULL = 0,
+		AF_OPEN_DRAIN,
+	}atype_t;
+	
+	typedef enum
+	{
+		SLEWRATE_NORMAL = 0,
+		SLEWRATE_HIGH,
+		SLEWRATE_FAST
+	}slewrate_t;
+
+	typedef enum
+	{
 		ALTFUNC_GPIO = 0,
 
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
+#if defined(BPWM0)
 		PA11_BPWM0_CH0 = 9,
 		PA0_BPWM0_CH0 = 12,
 		PG14_BPWM0_CH0 = 12,
@@ -64,7 +77,7 @@ public:
 		PE7_BPWM0_CH5 = 13,
 #endif
 
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
+#if defined(BPWM1)
 		PB11_BPWM1_CH0 = 10,
 		PF3_BPWM1_CH0 = 11,
 		PC7_BPWM1_CH0 = 12,
@@ -92,7 +105,7 @@ public:
 		PE13_BPWM1_CH5 = 12,
 #endif
 
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
+#if defined(EPWM0)
 		PE8_EPWM0_BRAKE0 = 11,
 		PB1_EPWM0_BRAKE0 = 13,
 
@@ -142,7 +155,48 @@ public:
 		PA11_EPWM0_SYNC_OUT = 10,
 #endif
 
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
+#if defined(HBI)
+		PC4_HBI_CK = 16,
+		PH13_HBI_CK = 16,
+
+		PC5_HBI_nCK = 16,
+		PH12_HBI_nCK = 16,
+
+		PJ6_HBI_D0 = 16,
+		PG11_HBI_D0 = 16,
+		
+		PJ5_HBI_D1 = 16,
+		PG12_HBI_D1 = 16,
+		
+		PC0_HBI_D2 = 16,
+		PJ4_HBI_D2 = 16,
+
+		PJ3_HBI_D3 = 16,
+		PG10_HBI_D3 = 16,
+
+		PG9_HBI_D4 = 16,
+		PH15_HBI_D4 = 16,
+
+		PD7_HBI_D5 = 16,
+		PG13_HBI_D5 = 16,
+		
+		PD6_HBI_D6 = 16,
+		PG14_HBI_D6 = 16,
+		
+		PD5_HBI_D7 = 16,
+		PG15_HBI_D7 = 16,
+
+		PC1_HBI_RWDS = 16,
+		PH14_HBI_RWDS = 16,
+
+		PC3_HBI_nCS = 16,
+		PJ7_HBI_nCS = 16,
+
+		PJ2_HBI_nRESET = 16,
+		PC2_HBI_nRESET = 16,
+#endif
+
+#if defined(I2C0)
 		PC12_I2C0_SCL = 4,
 		PD7_I2C0_SCL = 4,
 		PE13_I2C0_SCL = 4,
@@ -175,7 +229,7 @@ public:
 		PA2_I2C0_SMBSUS = 10,
 #endif
 
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
+#if defined(I2C1)
 		PF0_I2C1_SCL = 3,
 		PA12_I2C1_SCL = 4,
 		PD5_I2C1_SCL = 4,
@@ -211,7 +265,7 @@ public:
 		PH9_I2C1_SMBAL = 8,
 #endif
 
-#if defined(__M480_FAMILY)
+#if defined(I2C2)
 		PD9_I2C2_SCL = 3,
 		PA14_I2C2_SCL = 6,
 		PD1_I2C2_SCL = 6,
@@ -233,7 +287,7 @@ public:
 		PB14_I2C2_SMBSUS = 8,
 #endif
 
-#if defined(__M46x_SUBFAMILY)
+#if defined(SDH0)
 		PB1_SD0_CLK = 3,
 		PE6_SD0_CLK = 3,
 
@@ -256,7 +310,7 @@ public:
 		PB12_SD0_nCD = 9,
 #endif
 
-#if defined(__M46x_SUBFAMILY)
+#if defined(SDH1)
 		PG14_SD1_CLK = 3,
 		PA4_SD1_CLK = 5,
 		PB6_SD1_CLK = 7,
@@ -286,7 +340,7 @@ public:
 		PE14_SD1_nCD = 5,
 #endif
 
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
+#if defined(SPI0)
 		PA2_SPI0_CLK = 4,
 		PA2_SPI0_I2S_BCLK = 4,
 		PB14_SPI0_CLK = 4,
@@ -332,7 +386,7 @@ public:
 		PF9_SPI0_I2S_LRCLK = 5,
 #endif
 
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
+#if defined(SPI1)
 		PH6_SPI1_CLK = 3,
 		PH6_SPI1_I2S_BCLK = 3,
 		PA7_SPI1_CLK = 4,
@@ -384,7 +438,7 @@ public:
 		PC0_SPI1_I2S_LRCLK = 7,
 #endif
 
-#if defined(__M480_FAMILY)
+#if defined(SPI2)
 		PG3_SPI2_CLK = 3,
 		PG3_SPI2_I2S_BCLK = 3,
 		PA10_SPI2_CLK = 4,
@@ -426,7 +480,7 @@ public:
 		PE11_SPI2_I2S_LRCLK = 5,
 #endif
 
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
+#if defined(TIMER0)
 		PG2_PWM0_TM0 = 13,
 		PB5_PWM0_TM0 = 14,
 		PC7_PWM0_TM0 = 14,
@@ -435,7 +489,7 @@ public:
 		PH0_PWM0_TM0_EXT = 13,
 #endif
 
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
+#if defined(TIMER1)
 		PC14_PWM1_TM1 = 13,
 		PG3_PWM1_TM1 = 13,
 		PB4_PWM1_TM1 = 14,
@@ -445,7 +499,7 @@ public:
 		PH1_PWM1_TM1_EXT = 13,
 #endif
 
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
+#if defined(TIMER2)
 		PG4_PWM2_TM2 = 13,
 		PA7_PWM2_TM2 = 14,
 		PB3_PWM2_TM2 = 14,
@@ -455,7 +509,7 @@ public:
 		PH2_PWM2_TM2_EXT = 13,
 #endif
 
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
+#if defined(TIMER3)
 		PF11_PWM3_TM3 = 13,
 		PA6_PWM3_TM3 = 14,
 		PB2_PWM3_TM3 = 14,
@@ -464,7 +518,7 @@ public:
 		PH3_PWM3_TM3_EXT = 13,
 #endif
 
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
+#if defined(UART0)
 		PA15_UART0_RXD = 3,
 		PC11_UART0_RXD = 3,
 		PF2_UART0_RXD = 3,
@@ -499,7 +553,7 @@ public:
 		PC6_UART0_nRTS = 7,
 #endif
 
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
+#if defined(UART1)
 		PF1_UART1_RXD = 2,
 		PD6_UART1_RXD = 3,
 		PD10_UART1_RXD = 3,
@@ -531,7 +585,7 @@ public:
 		PE12_UART1_nRTS = 8,
 #endif
 
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
+#if defined(UART2)
 		PF5_UART2_RXD = 2,
 		PE15_UART2_RXD = 3,
 		PG0_UART2_RXD = 6,
@@ -560,13 +614,20 @@ public:
 		PC3_UART2_nRTS = 8,
 #endif
 
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
+#if defined(USBD)
 		PA14_USBD_DP = 14,
 		PA13_USBD_DN = 14,
 		PA15_USB_OTG_ID = 14,
 		PA12_USB_VBUS = 14,
 #endif
 	}altFunc_t;
+
+	typedef struct
+	{
+		GPIO_T *port;
+		uint8_t pin;
+		altFunc_t func;
+	}altFuncPackage_t;
 
 	typedef enum
 	{
@@ -595,7 +656,7 @@ public:
 	//		출력으로 변경할 핀의 번호를 설정합니다.
 	// otype_t otype
 	//		출력핀의 출력 종류를 설정합니다.
-	error_t setAsOutput(uint8_t pin, otype_t otype = PUSH_PULL) __attribute__((optimize("-O1")));
+	error_t setAsOutput(uint8_t pin, otype_t otype = PUSH_PULL, slewrate_t slewrate = SLEWRATE_NORMAL) __attribute__((optimize("-O1")));
 
 	error_t setAsInput(uint8_t pin) __attribute__((optimize("-O1")));
 
@@ -615,7 +676,7 @@ public:
 	//		핀의 대체 기능을 설정합니다.
 	// otype_t otype
 	//		출력핀의 출력 종류를 설정합니다.
-	error_t setAsAltFunc(uint8_t pin, altFunc_t altfunc, otype_t otype = PUSH_PULL) __attribute__((optimize("-O1")));
+	error_t setAsAltFunc(uint8_t pin, altFunc_t altfunc, atype_t atype = AF_PUSH_PULL, slewrate_t slewrate = SLEWRATE_NORMAL) __attribute__((optimize("-O1")));
 
 	// 핀의 Pull Up/Pull Down 설정을 합니다.
 	//
@@ -652,6 +713,18 @@ public:
 	 *	@ * isr : ISR 함수의 포인터를 설정합니다.
 	 */
 	error_t setGpioInterrupt(uint8_t pin, source_t src, triggerId_t trigger);
+	
+	/*
+	 *	핀 묶음을 한번에 대체 기능으로 설정합니다.
+	 *	Startup 코드에서 bss 초기화 전에 호출하는 목적으로 사용됩니다.
+	 *	bss 초기화가 이뤄지기 전에 이 함수 외의 다른 함수를 사용하면 의도하지 않은 동작을 하게됩니다.
+	 *	.
+	 *	@ return : 에러를 반환합니다.
+	 *	.
+	 *	@ *package : 핀의 대체 기능을 설정하는 altFunc_t의 배열을 설정합니다.
+	 *	@ count : 총 배열의 개수를 설정합니다.
+	 */
+	error_t setPackageAsAltFunc(altFuncPackage_t *package, uint8_t count, atype_t atype = AF_PUSH_PULL, slewrate_t slewrate = SLEWRATE_NORMAL);
 
 	/*
 	 *	GPIO 핀의 현재 상태를 읽어옵니다.
@@ -663,7 +736,7 @@ public:
 	// 아래 함수들은 시스템 함수로 사용자의 호출을 금지합니다.
 	struct setup_t
 	{
-		YSS_GPIO_Peri *dev;
+		GPIO_T *dev;
 		volatile uint32_t *mfp;
 	};
 
@@ -672,7 +745,7 @@ public:
 	void isr(void);
 
 private:
-	YSS_GPIO_Peri *mDev;
+	GPIO_T *mDev;
 	volatile uint32_t *mMfp, *mOutputReg;
 	void (*mIsr[16])(void);
 	bool mTriggerFlag[16];
