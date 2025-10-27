@@ -20,7 +20,7 @@ typedef volatile uint32_t	YSS_LTDC_Peri;
 
 #endif
 
-#include <yss/gui.h>
+//#include <yss/gui.h>
 #include <yss/error.h>
 #include "Drv.h"
 

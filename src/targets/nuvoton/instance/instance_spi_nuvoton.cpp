@@ -5,13 +5,18 @@
  * See the file "LICENSE" in the main directory of this archive for more details.
  */
 
-#include <drv/peripheral.h>
-
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
 
-#include <yss/instance.h>
+#include <drv/peripheral.h>
+#include <targets/nuvoton/NuvotonSpi.h>
 #include <config.h>
 #include <yss.h>
+
+/*---------------------------------------------------------------------------------------------------------*/
+/*  Transfer Direction Definitions                                                                         */
+/*---------------------------------------------------------------------------------------------------------*/
+#define PDMA_DIR_MEM_TO_PERI 0x00004000UL            /*!<DMA Single Request  \hideinitializer */
+#define PDMA_DIR_PERI_TO_MEM 0x00000000UL            /*!<DMA Burst Request  \hideinitializer */
 
 #if (1 < I2S0_ENABLE + SPI0_ENABLE)
 	#error "같은 장치 번호의 SPI 또는 I2S의 중복 사용을 금지합니다. 두 장치는 같은 장치 입니다."
@@ -203,14 +208,14 @@ static const Dma::dmaInfo_t gSpi1RxDmaInfo =
 	(void*)&SPI1->RX,	// void *cpar;
 };
 
-static const Spi::setup_t gSpi1Setup = 
+static const NuvotonSpi::setup_t gSpi1Setup = 
 {
 	SPI1,			//YSS_SPI_Peri *peri;
 	gSpi1TxDmaInfo,	//Dma::dmaInfo_t txDmaInfo;
 	gSpi1RxDmaInfo	//Dma::dmaInfo_t rxDmaInfo;
 };
 
-Spi spi1(gDrvSpi1Setup, gSpi1Setup);
+NuvotonSpi spi1(gDrvSpi1Setup, gSpi1Setup);
 
 extern "C"
 {

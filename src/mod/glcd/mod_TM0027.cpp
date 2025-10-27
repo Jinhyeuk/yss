@@ -23,7 +23,7 @@ namespace glcd
 {
 const Spi::specification_t gLcdConfig =
 {
-	Spi::MODE_MODE3,
+	Spi::CLOCK_MODE_MODE3,
 	10000000,
 	Spi::BIT_BIT8
 };

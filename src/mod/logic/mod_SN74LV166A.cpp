@@ -12,7 +12,7 @@
 
 static const Spi::specification_t gConfig =
 {
-	Spi::MODE_MODE0,
+	Spi::CLOCK_MODE_MODE0,
 	35000000,
 	Spi::BIT_BIT8
 };

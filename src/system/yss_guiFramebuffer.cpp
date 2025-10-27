@@ -25,9 +25,10 @@ static TftLcdDriver *gTftLcd;
 
 void initOutputFrameBuffer(void)
 {
-	gFrameBuf = new OutputFrameBuffer();
-	gFrameBuf->setLcdSize(ltdc.getLcdSize());
-	ltdc.setFrameBuffer(gFrameBuf->getFrameBuffer());
+#warning "복원 필요"
+	//gFrameBuf = new OutputFrameBuffer();
+	//gFrameBuf->setLcdSize(ltdc.getLcdSize());
+	//ltdc.setFrameBuffer(gFrameBuf->getFrameBuffer());
 }
 
 void setSystemTftLcd(TftLcdDriver &lcd)

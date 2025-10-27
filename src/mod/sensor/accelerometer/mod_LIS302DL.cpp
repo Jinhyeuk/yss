@@ -11,9 +11,9 @@
 
 static const Spi::specification_t gSpiSpec =
 {
-	Spi::MODE_MODE3,	//uint8_t mode;
-	10000000,			//uint32_t maxFreq;
-	Spi::BIT_BIT8		//uint8_t bit;
+	Spi::CLOCK_MODE_MODE3,	//uint8_t mode;
+	10000000,				//uint32_t maxFreq;
+	Spi::BIT_BIT8			//uint8_t bit;
 };
 
 error_t LIS302DL::initialize(const config_t config)

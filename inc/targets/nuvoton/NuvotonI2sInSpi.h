@@ -15,29 +15,29 @@
 class NuvotonI2sInSpi : public I2s
 {
 public :
-	error_t initialize(const config_t &config) __attribute__((optimize("-O1")));
+	virtual error_t initialize(const config_t &config) __attribute__((optimize("-O1")));
 	
-	uint32_t getLrclkFrequency(void) __attribute__((optimize("-O1")));
+	virtual uint32_t getLrclkFrequency(void) __attribute__((optimize("-O1")));
 	
-	uint32_t getMclkFrequency(void) __attribute__((optimize("-O1")));
+	virtual uint32_t getMclkFrequency(void) __attribute__((optimize("-O1")));
 	
-	error_t transfer(void *src, uint16_t count) __attribute__((optimize("-O1")));
+	virtual error_t transfer(void *src, uint16_t count) __attribute__((optimize("-O1")));
 	
-	void stop(void) __attribute__((optimize("-O1")));
+	virtual void stop(void) __attribute__((optimize("-O1")));
 	
-	uint32_t getTxCount(void) __attribute__((optimize("-O1")));
+	virtual uint32_t getTxCount(void) __attribute__((optimize("-O1")));
 	
-	uint32_t getRxCount(void) __attribute__((optimize("-O1")));
+	virtual uint32_t getRxCount(void) __attribute__((optimize("-O1")));
 	
-	void* getCurrentBuffer(void) __attribute__((optimize("-O1")));
+	virtual void* getCurrentBuffer(void) __attribute__((optimize("-O1")));
 	
-	void releaseBuffer(int32_t count) __attribute__((optimize("-O1")));
+	virtual void releaseBuffer(int32_t count) __attribute__((optimize("-O1")));
 
-	uint32_t getChannelFrameSize(void) __attribute__((optimize("-O1")));
+	virtual uint32_t getChannelFrameSize(void) __attribute__((optimize("-O1")));
 
-	wordWidth_t getWordWidth(void)  __attribute__((optimize("-O1")));
+	virtual wordWidth_t getWordWidth(void)  __attribute__((optimize("-O1")));
 
-	std_t getI2sStandard(void)  __attribute__((optimize("-O1")));
+	virtual std_t getI2sStandard(void)  __attribute__((optimize("-O1")));
 	
 	// 아래 함수들은 시스템 함수로 사용자 호출을 금지합니다.
 	typedef struct

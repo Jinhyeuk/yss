@@ -21,7 +21,7 @@
 
 static const Spi::specification_t gSpiConfig =
 {
-	Spi::MODE_MODE1, // 장치1 SPI 모드
+	Spi::CLOCK_MODE_MODE1, // 장치1 SPI 모드
 	10000000,                  // 장치1 최대 클럭
 	Spi::BIT_BIT8
 };
@@ -35,7 +35,7 @@ namespace oled
 {
 const Spi::specification_t gLcdConfig =
 {
-	Spi::MODE_MODE0,
+	Spi::CLOCK_MODE_MODE0,
 	10000000,
 	Spi::BIT_BIT8
 };

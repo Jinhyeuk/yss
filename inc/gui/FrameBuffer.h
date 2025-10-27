@@ -5,50 +5,34 @@
  * See the file "LICENSE" in the main directory of this archive for more details.
  */
 
-#ifndef YSS_GUI_FRAME_BUFFER___H_
-#define YSS_GUI_FRAME_BUFFER___H_
+#ifndef YSS_GUI_FRAME_BUFFER__H_
+#define YSS_GUI_FRAME_BUFFER__H_
 
-#include "util.h"
-#include <yss/error.h>
+#include <stdint.h>
+#include "Size.h"
 
 class FrameBuffer
 {
-public :
-	enum
-	{
-		COLOR_MODE_ARGB8888 = 0,
-		COLOR_MODE_RGB888,
-		COLOR_MODE_RGB565,
-		COLOR_MODE_ARGB1555,
-	};
-
+public:
 	FrameBuffer(void);
 
 	virtual ~FrameBuffer(void);
+
+	virtual uint8_t getPixelCapacity(void) = 0;
+
+	void setSize(Size size);
+
+	void setSize(uint16_t width, uint16_t height);
+
+	void malloc(uint32_t points);
+
+	uint8_t* getFrameBuffer(void);
 	
-	error_t setColorMode(uint8_t colorMode);
-
-	void enableMemoryAlloc(bool en = true);
-
-	void setFrameBuffer(void *frameBuffer);
-
-	void* getFrameBuffer(void);
-
-	uint8_t getColorMode(void);
-
-	uint8_t getDotSize(void);
-
-	virtual error_t setSize(uint16_t width, uint16_t height);
-
-	virtual error_t setSize(Size_t size);
-
-	Size_t getSize(void);
-
-protected :
-	uint8_t mColorMode, mDotSize;
+protected:
 	uint8_t *mFrameBuffer;
-	Size_t mSize;
-	bool mMemAllocFlag;
+	bool mMallocFlag;
+	Size mSize;
+	uint32_t mMaxPoints;
 };
 
 #endif

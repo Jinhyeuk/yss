@@ -139,14 +139,15 @@ extern NuvotonSdh sdh0;
 extern NuvotonSdh sdh1;
 #endif
 
+#include "NuvotonSpi.h"
 #if defined(__M480_FAMILY)
 extern Spi spi0;
 extern Spi spi1;
 extern Spi spi2;
 extern Spi spi3;
 #elif defined(__M4xx_FAMILY)
-extern Spi spi0;
-extern Spi spi1;
+extern NuvotonSpi spi0;
+extern NuvotonSpi spi1;
 #endif
 
 #include "NuvotonTmr.h"

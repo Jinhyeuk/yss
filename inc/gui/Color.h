@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Yoon-Ki Hong
+ * Copyright (c) 2025 Yoon-Ki Hong
  *
  * This file is subject to the terms and conditions of the MIT License.
  * See the file "LICENSE" in the main directory of this archive for more details.
@@ -12,48 +12,24 @@
 
 class Color
 {
-public :
+public:
 	Color(void);
 
 	Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 0xFF);
 
-	void setColor(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 0xFF);
+	void setColor(Color &obj);
 
-	void setColor(Color color);
+	void operator=(Color &obj);
 
-	void setColorCodeRgb888(uint32_t code);
+	virtual uint32_t getCode(void);
 
-	void setColorCodeRgb565(uint16_t code);
+		
+protected:
+	uint8_t mRed, mGreen, mBlue, mAlapha;
 
-	void getColor(uint8_t &red, uint8_t &green, uint8_t &blue, uint8_t &alpha);
+	uint32_t mCode;
 
-	void setToRed(void);
-
-	void setToGreen(void);
-
-	void setToBlue(void);
-
-	void setToWhite(void);
-
-	void setToBlack(void);
-
-	void setReverseRgbOrder(bool reverse);
-
-	void setLittleEndian(bool reverse);
-
-	Color calculateFontColorLevel(Color &bgColor, uint8_t level);
-
-	uint16_t getRgb565Code(void);
-
-	uint16_t getArgb1555Code(void);
-
-	uint32_t getRgb888Code(void);
-
-	bool compare(Color color);
-
-private :
-	uint8_t mRed, mGreen, mBlue, mAlpha;
-	static bool mReverseRgb, mLittleEndian;
+	virtual void setColorBase(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 0xFF);
 };
 
 #endif
