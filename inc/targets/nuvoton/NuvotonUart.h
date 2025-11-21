@@ -22,7 +22,7 @@ public :
 
 	NuvotonUart(const Drv::setup_t drvSetup, const NuvotonUart::setup_t setup) __attribute__((optimize("-O1")));
 
-	virtual error_t initialize(config_t config) __attribute__((optimize("-O1")));
+	error_t initialize(config_t config) __attribute__((optimize("-O1")));
 
 	virtual error_t changeBaudrate(int32_t buadrate) __attribute__((optimize("-O1")));
 

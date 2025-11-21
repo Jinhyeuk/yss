@@ -20,7 +20,7 @@
 
 #elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
 
-#include <targets/nuvoton/class_flash.h>
+#include <targets/nuvoton/NuvotonFlash.h>
 
 #else
 

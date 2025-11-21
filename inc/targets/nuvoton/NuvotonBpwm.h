@@ -15,7 +15,7 @@
 /*
 	Nuvoton MCU의 BPWM 장치 지원 드라이버 입니다.
 */
-class Bpwm : public Drv
+class NuvotonBpwm : public Drv
 {
 public:
 	/*
@@ -94,7 +94,7 @@ public:
 		BPWM_T *dev;
 	};
 
-	Bpwm(const Drv::setup_t drvSetup, const setup_t setup) __attribute__((optimize("-O1")));
+	NuvotonBpwm(const Drv::setup_t drvSetup, const setup_t setup) __attribute__((optimize("-O1")));
 
 protected:
 	BPWM_T *mDev;

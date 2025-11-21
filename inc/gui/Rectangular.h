@@ -20,15 +20,15 @@ public:
 
 	Rectangular(int16_t x, int16_t y, uint16_t width, uint16_t height);
 
-	void operator+(Position obj);
+	void operator+=(Position obj);
 	
-	void operator-(Position obj);
+	void operator-=(Position obj);
 
 	void operator=(Position obj);
 
-	void operator+(Size obj);
+	void operator+=(Size obj);
 	
-	void operator-(Size obj);
+	void operator-=(Size obj);
 
 	void operator=(Size obj);
 
@@ -36,9 +36,9 @@ public:
 
 	void setRectanglar(int16_t x, int16_t y, uint16_t width, uint16_t height);
 
-	Size getSize(void);
+	Size &getSize(void);
 
-	Position getPosition(void);
+	Position &getPosition(void);
 
 	void addX(int16_t x);
 

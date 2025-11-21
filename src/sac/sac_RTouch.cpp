@@ -5,6 +5,8 @@
  * See the file "LICENSE" in the main directory of this archive for more details.
  */
 
+#if 0
+
 #include <config.h>
 
 #include <sac/Rtouch.h>
@@ -73,4 +75,6 @@ namespace  sac
 		return Position_t {(int16_t)x, (int16_t)y};
 	}
 }
+
+#endif
 

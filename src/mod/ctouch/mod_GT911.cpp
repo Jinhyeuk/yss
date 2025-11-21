@@ -20,6 +20,8 @@
 #define REG_STATUS		0x814E
 #define REG_P1_COORD	0x814F
 #define REG_CFG			0x8047
+#define REG_CFG_CHKSUM	0x80FF
+#define REG_CFG_FRESH	0x8100
 
 struct Gt911config_t
 {
@@ -129,11 +131,16 @@ struct Gt911config_t
 static void trigger_handler(void *peri);
 static void thread_process(void *var);
 
+GT911::GT911(void)
+{
+	mThreadId = -1;
+	mTriggerId = -1;
+}
+
 error_t GT911::initialize(const config_t config)
 {
 	error_t result;
 	uint8_t data[4];
-	Gt911config_t *gt911Config = new Gt911config_t;
 	
 	mPeri = &config.peri;
 	mIsr = config.isrPin;
@@ -164,21 +171,16 @@ error_t GT911::initialize(const config_t config)
 		result = error_t::UNKNOWN_DEVICE;
 		goto error_handler;
 	}
-	memset(gt911Config, 0, sizeof(Gt911config_t));
-	result = getMultiByte(REG_CFG, gt911Config, sizeof(Gt911config_t));
-	if(result != error_t::ERROR_NONE)
-	{
-		goto error_handler;
-	}
 
 	mTriggerId = trigger::add(trigger_handler, this, 512);
 	mThreadId = thread::add(thread_process, this, 512);
 
-	if(mTriggerId == 0)
+	if(mTriggerId < 0 || mThreadId < 0)
 	{
 		result = error_t::FAILED_THREAD_ADDING;
 		goto error_handler;
 	}
+
 #if defined(__M4xx_FAMILY)
 	result = mIsr.port->setGpioInterrupt(mIsr.pin, Gpio::EDGE_FALLING, mTriggerId);
 #else
@@ -186,10 +188,17 @@ error_t GT911::initialize(const config_t config)
 	if(result == error_t::ERROR_NONE)
 		exti.enable(mIsr.pin);
 #endif
+	if(result != error_t::ERROR_NONE)
+		goto error_handler;
+
+	return error_t::ERROR_NONE;
 
 error_handler :
+	if(mTriggerId > 0)
+		trigger::remove(mTriggerId);
+	if(mThreadId > 0)
+		thread::remove(mThreadId);
 
-	delete gt911Config;
 	return result;
 }
 
@@ -289,6 +298,7 @@ error_t GT911::setByte(uint16_t addr, uint8_t data)
 void GT911::isr(void)
 {
 	uint8_t data[8], status;
+	event_t event;
 	
 	mMutex.lock();
 	status = getByte(REG_STATUS);
@@ -297,17 +307,19 @@ void GT911::isr(void)
 		setByte(REG_STATUS, 0);
 		getMultiByte(REG_P1_COORD, data, sizeof(data));
 
-		mX = (uint16_t)data[2] << 8 | (uint16_t)data[1];
-		mY = (uint16_t)data[4] << 8 | (uint16_t)data[3];
+		mX = event.x = (uint16_t)data[2] << 8 | (uint16_t)data[1];
+		mY = event.y = (uint16_t)data[4] << 8 | (uint16_t)data[3];
 
 		if(!mPenDownFlag)
 		{
 			mPenDownFlag = true;
-			push(mX, mY, event::TOUCH_DOWN);
+			event.event = EVENT_TOUCH_DOWN;
+			push(event); 
 		}
 		else 
 		{
-			push(mX, mY, event::TOUCH_DRAG);
+			event.event = EVENT_TOUCH_DRAG;
+			push(event); 
 		}
 	}
 
@@ -317,15 +329,22 @@ void GT911::isr(void)
 
 void GT911::process(void)
 {
+	event_t event;
+
 	while(1)
 	{
 		mMutex.lock();
-		if(mPenDownFlag && mLastUpdateTime.getMsec() >= 30)
+		if(mPenDownFlag && mLastUpdateTime.getMsec() >= 100)
 		{
 			mPenDownFlag = false;
-			push(mX, mY, event::TOUCH_UP);
+			event.x = mX;
+			event.y = mY;
+			event.event = EVENT_TOUCH_UP;
+			push(event);
 		}
 		mMutex.unlock();
+
+		thread::yield();
 	}
 }
 

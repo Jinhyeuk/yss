@@ -15,7 +15,7 @@ FrameBuffer::FrameBuffer(void)
 {
 	mMallocFlag = false;
 	mFrameBuffer = nullptr;
-	mMaxPoints = 0;
+	mMaxPixelCount = 0;
 }
 
 FrameBuffer::FrameBuffer::~FrameBuffer(void)
@@ -28,19 +28,33 @@ FrameBuffer::FrameBuffer::~FrameBuffer(void)
 #endif
 }
 
-void FrameBuffer::setSize(Size size)
+bool FrameBuffer::setSize(Size size)
 {
-	if(size.getWidth() * size.getHeight() <= mMaxPoints)
+	if(size.getWidth() * size.getHeight() <= mMaxPixelCount)
+	{
 		mSize = size;
+		return true;
+	}
+	else 
+	{
+		return false;
+	}
 }
 
-void FrameBuffer::setSize(uint16_t width, uint16_t height)
+bool FrameBuffer::setSize(uint16_t width, uint16_t height)
 {
-	if(width * height <= mMaxPoints)
+	if(width * height <= mMaxPixelCount)
+	{
 		mSize.setSize(width, height);
+		return true;
+	}
+	else 
+	{
+		return false;
+	}
 }
 
-void FrameBuffer::malloc(uint32_t points)
+void FrameBuffer::malloc(uint32_t maxPixelPoints)
 {
 	uint32_t size = getPixelCapacity();
 
@@ -51,7 +65,7 @@ void FrameBuffer::malloc(uint32_t points)
 		free(mFrameBuffer);
 #endif
 
-	size *= points;
+	size *= maxPixelPoints;
 #if YSS_L_HEAP_USE
 	mFrameBuffer = (uint8_t*)lmalloc(size);
 #else
@@ -60,7 +74,7 @@ void FrameBuffer::malloc(uint32_t points)
 
 	if(mFrameBuffer != nullptr)
 	{
-		mMaxPoints = points;
+		mMaxPixelCount = maxPixelPoints;
 		mMallocFlag = true;
 	}
 	else
@@ -70,5 +84,15 @@ void FrameBuffer::malloc(uint32_t points)
 uint8_t* FrameBuffer::getFrameBuffer(void)
 {
 	return mFrameBuffer;
+}
+
+uint32_t FrameBuffer::getMaxPixelCount(void)
+{
+	return mMaxPixelCount;
+}
+
+Size FrameBuffer::getSize(void)
+{
+	return mSize;
 }
 

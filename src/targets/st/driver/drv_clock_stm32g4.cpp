@@ -493,7 +493,7 @@ error Clock::setSysclk(uint8_t sysclkSrc, uint8_t ahbDiv, uint8_t apb1Div, uint8
 	setFieldData(FLASH->ACR, FLASH_ACR_LATENCY_Msk, div, FLASH_ACR_LATENCY_Pos);
 	
 	// 버스 클럭 프리스케일러 설정
-	setThreeFieldData(RCC->CFGR, RCC_CFGR_PPRE2_Msk, apb2Div, RCC_CFGR_PPRE2_Pos, RCC_CFGR_PPRE1_Msk, apb1Div, RCC_CFGR_PPRE1_Pos, RCC_CFGR_HPRE_Msk, ahbDiv, RCC_CFGR_HPRE_Pos);
+	setThreeFieldsData(RCC->CFGR, RCC_CFGR_PPRE2_Msk, apb2Div, RCC_CFGR_PPRE2_Pos, RCC_CFGR_PPRE1_Msk, apb1Div, RCC_CFGR_PPRE1_Pos, RCC_CFGR_HPRE_Msk, ahbDiv, RCC_CFGR_HPRE_Pos);
 
 	// 클럭 소스 변경
 	setFieldData(RCC->CFGR, RCC_CFGR_SW_Msk, sysclkSrc, RCC_CFGR_SW_Pos);

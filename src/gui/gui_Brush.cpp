@@ -9,6 +9,11 @@
 #include <math.h>
 #include <gui/Font.h>
 
+Brush::Brush(void)
+{
+	mFont = nullptr;
+}
+
 void Brush::fillRectBase(int16_t x, int16_t y, uint16_t width, uint16_t height, Color color)
 {
 	uint16_t cwidth = getCanvasSize().getWidth(), cheight = getCanvasSize().getHeight();
@@ -33,6 +38,14 @@ void Brush::fillRectangular(Rectangular rect)
 	Size size = rect.getSize();
 
 	fillRectBase(pos.getX(), pos.getY(), size.getWidth(), size.getHeight(), getBrushColor());
+}
+
+void Brush::clearRectangular(Rectangular rect)
+{
+	Position pos = rect.getPosition();
+	Size size = rect.getSize();
+
+	fillRectBase(pos.getX(), pos.getY(), size.getWidth(), size.getHeight(), getBackgroundColor());
 }
 
 void Brush::fill(void)
@@ -281,58 +294,64 @@ void Brush::drawRectangular(Rectangular rect)
 
 void Brush::fillTriangle(Position p1, Position p2, Position p3)
 {
-	float slope1, slope2;
-	bool nextDrawFlag = false;
-	uint32_t des;
-	int16_t p1x = p1.getX(), p2x = p2.getX(), p3x = p3.getX();
-	int16_t p1y = p1.getY(), p2y = p2.getY(), p3y = p3.getY();
-	int16_t sx, ex, ey, buf, cy = 0; 
+	int16_t p1x, p2x, p3x;
+	int16_t p1y, p2y, p3y;
+	float slopeL, slopeR;
+	int16_t sx, ex, sy, ey, buf;
+	Position p;
+	int16_t count;
 	uint16_t width = getCanvasSize().getWidth(), height = getCanvasSize().getHeight();
 	uint8_t offset = getPixelCapacity();
-	Position p;
-	
-	if(p1y < p2y)
+
+	if(p1.getY() > p2.getY())
 	{
 		p = p1;
 		p1 = p2;
 		p2 = p;
 	}
 	
-	if(p1y <p3y)
+	if(p1.getY() > p3.getY())
 	{
 		p = p1;
 		p1 = p3;
 		p3 = p;
 	}
-
-	if(p2x > p3x)
+	
+	if(p2.getX() > p3.getX())
 	{
 		p = p2;
 		p2 = p3;
 		p3 = p;
 	}
-
+	
 	p1x = p1.getX();
 	p2x = p2.getX();
 	p3x = p3.getX();
 	p1y = p1.getY();
 	p2y = p2.getY();
 	p3y = p3.getY();
-
-	if(p1y !=p3y && p1y != p2y)
+	
+	if(p1y != p2y && p1y != p3y)
 	{
-		if(p2y <p3y)
-			ey = p1y -p3y;
+		if(p2y < p3y)
+			ey = p2y;
 		else
-			ey = p1y - p2y;
-	
-		slope1 = (float)(p1x - p2x) / (float)(p1y - p2y);
-		slope2 = (float)(p1x - p3x) / (float)(p1y -p3y);
-	
-		for(int32_t  y=0;y<=ey;y++)
+			ey = p3y;
+		
+		if(ey > height)
+			ey = height;
+		
+		sy = p1y;
+		if(sy < 0)
+			sy = 0;
+		
+		slopeL = (float)(p1x - p2x) / (float)(p1y - p2y);
+		slopeR = (float)(p1x - p3x) / (float)(p1y - p3y);
+		
+		for(int32_t y = sy; y <= ey; y++)
 		{
-			sx = p1x - (y * slope1);
-			ex = p1x - (y * slope2);
+			sx = p1x + ((y - sy) * slopeL + 0.5f);
+			ex = p1x + ((y - sy) * slopeR + 0.5f);
 
 			if(sx > ex)
 			{
@@ -340,92 +359,91 @@ void Brush::fillTriangle(Position p1, Position p2, Position p3)
 				sx = ex;
 				ex = buf;
 			}
-			cy = p1y - y;
 
 			if(sx < 0)
 				sx = 0;
 		
 			if(ex > width - 1)
 				ex = width - 1;
+			
+			count = ex - sx + 1;
+			if(count < 0)
+				count = 0;
 
-			cy = p1y + y;
-			des = cy * width * offset + sx * offset;
-			fillDotArray(des, ex - sx, getBrushColor());
+			fillDotArray(y * width * offset + sx * offset, count, getBrushColor());
 		}
+	}
 
-		if(p1y < p2y)
+	if(p2y != p3y)
+	{
+		if(p2.getY() > p3.getY())
 		{
-			p1x = ex;
-			p1y = cy;
+			p = p3;
+			p3 = p2;
+			p2 = p;
 		}
-	}
-	else 
-		nextDrawFlag = true;
-
-	if(ey == p1y && nextDrawFlag == false)
-		return;
 	
-	if(p1y > p2y)
-	{
-		p = p1;
-		p1 = p2;
-		p2 = p;
-	}
-	
-	if(p1y >p3y)
-	{
-		p = p1;
-		p1 = p3;
-		p3 = p;
-	}
-
-	if(p2x > p3x)
-	{
-		p = p2;
-		p2 = p3;
-		p3 = p;
-	}
-
-	p1x = p1.getX();
-	p2x = p2.getX();
-	p3x = p3.getX();
-	p1y = p1.getY();
-	p2y = p2.getY();
-	p3y = p3.getY();
-
-	if(p1y ==p3y || p1y == p2y)
-		return;
-
-	slope1 = (float)(p2x - p1x) / (float)(p2y - p1y);
-	slope2 = (float)(p3x - p1x) / (float)(p3y - p1y);
-
-	if(p2y <p3y)
-		ey = p2y - p1y;
-	else
-		ey =p3y - p1y;
-
-	for(int32_t  y=0;y<=ey;y++)
-	{
-		sx = p1x + (y * slope1);
-		ex = p1x + (y * slope2);
-
-		if(sx > ex)
+		if(p1.getX() > p2.getX())
 		{
-			buf = sx;
-			sx = ex;
-			ex = buf;
+			p = p1;
+			p1 = p2;
+			p2 = p;
 		}
+	
+		p1x = p1.getX();
+		p2x = p2.getX();
+		p3x = p3.getX();
+		p1y = p1.getY();
+		p2y = p2.getY();
+		p3y = p3.getY();
 
-		if(sx < 0)
-			sx = 0;
+		ey = p3y;
+
+		if(p1y > p2y)
+			sy = p1y;
+		else
+			sy = p2y;
+
+		if(ey > height)
+			ey = height;
+
+		if(sy < 0)
+			sy = 0;
 		
-		if(ex > width - 1)
-			ex = width - 1;
+		slopeL = (float)(p3x - p1x) / (float)(p3y - p1y);
+		slopeR = (float)(p3x - p2x) / (float)(p3y - p2y);
+		
+		for(int32_t y = sy; y <= ey; y++)
+		{
+			sx = p3x - ((ey - y) * slopeL + 0.5f);
+			ex = p3x - ((ey - y) * slopeR + 0.5f);
 
-		cy = p1y + y;
-		des = cy * width * offset + sx * offset;
-		fillDotArray(des, ex - sx, getBrushColor());
+			if(sx > ex)
+			{
+				buf = sx;
+				sx = ex;
+				ex = buf;
+			}
+
+ 			if(sx < 0)
+				sx = 0;
+		
+			if(ex > width - 1)
+				ex = width - 1;
+
+			count = ex - sx + 1;
+			if(count < 0)
+				count = 0;
+
+			fillDotArray(y * width * offset + sx * offset, count, getBrushColor());
+		}
 	}
+}
+
+void Brush::fillQuadrangle(Position p1, Position p2, Position p3, Position p4)
+{
+	fillTriangle(p1, p2, p4);
+	fillTriangle(p2, p3, p4);
 }
 
 uint8_t Brush::drawChar(Position pos, uint32_t utf8)
@@ -434,10 +452,19 @@ uint8_t Brush::drawChar(Position pos, uint32_t utf8)
 		return 0;
 
 	Font::fontInfo_t *fontInfo = mFont->getFontInfo(utf8);
+	uint8_t spaceWidth = mFont->getSpaceWidth(), dotWidth = mFont->getDotWidth(), charWidth = mFont->getCharWidth();
+
+	if(utf8 == ' ')
+	{
+		if(spaceWidth > 0)
+			return spaceWidth;
+		else
+			return 4;
+	}
 
 	if(fontInfo == 0)
 		return 0;
-
+	
 	uint8_t *fontFb, color;
 	int32_t  index = 0;
 	int16_t width = fontInfo->width, height = fontInfo->height, offset = 0, xoffset;
@@ -484,7 +511,30 @@ uint8_t Brush::drawChar(Position pos, uint32_t utf8)
 		index += offset;
 	}
 
-	return fontInfo->width + xoffset;
+	if(utf8 == '.')
+	{
+		if(dotWidth > 0)
+		{
+			if(fontInfo->width + xoffset > charWidth)
+				return fontInfo->width + xoffset;
+			else
+				return dotWidth;
+		}
+		else
+			return fontInfo->width + xoffset;
+	}
+	else 
+	{
+		if(charWidth > 0)
+		{
+			if(fontInfo->width + xoffset > charWidth)
+				return fontInfo->width + xoffset;
+			else
+				return charWidth;
+		}
+		else
+			return fontInfo->width + xoffset;
+	}
 }
 
 void Brush::setFont(Font &font)
@@ -492,51 +542,191 @@ void Brush::setFont(Font &font)
 	mFont = &font;
 }
 
+Font* Brush::getFont(void)
+{
+	return mFont;
+}
+
 uint16_t Brush::drawString(Position pos, const char *str)
 {
 	if(mFont == 0)
 		return 0;
 
-	uint8_t width, charWidth = mFont->getCharWidth(), spaceWidth = mFont->getSpaceWidth();
+	uint8_t width, charWidth = mFont->getCharWidth(), spaceWidth = mFont->getSpaceWidth(), dotWidth = mFont->getDotWidth();
 
 	if (charWidth)
 	{
 		while (*str)
-		{
-			if (*str == ' ')
-			{
-				str++;
-				pos.addX(spaceWidth);
-			}
-			else
-			{
-				width = drawChar(pos, mFont->getUtf8(&str));
-				if (charWidth > width)
-					pos.addX(charWidth);
-				else
-					pos.addX(width);
-			}
-		}
-	}
-	else
-	{
-		while (*str)
-		{
-			if (*str == ' ')
-			{
-				str++;
-				pos.addX(spaceWidth);
-			}
-			else
-				pos.addX(drawChar(pos, mFont->getUtf8(&str)));
-		}
+			pos.addX(drawChar(pos, mFont->getUtf8(&str)));
 	}
 
 	return pos.getX();
 }
 
-void Brush::drawBitmap(Position pos, const bitmap_t &bitmap)
+void Brush::drawBitmap(Position pos, const bitmap_t bitmap)
 {
-	drawBitmapBase(pos, bitmap);
+	Size size = getCanvasSize();
+	drawBitmapBase(size, {pos, size}, pos, bitmap);
 }
+
+void Brush::drawBitmap(Rectangular rect, Position bitmapPos, const bitmap_t bitmap)
+{
+	drawBitmapBase(getCanvasSize(), rect, bitmapPos, bitmap);
+}
+
+bool Brush::calculate2BytesPixelDrawingInfo(Rectangular &des, Rectangular &src, uint16_t **frameBuffer)
+{
+	int16_t sx = src.getPosition().getX(), sy = src.getPosition().getY();
+	int16_t dx = des.getPosition().getX(), dy = des.getPosition().getY();
+	uint16_t dwidth = des.getSize().getWidth(), swidth = src.getSize().getWidth(), owidth = swidth;
+	uint16_t dheight = des.getSize().getHeight(), sheight = src.getSize().getHeight(), buf;
+
+	//if(sx + swidth < dx || dx + dwidth < sx || sy + sheight < dy || dy + dheight < sy)
+	//	return false;
+
+	if(sx + swidth < dx)
+		return false;
+
+	if(dx + dwidth < sx)
+		return false;
+	
+	if(sy + sheight < dy)
+		return false;
+
+	if(dy + dheight < sy)
+		return false;
+
+	if(sx < dx)
+	{
+		buf = dx - sx;
+		*frameBuffer = *frameBuffer + buf;
+		sx = dx;
+		src.setX(dx);
+		src.subWidth(buf);
+		swidth = src.getSize().getWidth();
+	}
+	
+	if(sx + swidth > dx + dwidth)
+	{
+		buf = swidth + sx - dwidth - dx;
+		src.subWidth(buf);
+		swidth = src.getSize().getWidth();
+	}
+
+	if(sy < dy)
+	{
+		buf = dy - sy;
+		*frameBuffer = *frameBuffer + (buf * owidth);
+		src.subHeight(buf);
+		src.setY(dy);
+		sy = dy;
+		sheight = src.getSize().getHeight();
+	}
+	
+	if(sy + sheight > dy + dheight)
+	{
+		buf = sheight + sy - dheight - dy;
+		src.subHeight(buf);
+	}
+
+	return true;
+}
+
+
+bool Brush::checkDrawingAble(Size &canvasSize, Rectangular &canvasDesArea, Rectangular &bitmapArea)
+{
+	int16_t cax = canvasDesArea.getPosition().getX();
+	int16_t cay = canvasDesArea.getPosition().getY();
+	uint16_t caw = canvasDesArea.getSize().getWidth();
+	uint16_t cah = canvasDesArea.getSize().getHeight();
+	uint16_t cw = canvasSize.getWidth();
+	uint16_t ch = canvasSize.getHeight();
+	int16_t bx = bitmapArea.getPosition().getX();
+	int16_t by = bitmapArea.getPosition().getY();
+	uint16_t baw = bitmapArea.getSize().getWidth();
+	uint16_t bah = bitmapArea.getSize().getHeight();
+	
+	if(cax < 0 || cax > cw  || cay < 0 || cay > ch)
+		return false;
+
+	if(bx + baw < cax || by + bah < cay)
+		return false;
+
+	if(cax + caw < bx || cay + cah < by)
+		return false;
+	
+	return true;
+}
+
+uint32_t Brush::calculateSrcFrameBufferOffset(Size &canvasSize, Rectangular &canvasDesArea, Rectangular &bitmapArea)
+{
+	int16_t cax = canvasDesArea.getPosition().getX();
+	int16_t cay = canvasDesArea.getPosition().getY();
+	int16_t bx = bitmapArea.getPosition().getX();
+	int16_t by = bitmapArea.getPosition().getY();
+	uint32_t offset = 0;
+
+	if(bx < cax)
+		offset += cax - bx;
+
+	if(by < cay)
+		offset += (cay - by) * bitmapArea.getSize().getWidth();
+
+	return offset;
+}
+
+uint16_t Brush::calculateSrcWidth(Size &canvasSize, Rectangular &canvasDesArea, Rectangular &bitmapArea)
+{
+	int16_t cax = canvasDesArea.getPosition().getX();
+	uint16_t caw = canvasDesArea.getSize().getWidth();
+	int16_t bx = bitmapArea.getPosition().getX();
+	uint16_t baw = bitmapArea.getSize().getWidth();
+	uint16_t bwidth = baw;
+
+	if(bx < cax)
+		bwidth -= cax - bx;
+
+	if(bx + bwidth > cax + caw)
+		bwidth -= baw + bx - caw - cax;
+	
+	return bwidth;	
+}
+
+uint32_t Brush::calculateDesFrameBufferOffset(Size &canvasSize, Rectangular &canvasDesArea, Rectangular &bitmapArea)
+{
+	int16_t by = bitmapArea.getPosition().getY();
+	int16_t bx = bitmapArea.getPosition().getX();
+
+	if(bx < 0)
+		bx = 0;
+	
+	if(by < 0)
+		by = 0;
+	
+	return canvasSize.getWidth() * by + bx;
+}
+
+uint16_t Brush::calculateSrcHeight(Size &canvasSize, Rectangular &canvasDesArea, Rectangular &bitmapArea)
+{
+	int16_t by = bitmapArea.getPosition().getY();
+	uint16_t bah = bitmapArea.getSize().getHeight();
+	uint16_t cah = canvasDesArea.getSize().getHeight();
+
+	if(by < 0)
+	{
+		bah += by;
+		by = 0;
+	}
+
+	if(by + bah > cah)
+		bah = cah - by;
+
+	return bah;
+}
+
+uint32_t calculateSrcLineOffset(Size &canvasSize, Rectangular &canvasDesArea, Rectangular &bitmapArea)
+{
+
+}
+
 

@@ -12,7 +12,7 @@
 #include <targets/nuvoton/NuvotonEpwm.h>
 #include <yss/reg.h>
 
-Epwm::Epwm(const Drv::setup_t drvSetup, const setup_t setup) : Drv(drvSetup)
+NuvotonEpwm::NuvotonEpwm(const Drv::setup_t drvSetup, const setup_t setup) : Drv(drvSetup)
 {
 	mDev = setup.dev;
 	mGetClock01Func = setup.getClock01Func;
@@ -20,14 +20,14 @@ Epwm::Epwm(const Drv::setup_t drvSetup, const setup_t setup) : Drv(drvSetup)
 	mGetClock45Func = setup.getClock45Func;
 }
 
-error_t Epwm::initialize(uint8_t ch, uint32_t freq)
+error_t NuvotonEpwm::initialize(uint8_t ch, uint32_t freq)
 {
 	error_t result = changeFrequency(ch, freq);
 
 	return error_t::ERROR_NONE;
 }
 
-error_t Epwm::changeFrequency(uint8_t ch, uint32_t freq)
+error_t NuvotonEpwm::changeFrequency(uint8_t ch, uint32_t freq)
 {
 	if(ch >= 6)
 		return error_t::OUT_OF_CHANNEL;
@@ -75,7 +75,7 @@ error_t Epwm::changeFrequency(uint8_t ch, uint32_t freq)
 	return error_t::ERROR_NONE;
 }
 
-error_t Epwm::start(uint8_t ch)
+error_t NuvotonEpwm::start(uint8_t ch)
 {
 	if(ch >= 6)
 		return error_t::OUT_OF_CHANNEL;
@@ -85,7 +85,7 @@ error_t Epwm::start(uint8_t ch)
 	return error_t::ERROR_NONE;
 }
 
-error_t Epwm::stop(uint8_t ch)
+error_t NuvotonEpwm::stop(uint8_t ch)
 {
 	if(ch >= 6)
 		return error_t::OUT_OF_CHANNEL;
@@ -95,7 +95,7 @@ error_t Epwm::stop(uint8_t ch)
 	return error_t::ERROR_NONE;
 }
 
-error_t Epwm::setAsPwmOutput(uint8_t ch, bool inverse)
+error_t NuvotonEpwm::setAsPwmOutput(uint8_t ch, bool inverse)
 {
 	if(ch > 5)
 		return error_t::OUT_OF_CHANNEL;
@@ -110,7 +110,7 @@ error_t Epwm::setAsPwmOutput(uint8_t ch, bool inverse)
 	return error_t::ERROR_NONE;
 }
 
-error_t Epwm::setDutyRatio(uint8_t ch, float ratio)
+error_t NuvotonEpwm::setDutyRatio(uint8_t ch, float ratio)
 {
 	if(ch > 5)
 		return error_t::OUT_OF_CHANNEL;
@@ -127,7 +127,7 @@ error_t Epwm::setDutyRatio(uint8_t ch, float ratio)
 	return error_t::ERROR_NONE;
 }
 
-uint32_t Epwm::getTopValue(uint8_t ch)
+uint32_t NuvotonEpwm::getTopValue(uint8_t ch)
 {
 	if(ch > 5)
 		return 0;
@@ -135,7 +135,7 @@ uint32_t Epwm::getTopValue(uint8_t ch)
 		return mDev->PERIOD[ch];
 }
 
-error_t Epwm::setCompareValue(uint8_t ch, int16_t  counter)
+error_t NuvotonEpwm::setCompareValue(uint8_t ch, int16_t  counter)
 {
 	if(ch > 5)
 		return error_t::OUT_OF_RANGE;

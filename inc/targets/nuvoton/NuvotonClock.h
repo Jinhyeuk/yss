@@ -9,11 +9,9 @@
 #define YSS_CLASS_CLOCK_NUVOTON__H_
 
 #include <yss/error.h>
-#include <drv/mcu.h>
-#include <yss/Mutex.h>
-#include <stdint.h>
+#include <drv/Drv.h>
 
-class Clock : public Mutex
+class Clock : public Drv
 {
 public:
 	/*

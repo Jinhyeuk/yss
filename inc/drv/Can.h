@@ -9,6 +9,41 @@
 #define YSS_DRV_CAN__H_
 
 #include "peripheral.h"
+#include "Drv.h"
+#include <yss/error.h>
+
+typedef struct
+{
+	bool xtd;
+	uint32_t id;
+	uint8_t dlc;
+	uint8_t data[8];
+}canMsg_t;
+
+class Can : public Drv
+{
+public :
+	virtual uint32_t getBuadrate(void) = 0;
+
+	virtual float getSamplePoint(void) = 0;
+
+	virtual void sendStdCanMessage(uint16_t id, uint8_t *src, uint8_t dlc) = 0;
+
+	virtual void sendXtdCanMessage(uint32_t id, uint8_t *src, uint8_t dlc) = 0;
+
+	virtual bool isNewRxMessage(void) = 0;
+
+	virtual canMsg_t getNewRxCanMessage(void) = 0;
+
+	// 아래 함수들은 시스템 함수로 사용자의 호출을 금지합니다.
+	Can(const Drv::setup_t drvSetup);
+
+private :
+};
+
+
+/*
+#include "peripheral.h"
 
 #if defined(GD32F1) || defined(STM32F1) || defined(STM32F7) || defined(STM32F4)
 
@@ -225,6 +260,7 @@ private :
 	void push(canFrame_t *frame);
 };
 
+*/
 #endif
 
 // ##### 초기화 방법 #####

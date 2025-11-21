@@ -131,6 +131,7 @@ error_t Dma::ready(dmaInfo_t &dmaInfo, void *src, int32_t count)
 	}
 
 	mChannel->CTL = ctl;
+	mDma->SWREQ |= 1 << mChNum;
 
 	return error_t::ERROR_NONE;
 }

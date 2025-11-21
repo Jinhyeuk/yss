@@ -35,7 +35,7 @@ void Clock::initialize(void)
 error Clock::enableHfxo(uint16_t capacitorValue, uint16_t biasCurrent, uint32_t frequency)
 {
 	mHfxoFrequency = frequency;
-	setThreeFieldData(HFXO0->XTALCTRL,	_HFXO_XTALCTRL_CTUNEXIANA_MASK, capacitorValue / 80, _HFXO_XTALCTRL_CTUNEXIANA_SHIFT,
+	setThreeFieldsData(HFXO0->XTALCTRL,	_HFXO_XTALCTRL_CTUNEXIANA_MASK, capacitorValue / 80, _HFXO_XTALCTRL_CTUNEXIANA_SHIFT,
 										_HFXO_XTALCTRL_CTUNEXOANA_MASK,	capacitorValue / 80, _HFXO_XTALCTRL_CTUNEXOANA_SHIFT,
 										_HFXO_XTALCTRL_COREBIASANA_MASK, biasCurrent / 10, _HFXO_XTALCTRL_COREBIASANA_SHIFT);
 
@@ -188,7 +188,7 @@ error Clock::enableDpll(uint8_t dpllref, uint16_t n, uint16_t m)
 
 	enableApb0Clock(_CMU_CLKEN0_DPLL0_SHIFT, true);
 	setFieldData(CMU->DPLLREFCLKCTRL, _CMU_DPLLREFCLKCTRL_MASK, dpllref, _CMU_DPLLREFCLKCTRL_CLKSEL_SHIFT);
-	setTwoFieldData(DPLL0->CFG1, _DPLL_CFG1_N_MASK, n, _DPLL_CFG1_N_SHIFT, _DPLL_CFG1_M_MASK, m, _DPLL_CFG1_M_SHIFT);	
+	setTwoFieldsData(DPLL0->CFG1, _DPLL_CFG1_N_MASK, n, _DPLL_CFG1_N_SHIFT, _DPLL_CFG1_M_MASK, m, _DPLL_CFG1_M_SHIFT);	
 	DPLL0->EN_SET = _DPLL_EN_EN_MASK;
 
 	for(uint32_t i=0;i<1000000;i++)
@@ -208,7 +208,7 @@ error Clock::setSysclk(uint8_t sysclkSel, uint8_t hclkDiv, uint8_t pclkDiv)
 	if(hclkDiv > 15 || pclkDiv > 1)
 		return error::WRONG_CONFIG;
 
-	setThreeFieldData(CMU->SYSCLKCTRL,	_CMU_SYSCLKCTRL_HCLKPRESC_MASK, hclkDiv, _CMU_SYSCLKCTRL_HCLKPRESC_SHIFT,
+	setThreeFieldsData(CMU->SYSCLKCTRL,	_CMU_SYSCLKCTRL_HCLKPRESC_MASK, hclkDiv, _CMU_SYSCLKCTRL_HCLKPRESC_SHIFT,
 										_CMU_SYSCLKCTRL_PCLKPRESC_MASK, pclkDiv, _CMU_SYSCLKCTRL_PCLKPRESC_SHIFT,
 										_CMU_SYSCLKCTRL_CLKSEL_MASK, sysclkSel, _CMU_SYSCLKCTRL_CLKSEL_SHIFT);
 

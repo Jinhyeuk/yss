@@ -80,11 +80,6 @@ void FrameBufferRgb565BE::blendDot(int16_t x, int16_t y, uint8_t alpha)
 	des[width * y + x] = ((r << 5) & 0x1F00) | ((g >> 5) & 0x0007) | ((g << 11) & 0xE000) | (b & 0x00F8);
 }
 
-void FrameBufferRgb565BE::drawDotNc(uint32_t offset, Color color)
-{
-	*(uint16_t*)&mFrameBuffer[offset] = color.getCode();
-}
-
 void FrameBufferRgb565BE::fillDotArray(uint32_t offset, uint32_t count, Color color)
 {
 	memsethw(&mFrameBuffer[offset], color.getCode(), count * 2);
@@ -127,7 +122,7 @@ Color FrameBufferRgb565BE::getBackgroundColor(void)
 	return mBgColor;
 }
 
-void FrameBufferRgb565BE::drawBitmapBase(Position pos, const bitmap_t &bitmap)
+void FrameBufferRgb565BE::drawBitmapBase(Position pos, const bitmap_t bitmap)
 {
 	switch(bitmap.type)
 	{
@@ -144,7 +139,7 @@ void FrameBufferRgb565BE::drawBitmapBase(Position pos, const bitmap_t &bitmap)
 	}
 }
 
-void FrameBufferRgb565BE::drawBitmapRgb565(Position pos, const bitmap_t &bitmap)
+void FrameBufferRgb565BE::drawBitmapRgb565(Position pos, const bitmap_t bitmap)
 {
 	if(bitmap.type != BITMAP_TYPE_RGB565)
 		return;
@@ -182,7 +177,7 @@ void FrameBufferRgb565BE::drawBitmapRgb565(Position pos, const bitmap_t &bitmap)
 	}
 }
 
-void FrameBufferRgb565BE::drawBitmapArgb1555(Position pos, const bitmap_t &bitmap)
+void FrameBufferRgb565BE::drawBitmapArgb1555(Position pos, const bitmap_t bitmap)
 {
 }
 

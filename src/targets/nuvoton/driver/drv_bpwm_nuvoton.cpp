@@ -12,12 +12,12 @@
 #include <targets/nuvoton/NuvotonBpwm.h>
 #include <yss/reg.h>
 
-Bpwm::Bpwm(const Drv::setup_t drvSetup, const setup_t setup) : Drv(drvSetup)
+NuvotonBpwm::NuvotonBpwm(const Drv::setup_t drvSetup, const setup_t setup) : Drv(drvSetup)
 {
 	mDev = setup.dev;
 }
 
-error_t Bpwm::initialize(uint32_t freq)
+error_t NuvotonBpwm::initialize(uint32_t freq)
 {
 	error_t result = changeFrequency(freq);
 	if(result != error_t::ERROR_NONE)
@@ -26,7 +26,7 @@ error_t Bpwm::initialize(uint32_t freq)
 	return error_t::ERROR_NONE;
 }
 
-error_t Bpwm::changeFrequency(uint32_t freq)
+error_t NuvotonBpwm::changeFrequency(uint32_t freq)
 {
 	int32_t psc, period, clk = getClockFrequency();
 
@@ -52,17 +52,17 @@ error_t Bpwm::changeFrequency(uint32_t freq)
 	return error_t::ERROR_NONE;
 }
 
-void Bpwm::start(void)
+void NuvotonBpwm::start(void)
 {
 	setBitData(mDev->CNTEN, true, TIMER_PWMCTL_CNTEN_Pos);	// Timer Enable
 }
 
-void Bpwm::stop(void)
+void NuvotonBpwm::stop(void)
 {
 	setBitData(mDev->CNTEN, false, TIMER_PWMCTL_CNTEN_Pos);	// Timer Disable
 }
 
-error_t Bpwm::setAsPwmOutput(uint8_t ch, bool inverse)
+error_t NuvotonBpwm::setAsPwmOutput(uint8_t ch, bool inverse)
 {
 	if(ch > 5)
 		return error_t::OUT_OF_RANGE;
@@ -77,12 +77,12 @@ error_t Bpwm::setAsPwmOutput(uint8_t ch, bool inverse)
 	return error_t::ERROR_NONE;
 }
 
-uint32_t Bpwm::getTopValue(void)
+uint32_t NuvotonBpwm::getTopValue(void)
 {
 	return mDev->PERIOD;
 }
 
-error_t Bpwm::setDutyRatio(uint8_t ch, float ratio)
+error_t NuvotonBpwm::setDutyRatio(uint8_t ch, float ratio)
 {
 	if(ch > 5)
 		return error_t::OUT_OF_RANGE;
@@ -99,7 +99,7 @@ error_t Bpwm::setDutyRatio(uint8_t ch, float ratio)
 	return error_t::ERROR_NONE;
 }
 
-error_t Bpwm::setCompareValue(uint8_t ch, int16_t  counter)
+error_t NuvotonBpwm::setCompareValue(uint8_t ch, int16_t  counter)
 {
 	if(ch > 5)
 		return error_t::OUT_OF_RANGE;

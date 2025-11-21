@@ -31,7 +31,7 @@ class ST7789V_with_Brush_RGB565 : public ST7789V, public BrushRgb565
 
 	virtual void updateLcdSize(void); // pure
 
-	virtual void drawBitmapBase(Position_t pos, const Bitmap_t &bitmap);
+	virtual void drawBitmapBase(Position_t pos, const Bitmap_t bitmap);
 
 	virtual void fillRectBase(Position_t pos, Size_t size, uint32_t color);
 };

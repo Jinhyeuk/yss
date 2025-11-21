@@ -5,6 +5,8 @@
  * See the file "LICENSE" in the main directory of this archive for more details.
  */
 
+ #if 0
+
 #include <yss/debug.h>
 #include <mod/rtouch/STMPE811.h>
 #include <yss/thread.h>
@@ -195,4 +197,5 @@ bool STMPE811::init(const Config &config)
 
 #endif
 
+#endif
 

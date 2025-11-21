@@ -53,7 +53,7 @@ error_t Uart::initializeAsTransmitterOnly(int32_t baud)
 	setBitData(mDev->CR1, false, 13);
 	
 	// 보레이트 설정
-	setTwoFieldData(mDev->BRR, 0xFFF << 4, man, 4, 0xF << 0, fra, 0);
+	setTwoFieldsData(mDev->BRR, 0xFFF << 4, man, 4, 0xF << 0, fra, 0);
 
 #if defined(STM32G4)
 	// DMA 활성화
@@ -81,7 +81,7 @@ error_t Uart::initialize(config_t config)
 	setBitData(mDev->CR1, false, 13);
 	
 	// 보레이트 설정
-	setTwoFieldData(mDev->BRR, 0xFFF << 4, man, 4, 0xF << 0, fra, 0);
+	setTwoFieldsData(mDev->BRR, 0xFFF << 4, man, 4, 0xF << 0, fra, 0);
 	
 	// Stop bit 설정
 	setFieldData(mDev->CR2, USART_CR2_STOP_Msk, config.stopbit, USART_CR2_STOP_Pos);
@@ -160,7 +160,7 @@ error_t Uart::changeBaudrate(int32_t baud)
 	if(enableFlag)
 		mDev->CR1 &= ~USART_CR1_UE_Msk;
 	
-	setTwoFieldData(mDev->BRR, 0xFFF << 4, man, 4, 0xF << 0, fra, 0);
+	setTwoFieldsData(mDev->BRR, 0xFFF << 4, man, 4, 0xF << 0, fra, 0);
 
 	if(enableFlag)
 		mDev->CR1 |= USART_CR1_UE_Msk;

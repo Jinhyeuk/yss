@@ -47,7 +47,7 @@ public:
 		.
 		@ config : UART의 구성을 설정합니다.
 	*/
-	virtual error_t initialize(config_t config) __attribute__((optimize("-O1"))) = 0;
+	error_t initialize(config_t config) __attribute__((optimize("-O1")));
 
 	/*
 		UART 장치가 동작중에 보레이트를 변경하기 위해 사용됩니다.

@@ -72,7 +72,7 @@ error_t NuvotonUart::initialize(config_t config)
 	
 	if(config.mode != UART_MODE_RX_ONLY)
 	{
-		mTxDma = allocateDma();
+		mTxDma = system::allocateDma();
 		if(mTxDma == nullptr)
 			return error_t::DMA_ALLOCATION_FAILED;
 

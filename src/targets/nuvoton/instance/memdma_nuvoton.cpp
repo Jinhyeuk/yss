@@ -16,7 +16,7 @@ Dma *gDma;
 
 void initializeDmaCopy(void)
 {
-	gDma = allocateDma();
+	gDma = system::allocateDma();
 	gDma->setSource(PDMA_MEM);
 }
 

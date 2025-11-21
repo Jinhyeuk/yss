@@ -37,7 +37,7 @@ void __WEAK initializeSystem(void)
 #if defined(HSE_CLOCK_FREQ)
 		Clock::PLL_SRC_HXT,
 #else
-		Clock::PLL_SRC_HIRC,
+		NuvotonClock::PLL_SRC_HIRC,
 #endif
 		srcClk / 4000000 - 1,
 		FBDIV_VALUE,
@@ -83,6 +83,33 @@ void __WEAK initializeSystem(void)
 	reg &= ~(CLK_CLKSEL1_TMR0SEL_Msk | CLK_CLKSEL1_TMR1SEL_Msk | CLK_CLKSEL1_TMR2SEL_Msk | CLK_CLKSEL1_TMR3SEL_Msk);
 	reg |= (2 << CLK_CLKSEL1_TMR0SEL_Pos) | (2 << CLK_CLKSEL1_TMR1SEL_Pos) | (2 << CLK_CLKSEL1_TMR2SEL_Pos) | (2 << CLK_CLKSEL1_TMR3SEL_Pos);
 	CLK->CLKSEL1 = reg;
+	
+	// CAN FD의 클럭 소스를 HCLK로 변경
+	// unlock	
+#if defined(CANFD0) || defined(CANFD1) || defined(CANFD2) || defined(CANFD3)
+	SYS->REGLCTL = 0x59;
+	SYS->REGLCTL = 0x16;
+	SYS->REGLCTL = 0x88;
+#endif
+#if defined(CANFD0)
+	setFieldData(CLK->CLKSEL0, CLK_CLKSEL0_CANFD0SEL_Msk, 2, CLK_CLKSEL0_CANFD0SEL_Pos);
+#endif
+
+#if defined(CANFD1)
+	setFieldData(CLK->CLKSEL0, CLK_CLKSEL0_CANFD1SEL_Msk, 2, CLK_CLKSEL0_CANFD1SEL_Pos);
+#endif
+
+#if defined(CANFD2)
+	setFieldData(CLK->CLKSEL0, CLK_CLKSEL0_CANFD2SEL_Msk, 2, CLK_CLKSEL0_CANFD2SEL_Pos);
+#endif
+
+#if defined(CANFD3)
+	setFieldData(CLK->CLKSEL0, CLK_CLKSEL0_CANFD3SEL_Msk, 2, CLK_CLKSEL0_CANFD3SEL_Pos);
+#endif
+#if defined(CANFD0) || defined(CANFD1) || defined(CANFD2) || defined(CANFD3)
+	// lock
+	SYS->REGLCTL = 0x00;
+#endif
 
 	// SPI0, SPI1, SPI2, SPI3의 클럭 소스를 PLL로 변경
 #if defined(__M46x_SUBFAMILY)

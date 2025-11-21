@@ -23,12 +23,12 @@ Rectangular::Rectangular(int16_t x, int16_t y, uint16_t width, uint16_t height)
 	mPos.setPosition(x, y);
 }
 
-void Rectangular::operator+(Position obj)
+void Rectangular::operator+=(Position obj)
 {
 	mPos += obj;
 }
 
-void Rectangular::operator-(Position obj)
+void Rectangular::operator-=(Position obj)
 {
 	mPos -= obj;
 }
@@ -38,12 +38,12 @@ void Rectangular::operator=(Position obj)
 	mPos = obj;
 }
 
-void Rectangular::operator+(Size obj)
+void Rectangular::operator+=(Size obj)
 {
 	mSize += obj;
 }
 
-void Rectangular::operator-(Size obj)
+void Rectangular::operator-=(Size obj)
 {
 	mSize -= obj;
 }
@@ -64,12 +64,12 @@ void Rectangular::setRectanglar(int16_t x, int16_t y, uint16_t width, uint16_t h
 	mPos.setPosition(x, y);
 }
 
-Size Rectangular::getSize(void)
+Size &Rectangular::getSize(void)
 {
 	return mSize;
 }
 
-Position Rectangular::getPosition(void)
+Position &Rectangular::getPosition(void)
 {
 	return mPos;
 }

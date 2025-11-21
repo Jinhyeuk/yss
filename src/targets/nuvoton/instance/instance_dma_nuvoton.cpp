@@ -58,11 +58,11 @@ const Drv::setup_t gDrvDmaChannel1Setup =
 const Dma::setup_t gDma1Setup = 
 {
 #if defined(__M46x_SUBFAMILY)
-	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[0]	// YSS_DMA_Channel_Peri *peri;
+	PDMA0,					// YSS_DMA_Peri *dma;
+	&PDMA0->DSCT[0]	// YSS_DMA_Channel_Peri *peri;
 #elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
-	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[0]	// YSS_DMA_Channel_Peri *peri; 
+	PDMA,					// YSS_DMA_Peri *dma;
+	&PDMA->DSCT[0]	// YSS_DMA_Channel_Peri *peri; 
 #endif
 };
 
@@ -83,11 +83,11 @@ const Drv::setup_t gDrvDmaDummySetup =
 const Dma::setup_t gDma2Setup = 
 {
 #if defined(__M46x_SUBFAMILY)
-	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[1]	// YSS_DMA_Channel_Peri *peri;
+	PDMA0,					// YSS_DMA_Peri *dma;
+	&PDMA0->DSCT[1]	// YSS_DMA_Channel_Peri *peri;
 #elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
-	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[1]	// YSS_DMA_Channel_Peri *peri;
+	PDMA,					// YSS_DMA_Peri *dma;
+	&PDMA->DSCT[1]	// YSS_DMA_Channel_Peri *peri;
 #endif
 };
 
@@ -100,11 +100,11 @@ DmaChannel2 dmaChannel2(gDrvDmaDummySetup, gDma2Setup);
 const Dma::setup_t gDma3Setup = 
 {
 #if defined(__M46x_SUBFAMILY)
-	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[2]	// YSS_DMA_Channel_Peri *peri;
+	PDMA0,					// YSS_DMA_Peri *dma;
+	&PDMA0->DSCT[2]	// YSS_DMA_Channel_Peri *peri;
 #elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
-	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[2]	// YSS_DMA_Channel_Peri *peri;
+	PDMA,					// YSS_DMA_Peri *dma;
+	&PDMA->DSCT[2]	// YSS_DMA_Channel_Peri *peri;
 #endif
 };
 
@@ -117,11 +117,11 @@ DmaChannel3 dmaChannel3(gDrvDmaDummySetup, gDma3Setup);
 const Dma::setup_t gDma4Setup = 
 {
 #if defined(__M46x_SUBFAMILY)
-	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[3]	// YSS_DMA_Channel_Peri *peri;
+	PDMA0,					// YSS_DMA_Peri *dma;
+	&PDMA0->DSCT[3]	// YSS_DMA_Channel_Peri *peri;
 #elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
-	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[3]	// YSS_DMA_Channel_Peri *peri;
+	PDMA,					// YSS_DMA_Peri *dma;
+	&PDMA->DSCT[3]	// YSS_DMA_Channel_Peri *peri;
 #endif
 };
 
@@ -134,11 +134,11 @@ DmaChannel4 dmaChannel4(gDrvDmaDummySetup, gDma4Setup);
 const Dma::setup_t gDma5Setup = 
 {
 #if defined(__M46x_SUBFAMILY)
-	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[4]	// YSS_DMA_Channel_Peri *peri;
+	PDMA0,					// YSS_DMA_Peri *dma;
+	&PDMA0->DSCT[4]	// YSS_DMA_Channel_Peri *peri;
 #elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
-	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[4]	// YSS_DMA_Channel_Peri *peri;
+	PDMA,					// YSS_DMA_Peri *dma;
+	&PDMA->DSCT[4]	// YSS_DMA_Channel_Peri *peri;
 #endif
 };
 
@@ -151,11 +151,11 @@ DmaChannel5 dmaChannel5(gDrvDmaDummySetup, gDma5Setup);
 const Dma::setup_t gDma6Setup = 
 {
 #if defined(__M46x_SUBFAMILY)
-	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[5]	// YSS_DMA_Channel_Peri *peri;
+	PDMA0,					// YSS_DMA_Peri *dma;
+	&PDMA0->DSCT[5]	// YSS_DMA_Channel_Peri *peri;
 #elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
-	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[5]	// YSS_DMA_Channel_Peri *peri;
+	PDMA,					// YSS_DMA_Peri *dma;
+	&PDMA->DSCT[5]	// YSS_DMA_Channel_Peri *peri;
 #endif
 };
 
@@ -168,11 +168,11 @@ DmaChannel6 dmaChannel6(gDrvDmaDummySetup, gDma6Setup);
 const Dma::setup_t gDma7Setup = 
 {
 #if defined(__M46x_SUBFAMILY)
-	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[6]	// YSS_DMA_Channel_Peri *peri;
+	PDMA0,					// YSS_DMA_Peri *dma;
+	&PDMA0->DSCT[6]	// YSS_DMA_Channel_Peri *peri;
 #elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
-	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[6]	// YSS_DMA_Channel_Peri *peri;
+	PDMA,					// YSS_DMA_Peri *dma;
+	&PDMA->DSCT[6]	// YSS_DMA_Channel_Peri *peri;
 #endif
 };
 
@@ -185,11 +185,11 @@ DmaChannel7 dmaChannel7(gDrvDmaDummySetup, gDma7Setup);
 const Dma::setup_t gDma8Setup = 
 {
 #if defined(__M46x_SUBFAMILY)
-	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[7]	// YSS_DMA_Channel_Peri *peri;
+	PDMA0,					// YSS_DMA_Peri *dma;
+	&PDMA0->DSCT[7]	// YSS_DMA_Channel_Peri *peri;
 #elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
-	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[7]	// YSS_DMA_Channel_Peri *peri;
+	PDMA,					// YSS_DMA_Peri *dma;
+	&PDMA->DSCT[7]	// YSS_DMA_Channel_Peri *peri;
 #endif
 };
 
@@ -202,11 +202,11 @@ DmaChannel8 dmaChannel8(gDrvDmaDummySetup, gDma8Setup);
 const Dma::setup_t gDma9Setup = 
 {
 #if defined(__M46x_SUBFAMILY)
-	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[8]	// YSS_DMA_Channel_Peri *peri;
+	PDMA0,					// YSS_DMA_Peri *dma;
+	&PDMA0->DSCT[8]	// YSS_DMA_Channel_Peri *peri;
 #elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
-	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[8]	// YSS_DMA_Channel_Peri *peri;
+	PDMA,					// YSS_DMA_Peri *dma;
+	&PDMA->DSCT[8]	// YSS_DMA_Channel_Peri *peri;
 #endif
 };
 
@@ -219,11 +219,11 @@ DmaChannel9 dmaChannel9(gDrvDmaDummySetup, gDma9Setup);
 const Dma::setup_t gDma10Setup = 
 {
 #if defined(__M46x_SUBFAMILY)
-	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[9]	// YSS_DMA_Channel_Peri *peri;
+	PDMA0,					// YSS_DMA_Peri *dma;
+	&PDMA0->DSCT[9]	// YSS_DMA_Channel_Peri *peri;
 #elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
-	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[9]	// YSS_DMA_Channel_Peri *peri;
+	PDMA,					// YSS_DMA_Peri *dma;
+	&PDMA->DSCT[9]	// YSS_DMA_Channel_Peri *peri;
 #endif
 };
 
@@ -236,11 +236,11 @@ DmaChannel10 dmaChannel10(gDrvDmaDummySetup, gDma10Setup);
 const Dma::setup_t gDma11Setup = 
 {
 #if defined(__M46x_SUBFAMILY)
-	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[10]	// YSS_DMA_Channel_Peri *peri;
+	PDMA0,					// YSS_DMA_Peri *dma;
+	&PDMA0->DSCT[10]	// YSS_DMA_Channel_Peri *peri;
 #elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
-	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[10]	// YSS_DMA_Channel_Peri *peri;
+	PDMA,					// YSS_DMA_Peri *dma;
+	&PDMA->DSCT[10]	// YSS_DMA_Channel_Peri *peri;
 #endif
 };
 
@@ -253,11 +253,11 @@ DmaChannel11 dmaChannel11(gDrvDmaDummySetup, gDma11Setup);
 const Dma::setup_t gDma12Setup = 
 {
 #if defined(__M46x_SUBFAMILY)
-	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[11]	// YSS_DMA_Channel_Peri *peri;
+	PDMA0,					// YSS_DMA_Peri *dma;
+	&PDMA0->DSCT[11]	// YSS_DMA_Channel_Peri *peri;
 #elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
-	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[11]	// YSS_DMA_Channel_Peri *peri;
+	PDMA,					// YSS_DMA_Peri *dma;
+	&PDMA->DSCT[11]	// YSS_DMA_Channel_Peri *peri;
 #endif
 };
 
@@ -270,11 +270,11 @@ DmaChannel12 dmaChannel12(gDrvDmaDummySetup, gDma12Setup);
 const Dma::setup_t gDma13Setup = 
 {
 #if defined(__M46x_SUBFAMILY)
-	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[12]	// YSS_DMA_Channel_Peri *peri;
+	PDMA0,					// YSS_DMA_Peri *dma;
+	&PDMA0->DSCT[12]	// YSS_DMA_Channel_Peri *peri;
 #elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
-	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[12]	// YSS_DMA_Channel_Peri *peri;
+	PDMA,					// YSS_DMA_Peri *dma;
+	&PDMA->DSCT[12]	// YSS_DMA_Channel_Peri *peri;
 #endif
 };
 
@@ -287,11 +287,11 @@ DmaChannel13 dmaChannel13(gDrvDmaDummySetup, gDma13Setup);
 const Dma::setup_t gDma14Setup = 
 {
 #if defined(__M46x_SUBFAMILY)
-	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[13]	// YSS_DMA_Channel_Peri *peri;
+	PDMA0,					// YSS_DMA_Peri *dma;
+	&PDMA0->DSCT[13]	// YSS_DMA_Channel_Peri *peri;
 #elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
-	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[13]	// YSS_DMA_Channel_Peri *peri;
+	PDMA,					// YSS_DMA_Peri *dma;
+	&PDMA->DSCT[13]	// YSS_DMA_Channel_Peri *peri;
 #endif
 };
 
@@ -304,11 +304,11 @@ DmaChannel14 dmaChannel14(gDrvDmaDummySetup, gDma14Setup);
 const Dma::setup_t gDma15Setup = 
 {
 #if defined(__M46x_SUBFAMILY)
-	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[14]	// YSS_DMA_Channel_Peri *peri;
+	PDMA0,					// YSS_DMA_Peri *dma;
+	&PDMA0->DSCT[14]	// YSS_DMA_Channel_Peri *peri;
 #elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
-	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[14]	// YSS_DMA_Channel_Peri *peri;
+	PDMA,					// YSS_DMA_Peri *dma;
+	&PDMA->DSCT[14]	// YSS_DMA_Channel_Peri *peri;
 #endif
 };
 
@@ -321,11 +321,11 @@ DmaChannel15 dmaChannel15(gDrvDmaDummySetup, gDma15Setup);
 const Dma::setup_t gDma16Setup = 
 {
 #if defined(__M46x_SUBFAMILY)
-	(YSS_DMA_Peri*)PDMA0,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA0->DSCT[15]	// YSS_DMA_Channel_Peri *peri;
+	PDMA0,					// YSS_DMA_Peri *dma;
+	&PDMA0->DSCT[15]	// YSS_DMA_Channel_Peri *peri;
 #elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
-	(YSS_DMA_Peri*)PDMA,					// YSS_DMA_Peri *dma;
-	(YSS_DMA_Channel_Peri*)&PDMA->DSCT[15]	// YSS_DMA_Channel_Peri *peri;
+	PDMA,					// YSS_DMA_Peri *dma;
+	&PDMA->DSCT[15]	// YSS_DMA_Channel_Peri *peri;
 #endif
 };
 

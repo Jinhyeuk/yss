@@ -77,14 +77,30 @@ void Size::setSize(Size obj)
 
 void Size::sub(uint16_t width, uint16_t height)
 {
-	setWidth(mWidth - width);
+	if(mWidth > width)
+		setWidth(mWidth - width);
+	else
+		setWidth(0);
+
 	setHeight(mHeight - height);
+	if(mHeight > height)
+		setHeight(mHeight - height);
+	else
+		setHeight(0);
 }
 
 void Size::sub(Size obj)
 {
-	setWidth(mWidth - obj.mWidth);
+	if(mWidth > obj.mWidth)
+		setWidth(mWidth - obj.mWidth);
+	else
+		setWidth(0);
+
 	setHeight(mHeight - obj.mHeight);
+	if(mHeight > obj.mHeight)
+		setHeight(mHeight - obj.mHeight);
+	else
+		setHeight(0);
 }
 
 void Size::operator-=(Size obj)
@@ -100,7 +116,10 @@ void Size::addWidth(uint16_t width)
 
 void Size::subWidth(uint16_t width)
 {
-	setWidth(mWidth - width);
+	if(mWidth > width)
+		setWidth(mWidth - width);
+	else
+		setWidth(0);
 }
 
 void Size::addHeight(uint16_t height)
@@ -110,7 +129,10 @@ void Size::addHeight(uint16_t height)
 
 void Size::subHeight(uint16_t height)
 {
-	setHeight(mHeight - height);
+	if(mHeight > height)
+		setHeight(mHeight - height);
+	else
+		setHeight(0);
 }
 
 void Size::setWidth(uint16_t width)

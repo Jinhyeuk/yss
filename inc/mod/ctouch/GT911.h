@@ -9,13 +9,13 @@
 #define YSS_MOD_CTOUCH_GT911__H_
 
 #include <yss/instance.h>
-#include <sac/Touch.h>
+#include <sac/PointerDevice.h>
 
 #if !(defined(YSS_DRV_I2C_UNSUPPORTED) || defined(YSS_DRV_GPIO_UNSUPPORTED))
 
 class ElapsedTime;
 
-class GT911 : public sac::Touch
+class GT911 : public PointerDevice
 {
 public :
 	struct config_t
@@ -24,6 +24,8 @@ public :
 		pin_t isrPin;
 		pin_t resetPin;
 	};
+
+	GT911(void);
 
 	error_t initialize(const config_t config);
 

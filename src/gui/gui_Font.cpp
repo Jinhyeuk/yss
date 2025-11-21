@@ -15,6 +15,7 @@ Font::Font(void)
 {
 	mSpaceWidth = 0;
 	mCharWidth = 0;
+	mDotWidth = 0;
 	mSize = 0;
 }
 
@@ -36,6 +37,16 @@ uint8_t Font::getCharWidth(void)
 void Font::setCharWidth(uint8_t width)
 {
 	mCharWidth = width;
+}
+
+uint8_t Font::getDotWidth(void)
+{
+	return mDotWidth;
+}
+
+void Font::setDotWidth(uint8_t width)
+{
+	mDotWidth = width;
 }
 
 uint32_t Font::getUtf8(const char **src)
@@ -75,8 +86,10 @@ uint16_t Font::getStringWidth(const char *str)
 		while (*str)
 		{
 			utf8 = getUtf8(&str);
-			if (utf8 == ' ')
+			if (utf8 == ' ' && mSpaceWidth > 0)
 				buf = mSpaceWidth;
+			else if(utf8 == '.' && mDotWidth > 0)
+				buf = mDotWidth;
 			else
 			{
 				fontInfo = getFontInfo(utf8);
@@ -100,8 +113,14 @@ uint16_t Font::getStringWidth(const char *str)
 		while (*str)
 		{
 			utf8 = getUtf8(&str);
-			if (utf8 == ' ')
+			if (utf8 == ' ' && mSpaceWidth > 0)
 				width += mSpaceWidth;
+			else if(utf8 == ' ')
+				width += 4;
+			else if(utf8 == '.' && mDotWidth > 0)
+				width += mDotWidth;
+			else if(utf8 == '.')
+				width += 4;
 			else
 			{
 				fontInfo = getFontInfo(utf8);

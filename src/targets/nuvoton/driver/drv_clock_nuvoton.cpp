@@ -5,11 +5,9 @@
  * See the file "LICENSE" in the main directory of this archive for more details.
  */
 
-#include <drv/peripheral.h>
-
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
 
-#include <drv/Clock.h>
+#include <targets/nuvoton/NuvotonClock.h>
 #include <yss/reg.h>
 
 #include <util/runtime.h>

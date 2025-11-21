@@ -30,7 +30,7 @@ error_t Gpio::setAsOutput(uint8_t pin, otype_t otype, slewrate_t slewrate)
 	if(pin > 15)
 		return error_t::OUT_OF_PIN_INDEX_RANGE;
 	
-	setAsAltFunc(pin, ALTFUNC_GPIO, AF_PUSH_PULL, slewrate);
+	setAsAltFunc(pin, PA0_GPIO, AF_PUSH_PULL, slewrate);
 
 	pin <<= 1;
 	__disable_irq();
@@ -72,7 +72,7 @@ error_t Gpio::setAsAltFunc(uint8_t pin, altFunc_t altfunc, atype_t atype, slewra
 #if defined(__M46x_SUBFAMILY)
 	__disable_irq();
 	des = &SYS->GPA_MFOS;
-	des = &des[((uint32_t)mDev - GPIOA_BASE) / 0x10];
+	des = &des[((uint32_t)mDev - GPIOA_BASE) / 0x40];
 	setBitData(*des, atype, pin);
 
 	index = pin << 1;

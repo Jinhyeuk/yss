@@ -12,6 +12,8 @@
 #include <config.h>
 #include <std_ext/malloc.h>
 #include <std_ext/string.h>
+#include <__debug_stdio.h>
+#include <gui/BitmapDrawingCalculator.h>
 
 FrameBufferRgb565LE::FrameBufferRgb565LE(void)
 {
@@ -57,31 +59,26 @@ void FrameBufferRgb565LE::blendDot(int16_t x, int16_t y, uint8_t alpha)
 
 	uint16_t *des = (uint16_t*)mFrameBuffer;
 	uint16_t blend;
-	int32_t r, g, b, buf;
+	int32_t r, g, b, buf, d1, d2, d3;
 	
 	blend = des[width * y + x];
 	
 	// Red
-	r = blend >> 8 & 0xF8 | 0x07;
-	buf = mBrushColorCode >> 8 & 0xF8 | 0x07;
-	r = (((buf - r) * alpha) >> 8) + r;
-
+	d1 = r = blend >> 8 & 0xF8 | 0x07;
+	d2 = buf = mBrushColorCode >> 8 & 0xF8 | 0x07;
+	d3 = r = (((buf - r) * (int32_t)alpha) >> 8) + r;
+	
 	// Green
 	g = blend >> 3 & 0xFC | 0x03;
 	buf = mBrushColorCode >> 3 & 0xFC | 0x03;
-	g = (((buf - g) * alpha) >> 8) + g;
+	g = (((buf - g) * (int32_t)alpha) >> 8) + g;
 
 	// Blue
 	b = (blend << 3) & 0xF8 | 0x07;
 	buf = (mBrushColorCode << 3) & 0xF8;// | 0x07;
-	b = (((buf - b) * alpha) >> 8) + b;
+	b = (((buf - b) * (int32_t)alpha) >> 8) + b;
 	
-	des[width * y + x] = ((r << 8) & 0xF800) | ((g << 5) & 0x07E0) | (b & 0x001F);
-}
-
-void FrameBufferRgb565LE::drawDotNc(uint32_t offset, Color color)
-{
-	*(uint16_t*)&mFrameBuffer[offset] = color.getCode();
+	des[width * y + x] = ((r << 8) & 0xF800) | ((g << 3) & 0x07E0) | ((b >> 3) & 0x001F);
 }
 
 void FrameBufferRgb565LE::fillDotArray(uint32_t offset, uint32_t count, Color color)
@@ -92,12 +89,6 @@ void FrameBufferRgb565LE::fillDotArray(uint32_t offset, uint32_t count, Color co
 Size FrameBufferRgb565LE::getCanvasSize(void)
 {
 	return mSize;
-}
-
-void FrameBufferRgb565LE::setBrushColor(Color &color)
-{
-	mBrushColor.Color::setColor(color);
-	mBrushColorCode = mBrushColor.getCode();
 }
 
 void FrameBufferRgb565LE::setBrushColor(Color color)
@@ -111,11 +102,6 @@ Color FrameBufferRgb565LE::getBrushColor(void)
 	return mBrushColor;
 }
 
-void FrameBufferRgb565LE::setBackgroundColor(Color &color)
-{
-	mBgColor.Color::setColor(color);
-}
-
 void FrameBufferRgb565LE::setBackgroundColor(Color color)
 {
 	mBgColor.Color::setColor(color);
@@ -126,16 +112,16 @@ Color FrameBufferRgb565LE::getBackgroundColor(void)
 	return mBgColor;
 }
 
-void FrameBufferRgb565LE::drawBitmapBase(Position pos, const bitmap_t &bitmap)
+void FrameBufferRgb565LE::drawBitmapBase(Size canvasSize, Rectangular canvasRect, Position bitmapPos, const bitmap_t bitmap)
 {
 	switch(bitmap.type)
 	{
 	case BITMAP_TYPE_RGB565 :
-		drawBitmapRgb565(pos, bitmap);
+		drawBitmapRgb565(getCanvasSize(), canvasRect, bitmapPos, bitmap);
 		break;
 	
 	case BITMAP_TYPE_ARGB1555 :
-		drawBitmapArgb1555(pos, bitmap);
+		drawBitmapArgb1555(getCanvasSize(),canvasRect, bitmapPos, bitmap);
 		break;
 
 	default :
@@ -143,36 +129,23 @@ void FrameBufferRgb565LE::drawBitmapBase(Position pos, const bitmap_t &bitmap)
 	}
 }
 
-void FrameBufferRgb565LE::drawBitmapRgb565(Position pos, const bitmap_t &bitmap)
+void FrameBufferRgb565LE::drawBitmapRgb565(Size canvasSize, Rectangular canvasDesArea, Position bitmapPos, const bitmap_t bitmap)
 {
 	if(bitmap.type != BITMAP_TYPE_RGB565)
 		return;
 
-	uint16_t cwidth = getCanvasSize().getWidth(), cheight = getCanvasSize().getHeight();
-	uint16_t bwidth = bitmap.width, bheight = bitmap.height;
-	int16_t x = pos.getX(), y = pos.getY();
-	uint16_t *des = (uint16_t*)mFrameBuffer;
-	uint16_t *src = (uint16_t*)bitmap.data;	
+	Rectangular bitmapArea = {bitmapPos, {bitmap.width, bitmap.height}};
+	BitmapDrawingCalculator bdc(canvasSize, canvasDesArea, bitmapArea);
 	
-	if(x < 0)
-	{
-		src = &src[x * -1];
-		x = 0;
-	}
-	
-	if(x + bwidth > cwidth)
-		bwidth = cwidth - x;
-	
-	if(y < 0)
-	{
-		src = &src[y * -1 * bwidth];
-		y = 0;
-	}
-	
-	if(y + bheight > cheight)
-		bheight = cheight - y;
+	if(bdc.calculate() == false)
+		return;
 
-	des = &des[cwidth * y + x];
+	uint16_t cwidth = getCanvasSize().getWidth(), *des = (uint16_t*)mFrameBuffer, *src = (uint16_t*)bitmap.data;
+	uint16_t bwidth = bdc.getTrimedBitmapWidth();
+	uint16_t bheight = bdc.getTrimedBitmapHeight();
+	des = &des[bdc.getCanvasDesFrameBufferOffset()];
+	src = &src[bdc.getBitmapSrcFrameBufferOffset()];
+
 	for(uint16_t i = 0; i < bheight; i++)
 	{
 		memcpy(des, src, bwidth * 2);
@@ -181,38 +154,25 @@ void FrameBufferRgb565LE::drawBitmapRgb565(Position pos, const bitmap_t &bitmap)
 	}
 }
 
-void FrameBufferRgb565LE::drawBitmapArgb1555(Position pos, const bitmap_t &bitmap)
+void FrameBufferRgb565LE::drawBitmapArgb1555(Size canvasSize, Rectangular canvasDesArea, Position bitmapPos, const bitmap_t bitmap)
 {
 	if(bitmap.type != BITMAP_TYPE_ARGB1555)
 		return;
+	
+	Rectangular bitmapArea = {bitmapPos, {bitmap.width, bitmap.height}};
+	BitmapDrawingCalculator bdc(canvasSize, canvasDesArea, bitmapArea);
+	
+	if(bdc.calculate() == false)
+		return;
 
-	uint16_t cwidth = getCanvasSize().getWidth(), cheight = getCanvasSize().getHeight();
-	uint16_t bwidth = bitmap.width, bheight = bitmap.height;
-	int16_t x = pos.getX(), y = pos.getY();
-	uint16_t *des = (uint16_t*)mFrameBuffer;
-	uint16_t *src = (uint16_t*)bitmap.data;
-	uint16_t buf, offset = 0, trans;
-	
-	if(x < 0)
-	{
-		offset = x * -1;
-		src = &src[offset];
-		x = 0;
-	}
-	
-	if(x + bwidth > cwidth)
-		bwidth = cwidth - x;
-	
-	if(y < 0)
-	{
-		src = &src[y * -1 * bwidth];
-		y = 0;
-	}
-	
-	if(y + bheight > cheight)
-		bheight = cheight - y;
+	uint16_t cwidth = getCanvasSize().getWidth(), *des = (uint16_t*)mFrameBuffer, *src = (uint16_t*)bitmap.data;
+	uint16_t bwidth = bdc.getTrimedBitmapWidth();
+	uint16_t bheight = bdc.getTrimedBitmapHeight();
+	uint16_t buf, offset, trans;
+	des = &des[bdc.getCanvasDesFrameBufferOffset()];
+	src = &src[bdc.getBitmapSrcFrameBufferOffset()];
+	offset = bitmap.width - bwidth;
 
-	des = &des[cwidth * y + x];
 	for(uint16_t i = 0; i < bheight; i++)
 	{
 		for(uint16_t j = 0; j < bwidth; j++)
@@ -234,5 +194,18 @@ void FrameBufferRgb565LE::drawBitmapArgb1555(Position pos, const bitmap_t &bitma
 		des += cwidth - bwidth;
 		src += offset;
 	}
+}
+
+bitmap_t FrameBufferRgb565LE::getBitmap(void)
+{
+	bitmap_t bitmap = 
+	{
+		mSize.getWidth(),	//uint16_t width;
+		mSize.getHeight(),	//uint16_t height;
+		BITMAP_TYPE_RGB565,	//bitmapType_t type; // 0 : RGB565, 1 : RGB888, 2 : ARGB1555
+		mFrameBuffer		//uint8_t *data;
+	};
+
+	return bitmap;
 }
 

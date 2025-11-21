@@ -38,11 +38,9 @@ public :
 	virtual Color getBackgroundColor(void);
 
 protected :
-	virtual void drawDotNc(uint32_t offset, Color color);
-
 	virtual void fillDotArray(uint32_t offset, uint32_t count, Color color);
 
-	virtual void drawBitmapBase(Position pos, const bitmap_t &bitmap);
+	virtual void drawBitmapBase(Position pos, const bitmap_t bitmap);
 
 	virtual Size getCanvasSize(void);
 
@@ -50,9 +48,9 @@ private :
 	ColorRgb565BE mBrushColor, mBgColor, mFontColor;
 	uint16_t mBrushColorCode;
 
-	void drawBitmapRgb565(Position pos, const bitmap_t &bitmap);
+	void drawBitmapRgb565(Position pos, const bitmap_t bitmap);
 
-	void drawBitmapArgb1555(Position pos, const bitmap_t &bitmap);
+	void drawBitmapArgb1555(Position pos, const bitmap_t bitmap);
 };
 
 #endif

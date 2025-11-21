@@ -17,7 +17,7 @@
 /*
 	Nuvoton MCU의 EPWM 장치 지원 드라이버 입니다.
 */
-class Epwm : public Drv
+class NuvotonEpwm : public Drv
 {
 public:
 	/*
@@ -116,7 +116,7 @@ public:
 		uint32_t (*getClock45Func)(void);
 	};
 
-	Epwm(const Drv::setup_t drvSetup, const setup_t setup) __attribute__((optimize("-O1")));
+	NuvotonEpwm(const Drv::setup_t drvSetup, const setup_t setup) __attribute__((optimize("-O1")));
 
   protected:
 	EPWM_T *mDev;

@@ -20,17 +20,15 @@ class Font;
 class Brush
 {
 public:
+	Brush(void);
+
 	virtual void drawDot(int16_t x, int16_t y) = 0;
 
 	virtual void blendDot(int16_t x, int16_t y, uint8_t alpha) = 0;
 	
-	virtual void setBrushColor(Color &color) = 0;
-
 	virtual void setBrushColor(Color color) = 0;
 
 	virtual Color getBrushColor(void) = 0;
-
-	virtual void setBackgroundColor(Color &color) = 0;
 
 	virtual void setBackgroundColor(Color color) = 0;
 
@@ -50,26 +48,46 @@ public:
 
 	void fillRectangular(Rectangular rect);
 
+	void fillQuadrangle(Position p1, Position p2, Position p3, Position p4);
+
+	void clearRectangular(Rectangular rect);
+
 	void fill(void);
 
 	void clear(void);
 
 	void setFont(Font &font);
 
+	Font* getFont(void);
+
 	uint8_t drawChar(Position pos, uint32_t utf8);
 
 	uint16_t drawString(Position pos, const char *str);
 
-	void drawBitmap(Position pos, const bitmap_t &bitmap);
+	void drawBitmap(Position bitmapPos, const bitmap_t bitmap);
+
+	void drawBitmap(Rectangular canvasRect, Position bitmapPos, const bitmap_t bitmap);
+
+	void drawBitmap(Size canvasSize, Rectangular canvasRect, Position bitmapPos, const bitmap_t bitmap);
 
 protected:
 	Font *mFont;
+	
+	bool checkDrawingAble(Size &canvasSize, Rectangular &canvasDesArea, Rectangular &bitmapArea);
+
+	uint32_t calculateSrcFrameBufferOffset(Size &canvasSize, Rectangular &canvasDesArea, Rectangular &bitmapArea);
+
+	uint16_t calculateSrcWidth(Size &canvasSize, Rectangular &canvasDesArea, Rectangular &bitmapArea);
+
+	uint16_t calculateSrcHeight(Size &canvasSize, Rectangular &canvasDesArea, Rectangular &bitmapArea);
+
+	uint32_t calculateDesFrameBufferOffset(Size &canvasSize, Rectangular &canvasDesArea, Rectangular &bitmapArea);
+
+	bool calculate2BytesPixelDrawingInfo(Rectangular &des, Rectangular &src, uint16_t **frameBuffer);
 
 	virtual void fillRectBase(int16_t x, int16_t y, uint16_t width, uint16_t height, Color color);
 
-	virtual void drawBitmapBase(Position pos, const bitmap_t &bitmap) = 0;
-
-	virtual void drawDotNc(uint32_t offset, Color color) = 0;
+	virtual void drawBitmapBase(Size canvasSize, Rectangular canvasDesArea, Position bitmapDrawingPos, const bitmap_t bitmap) = 0;
 
 	virtual void fillDotArray(uint32_t offset, uint32_t count, Color color) = 0;
 

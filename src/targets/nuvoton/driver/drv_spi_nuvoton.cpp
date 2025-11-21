@@ -43,19 +43,19 @@ error_t NuvotonSpi::setSpecification(const specification_t &spec)
 	switch(spec.mode)
 	{
 	case 0 :
-		mode = 0x0 << SPI_CTL_RXNEG_Pos;
-		break;
-
-	case 1 :
 		mode = 0x3 << SPI_CTL_RXNEG_Pos;
 		break;
 
+	case 1 :
+		mode = 0x0 << SPI_CTL_RXNEG_Pos;
+		break;
+
 	case 2 :
-		mode = 0x4 << SPI_CTL_RXNEG_Pos;
+		mode = 0x7 << SPI_CTL_RXNEG_Pos;
 		break;
 
 	case 3 :
-		mode = 0x7 << SPI_CTL_RXNEG_Pos;
+		mode = 0x4 << SPI_CTL_RXNEG_Pos;
 		break;
 	}
 	
@@ -84,11 +84,11 @@ error_t NuvotonSpi::initialize(config_t config)
 		return error_t::NOT_SUPPORTED_YET;
 	}
 
-	mTxDma = allocateDma();
+	mTxDma = system::allocateDma();
 	if(mTxDma == nullptr)
 		return error_t::DMA_ALLOCATION_FAILED;
 
-	mRxDma = allocateDma();
+	mRxDma = system::allocateDma();
 	if(mRxDma == nullptr)
 		return error_t::DMA_ALLOCATION_FAILED;
 

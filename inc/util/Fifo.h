@@ -13,19 +13,28 @@
 
 class Fifo : public Mutex
 {
+public:
+	Fifo(uint32_t size);
+
+	~Fifo(void);
+
+	void push(void *src, uint32_t size);
+
+	void push(int8_t src);
+
+	int8_t pop(void);
+
+	void pop(void *des, uint32_t size);
+
+	uint32_t getStoredSize(void);
+
+	uint32_t getFreeSize(void);
+
+	void flush(void);
+
+private:
 	int32_t  mHead, mTail, mSize;
 	uint8_t *mData;
-
-  public:
-	Fifo(uint32_t size);
-	~Fifo(void);
-	void push(void *src, uint32_t size);
-	void push(int8_t src);
-	int8_t pop(void);
-	void pop(void *des, uint32_t size);
-	uint32_t getStoredSize(void);
-	uint32_t getFreeSize(void);
-	void flush(void);
 };
 
 #endif

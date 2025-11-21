@@ -90,7 +90,7 @@ error_t Can::initialize(config_t config)
 	setBitData(mDev->BTR, config.enableLoopback, CAN_BTR_LBKM_Pos); // Loopback 통신 모드 
 	
 	// Baudrate 설정
-	setThreeFieldData(mDev->BTR,	CAN_BTR_BRP_Msk, pres, CAN_BTR_BRP_Pos, 
+	setThreeFieldsData(mDev->BTR,	CAN_BTR_BRP_Msk, pres, CAN_BTR_BRP_Pos, 
 									CAN_BTR_TS1_Msk, ts1, CAN_BTR_TS1_Pos, 
 									CAN_BTR_TS2_Msk, ts2, CAN_BTR_TS2_Pos); 
 	

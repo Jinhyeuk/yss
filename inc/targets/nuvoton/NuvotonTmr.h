@@ -29,7 +29,7 @@ public:
 		.
 		@ en : 타이머를 1회 동작하도록 설정 할 경우 true를, 연속해서 계속 실행하게 할 경우 false를 설정합니다.
 	*/
-	void setOnePulse(bool en) __attribute__((optimize("-O1")));
+	virtual void setOnePulse(bool en) __attribute__((optimize("-O1")));
 	
 	/*
 		타이머의 카운터를 시작합니다.

@@ -19,10 +19,11 @@
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
 #include "NuvotonBpwm.h"
 
-extern Bpwm bpwm0;
-extern Bpwm bpwm1;
+extern NuvotonBpwm bpwm0;
+extern NuvotonBpwm bpwm1;
 #endif
 
+#include "NuvotonClock.h"
 extern Clock clock;
 
 #if defined(__M480_FAMILY)
@@ -57,13 +58,13 @@ extern DmaChannel9 dmaChannel9;
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
 #include "NuvotonEpwm.h"
 
-extern Epwm epwm0;
-extern Epwm epwm1;
+extern NuvotonEpwm epwm0;
+extern NuvotonEpwm epwm1;
 #endif
 
 extern Flash flash;
 
-#include "class_gpio.h"
+#include "NuvotonGpio.h"
 #if defined(PA)
 extern Gpio gpioA;
 #endif
@@ -132,6 +133,14 @@ extern PwmCh1 pwm2;
 extern PwmCh1 pwm3;
 #endif
 
+#include "NuvotonQuadspi.h"
+#if defined(QSPI0)
+extern NuvotonQuadspi qspi0;
+#endif
+#if defined(QSPI1)
+extern NuvotonQuadspi qspi1;
+#endif
+
 #if defined(__M46x_SUBFAMILY)
 #include "NuvotonSdh.h"
 
@@ -177,6 +186,13 @@ extern NuvotonUart uart3;
 
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
 extern Usbd usbd;
+#endif
+
+#if defined(__M46x_SUBFAMILY)
+#include "NuvotonCanFd.h"
+
+extern NuvotonCanFd canfd0;
+
 #endif
 
 #endif
