@@ -10,8 +10,7 @@
 #include <gui/Label.h>
 #include <yss/instance.h>
 
-#if YSS_L_HEAP_USE
-//#if USE_GUI && YSS_L_HEAP_USE
+#if USE_GUI && YSS_L_HEAP_USE
 
 Label::Label(void)
 {

@@ -7,7 +7,7 @@
 
 #include <config.h>
 
-#if YSS_L_HEAP_USE
+#if USE_GUI && YSS_L_HEAP_USE
 
 #include <yss/gui.h>
 #include <yss/Mutex.h>

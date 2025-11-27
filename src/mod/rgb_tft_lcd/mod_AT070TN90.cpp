@@ -7,7 +7,7 @@
 
 #include <config.h>
 
-#if USE_GUI == true
+#if 0
 
 #include <drv/Ltdc.h>
 

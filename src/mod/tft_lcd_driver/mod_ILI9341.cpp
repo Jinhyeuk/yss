@@ -7,7 +7,8 @@
 
 #include <config.h>
 
-#if USE_GUI == true
+#if 0
+//#if USE_GUI == true
 
 #include <mod/tft_lcd_driver/ILI9341.h>
 

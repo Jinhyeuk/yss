@@ -9,6 +9,9 @@
 #define YSS_GUI_OUTPUT_FRAME_BUFFER__H_
 
 #include <config.h>
+
+#if USE_GUI && YSS_L_HEAP_USE
+
 #include "FrameBufferRgb565LE.h"
 #include "Rectangular.h"
 
@@ -38,6 +41,8 @@ private :
 	Frame *mFrame;
 	SystemOutputFrameBuffer *mFrameBuffer;
 };
+
+#endif
 
 #endif
 

@@ -142,78 +142,11 @@ void ST6201_qspi_with_Brush_RGB565::sendData(uint32_t *data, uint32_t len)
 
 void ST6201_qspi_with_Brush_RGB565::enable(void)
 {
+	
 }
 
 void ST6201_qspi_with_Brush_RGB565::disable(void)
 {
+	
 }
-
-#if USE_GUI == true
-
-#include <mod/tft_lcd_driver/ST7789V_spi_with_Brush_RGB565.h>
-#include <yss/debug.h>
-
-#if !defined(YSS_DRV_SPI_UNSUPPORTED) && !defined(YSS_DRV_GPIO_UNSUPPORTED)
-
-static const Spi::specification_t gLcdSpec =
-{
-	Spi::CLOCK_MODE_MODE0,	//uint8_t mode;
-	15000000,			//uint32_t maxFreq;
-	Spi::BIT_BIT8		//uint8_t bit;
-};
-
-ST7789V_spi_with_Brush_RGB565::ST7789V_spi_with_Brush_RGB565(void)
-{
-	mSpec = &gLcdSpec;
-}
-
-void ST7789V_spi_with_Brush_RGB565::setSpiSpecification(const Spi::specification_t &spec)
-{
-	mSpec = &spec;
-}
-
-void ST7789V_spi_with_Brush_RGB565::setConfig(const config_t &config)
-{
-	mPeri = &config.peri;
-	mCsPin = config.chipSelect;
-	mDcPin = config.dataCommand;
-	mRstPin = config.reset;
-
-	if(mRstPin.port)
-		mRstPin.port->setOutput(mRstPin.pin, false);
-	mCsPin.port->setOutput(mCsPin.pin, true);
-}
-
-
-
-void ST7789V_spi_with_Brush_RGB565::read(uint8_t cmd, uint8_t &des)
-{
-	mDcPin.port->setOutput(mDcPin.pin, false);
-	mCsPin.port->setOutput(mCsPin.pin, false);
-	mPeri->send(cmd);
-	mDcPin.port->setOutput(mDcPin.pin, true);
-	des = mPeri->exchange(0);
-	mCsPin.port->setOutput(mCsPin.pin, true);	
-}
-
-
-void ST7789V_spi_with_Brush_RGB565::reset(void)
-{
-	if(mRstPin.port)
-	{
-		mRstPin.port->setOutput(mRstPin.pin, false);
-		thread::delay(10);
-		mRstPin.port->setOutput(mRstPin.pin, true);
-	}
-	else
-	{
-		enable();
-		sendCmd(SOFTWARE_RESET);
-		disable();
-	}
-}
-
-#endif
-
-#endif
 

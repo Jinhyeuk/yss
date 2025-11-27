@@ -11,6 +11,8 @@
 #include <config.h>
 #include <std_ext/malloc.h>
 
+#if USE_GUI
+
 FrameBuffer::FrameBuffer(void)
 {
 	mMallocFlag = false;
@@ -24,7 +26,7 @@ FrameBuffer::FrameBuffer::~FrameBuffer(void)
 #if YSS_L_HEAP_USE
 		lfree(mFrameBuffer);
 #else
-		free(mFrameBuffer);
+		hfree(mFrameBuffer);
 #endif
 }
 
@@ -62,14 +64,14 @@ void FrameBuffer::malloc(uint32_t maxPixelPoints)
 #if YSS_L_HEAP_USE
 		lfree(mFrameBuffer);
 #else
-		free(mFrameBuffer);
+		hfree(mFrameBuffer);
 #endif
 
 	size *= maxPixelPoints;
 #if YSS_L_HEAP_USE
 	mFrameBuffer = (uint8_t*)lmalloc(size);
 #else
-	mFrameBuffer = (uint8_t*)malloc(size);
+	mFrameBuffer = (uint8_t*)hmalloc(size);
 #endif
 
 	if(mFrameBuffer != nullptr)
@@ -95,4 +97,6 @@ Size FrameBuffer::getSize(void)
 {
 	return mSize;
 }
+
+#endif
 

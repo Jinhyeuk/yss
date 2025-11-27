@@ -7,8 +7,9 @@
 
 #include <config.h>
 
-#include <sac/PointerDevice.h>
+#if USE_POINTER_DEVICE
 
+#include <sac/PointerDevice.h>
 #include <gui/Frame.h>
 
 PointerDevice::PointerDevice(void)
@@ -112,3 +113,6 @@ void PointerDevice::resetFrame(Frame *frame)
 		mFrame = nullptr;
 	unlock();
 }
+
+#endif
+

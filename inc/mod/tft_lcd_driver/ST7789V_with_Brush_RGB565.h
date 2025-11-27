@@ -8,32 +8,32 @@
 #ifndef YSS_MOD_TFT_LCD_DRIVER_ST7796__H_
 #define YSS_MOD_TFT_LCD_DRIVER_ST7796__H_
 
-#include <gui/BrushRgb565.h>
-#include <gui/Bmp565Buffer.h>
+#include "BrushTftLcdRgb565LE.h"
 #include "ST7789V.h"
 
-class ST7789V_with_Brush_RGB565 : public ST7789V, public BrushRgb565
+class ST7789V_with_Brush_RGB565 : public ST7789V, public BrushTftLcdRgb565LE
 {
-  protected:
-	Bmp565Buffer *mBmp565Buffer;
-	uint32_t mBmp565BufferSize, mBrushColorCode;
-
-  public:
+public:
 	ST7789V_with_Brush_RGB565(void);
-	void setBmp565Buffer(Bmp565Buffer &obj);
 
 	// Brush
 	virtual void drawDot(int16_t x, int16_t y); // pure
 
-	virtual void drawDot(int16_t x, int16_t y, uint32_t color); // pure
-
-	virtual void drawDot(int16_t x, int16_t y, Color color); // pure
+	virtual void blendDot(int16_t x, int16_t y, uint8_t alpha);
 
 	virtual void updateLcdSize(void); // pure
 
-	virtual void drawBitmapBase(Position_t pos, const Bitmap_t bitmap);
+	virtual void fillRectBase(int16_t x, int16_t y, uint16_t width, uint16_t height, Color color);
 
-	virtual void fillRectBase(Position_t pos, Size_t size, uint32_t color);
+protected :
+	void fillDotArray(uint32_t offset, uint32_t count, Color color);
+
+	virtual void drawBitmapBase(Size canvasSize, Rectangular targetCanvasArea, Position bitmapPos, const bitmap_t bitmap);
+
+private :
+	void drawBitmapRgb565(Size canvasSize, Rectangular targetCanvasArea, Position bitmapPos, const bitmap_t bitmap);
+
+	void drawBitmapArgb1555(Size canvasSize, Rectangular targetCanvasArea, Position bitmapPos, const bitmap_t bitmap);
 };
 
 #endif

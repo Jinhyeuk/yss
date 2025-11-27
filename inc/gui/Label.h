@@ -10,6 +10,8 @@
 
 #include "Object.h"
 
+#if USE_GUI
+
 class Color;
 class Font;
 
@@ -46,6 +48,8 @@ private :
 	const char *mText;
 	Color mFontColor;
 };
+
+#endif
 
 #endif
 

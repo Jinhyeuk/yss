@@ -5,11 +5,6 @@
  * See the file "LICENSE" in the main directory of this archive for more details.
  */
 
-#include <config.h>
-
-//#if USE_GUI && YSS_L_HEAP_USE
-#if YSS_L_HEAP_USE
-
 #include <gui/BitmapDrawingCalculator.h>
 
 BitmapDrawingCalculator::BitmapDrawingCalculator(void)
@@ -186,6 +181,4 @@ Rectangular &BitmapDrawingCalculator::getTrimedBitmapSrcArea(void)
 {
 	return mTrimedBitmapSrcArea;
 }
-
-#endif
 

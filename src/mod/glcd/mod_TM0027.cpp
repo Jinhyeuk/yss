@@ -7,7 +7,7 @@
 
 #include <config.h>
 
-#if USE_GUI
+#if 0
 
 #include <mod/glcd/TM0027.h>
 #include <string.h>

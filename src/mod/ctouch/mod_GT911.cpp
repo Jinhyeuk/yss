@@ -11,6 +11,9 @@
 #include <yss/debug.h>
 #include <std_ext/string.h>
 #include <util/ElapsedTime.h>
+#include <config.h>
+
+#if USE_POINTER_DEVICE
 
 #if !defined(YSS_DRV_I2C_UNSUPPORTED) && (!defined(YSS_DRV_EXTI_UNSUPPORTED) || defined(__M4xx_FAMILY))
 
@@ -357,6 +360,8 @@ static void thread_process(void *var)
 {
 	((GT911*)var)->process();
 }
+
+#endif
 
 #endif
 

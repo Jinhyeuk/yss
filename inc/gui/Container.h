@@ -10,6 +10,8 @@
 
 #include "Object.h"
 
+#if USE_GUI
+
 class Container : public Object
 {
   public:
@@ -44,6 +46,8 @@ class Container : public Object
 	Object **mObjArr, *mLastEventObj;
 	bool mValidFlag;
 };
+
+#endif
 
 #endif
 

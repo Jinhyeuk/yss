@@ -7,7 +7,8 @@
 
 #include <config.h>
 
-#if USE_GUI == true
+#if 0
+//#if USE_GUI == true
 
 #include <mod/rgb_tft_lcd/GD32_RGB_LCD.h>
 

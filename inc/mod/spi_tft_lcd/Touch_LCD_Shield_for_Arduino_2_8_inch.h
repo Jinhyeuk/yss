@@ -13,16 +13,17 @@
 // 구매처 : https://www.eleparts.co.kr/goods/view?no=3216739
 // 구매처 : https://www.waveshare.com/2.8inch-TFT-Touch-Shield.htm
 
-// 현재 이 장치는 정상 동작이 확인되지 않았습니다.
 class Touch_LCD_Shield_for_Arduino_2_8_inch : public ST7789V_spi_with_Brush_RGB565
 {
   public:
 	Touch_LCD_Shield_for_Arduino_2_8_inch(void);
 	
 	// TftLcdDriver
-	virtual error_t initialize(void); // pure
+	virtual error_t initialize(config_t config); // pure
 
-	virtual Size_t getLcdSize(void); // pure
+	virtual Size getLcdSize(void); // pure
+
+	virtual Size getCanvasSize(void);
 };
 
 #endif

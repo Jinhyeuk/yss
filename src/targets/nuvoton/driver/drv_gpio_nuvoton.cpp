@@ -84,19 +84,19 @@ error_t Gpio::setAsAltFunc(uint8_t pin, altFunc_t altfunc, atype_t atype, slewra
 	des = &des[((uint32_t)mDev - GPIOA_BASE) / 0x10];
 	setFieldData(des[index], 0x1F << pin, altfunc, pin);
 	__enable_irq();
-#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
+#elif defined(__M480_FAMILY) || defined(__M43x_SUBFAMILY) || defined(__M2xx_FAMILY)
 	__disable_irq();
 	des = &SYS->GPA_MFOS;
-	des = &des[((uint32_t)mDev - GPIOA_BASE) / 0x10];
+	des = &des[((uint32_t)mDev - GPIOA_BASE) / 0x40];
 	setBitData(*des, atype, pin);
 
 	index = pin << 1;
 	setFieldData(mDev->SLEWCTL, 0x03 << index, slewrate, index);
 
-	index = pin >> 4;
+	index = pin >> 3;
 	pin = (pin << 2) & 0x1F;
-	des = &SYS->GPA_MFP0;
-	des = &des[((uint32_t)mDev - GPIOA_BASE) / 0x10];
+	des = &SYS->GPA_MFPL;
+	des = &des[((uint32_t)mDev - GPIOA_BASE) / 0x20];
 	setFieldData(des[index], 0x0F << pin, altfunc, pin);
 	__enable_irq();
 #endif
@@ -132,6 +132,19 @@ error_t Gpio::setPackageAsAltFunc(altFuncPackage_t *package, uint8_t count, atyp
 		des = &SYS->GPA_MFP0;
 		des = &des[((uint32_t)port - GPIOA_BASE) / 0x10];
 		setFieldData(des[index], 0x1F << pin, package[i].func, pin);
+#elif defined(__M25x_SUBFAMILY) || defined(__M43x_SUBFAMILY)
+		des = &SYS->GPA_MFOS;
+		des = &des[((uint32_t)port - GPIOA_BASE) / 0x10];
+		setBitData(*des, atype, pin);
+
+		index = pin << 1;
+		setFieldData(port->SLEWCTL, 0x03 << index, slewrate, index);
+
+		index = pin >> 3;
+		pin = (pin << 2) & 0x1F;
+		des = &SYS->GPA_MFPL;
+		des = &des[((uint32_t)port - GPIOA_BASE) / 0x10];
+		setFieldData(des[index], 0x0F << pin, package[i].func, pin);
 #endif
 	}
 

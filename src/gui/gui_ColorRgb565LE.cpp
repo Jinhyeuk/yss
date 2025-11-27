@@ -10,17 +10,7 @@
 
 ColorRgb565LE::ColorRgb565LE(void)
 {
-	setColorBase(0x00, 0x00, 0x00);
-}
 
-ColorRgb565LE::ColorRgb565LE(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
-{
-	setColorBase(red, green, blue, alpha);
-}
-
-ColorRgb565LE::ColorRgb565LE(Color obj)
-{
-	Color::setColor(obj);
 }
 
 void  ColorRgb565LE::setColorBase(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)

@@ -37,7 +37,7 @@ void __WEAK initializeSystem(void)
 #if defined(HSE_CLOCK_FREQ)
 		Clock::PLL_SRC_HXT,
 #else
-		NuvotonClock::PLL_SRC_HIRC,
+		Clock::PLL_SRC_HIRC,
 #endif
 		srcClk / 4000000 - 1,
 		FBDIV_VALUE,

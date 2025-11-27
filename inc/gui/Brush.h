@@ -20,6 +20,21 @@ class Font;
 class Brush
 {
 public:
+	typedef enum
+	{
+		ALGIN_LEFT_TOP = (0x01 | 0x08),
+		ALGIN_LEFT_MID = (0x01 | 0x10),
+		ALGIN_LEFT_BOT = (0x01 | 0x20),
+
+		ALIGN_CENTER_TOP = (0x02 | 0x08),
+		ALIGN_CENTER_MID = (0x02 | 0x10),
+		ALIGN_CENTER_BOT = (0x02 | 0x20),
+
+		ALIGN_RIGHT_TOP = (0x04 | 0x08),
+		ALIGN_RIGHT_MID = (0x04 | 0x10),
+		ALIGN_RIGHT_BOT = (0x04 | 0x20)
+	}align_t;
+
 	Brush(void);
 
 	virtual void drawDot(int16_t x, int16_t y) = 0;
@@ -62,7 +77,11 @@ public:
 
 	uint8_t drawChar(Position pos, uint32_t utf8);
 
-	uint16_t drawString(Position pos, const char *str);
+	Position drawString(Position pos, const char *str);
+
+	Position drawString(align_t align, const char *str);
+
+	Size calculateStringArea(const char *str);
 
 	void drawBitmap(Position bitmapPos, const bitmap_t bitmap);
 

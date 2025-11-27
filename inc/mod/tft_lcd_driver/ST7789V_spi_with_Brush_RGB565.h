@@ -14,10 +14,10 @@
 
 class ST7789V_spi_with_Brush_RGB565 : public ST7789V_with_Brush_RGB565
 {
-  public:
+public :
 	typedef struct 
 	{
-		Spi &peri;
+		Spi &spi;
 		pin_t chipSelect;
 		pin_t dataCommand;
 		pin_t reset;
@@ -25,29 +25,32 @@ class ST7789V_spi_with_Brush_RGB565 : public ST7789V_with_Brush_RGB565
 
 	ST7789V_spi_with_Brush_RGB565(void);
 
-	void setConfig(const config_t &config);
+	virtual error_t initialize(config_t config) = 0;
 
-	void setSpiSpecification(const Spi::specification_t &spec);
+	void setSpiSpecification(const Spi::specification_t &regSpec, const Spi::specification_t &dataSpec);
 
-	void reset(void); // virtual 0
+	void reset(void);
 
   protected:
-	Spi *mPeri;
+	Spi *mSpi;
 	pin_t mCsPin;
 	pin_t mDcPin;
 	pin_t mRstPin;
-	const Spi::specification_t *mSpec;
+	const Spi::specification_t *mRegSpec, *mDataSpec;
 
-	// TftLcdDriver
-	virtual void sendCmd(uint8_t cmd); // pure
+	void setConfig(const config_t &config);
+
+	virtual void sendReg(cmd_t cmd);	// pure
+
+	virtual void sendReg(cmd_t cmd, uint8_t data);	// pure
 	
-	virtual void sendCmd(uint8_t cmd, uint8_t data); // pure
-	
-	virtual void sendCmd(uint8_t cmd, void *data, uint32_t len); // pure
-	
-	void enable(void); // pure
-	
-	void disable(void); // pure
+	virtual void sendReg(cmd_t cmd, uint8_t *data, uint32_t count);	// pure
+
+	virtual void sendData(uint16_t *data, uint32_t count);	// pure
+
+	void enable(type_t type);
+
+	void disable(void);
 
 	void read(uint8_t cmd, uint8_t &des);
 };

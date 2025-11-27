@@ -9,6 +9,8 @@
 #include <math.h>
 #include <gui/Font.h>
 
+#define DEFAULT_SPACE_WIDTH		4
+
 Brush::Brush(void)
 {
 	mFont = nullptr;
@@ -446,6 +448,76 @@ void Brush::fillQuadrangle(Position p1, Position p2, Position p3, Position p4)
 	fillTriangle(p2, p3, p4);
 }
 
+Size Brush::calculateStringArea(const char *str)
+{
+	Size size;
+
+	if(mFont == nullptr)
+		return size;
+
+	Font::fontInfo_t *fontInfo;
+	uint8_t spaceWidth = mFont->getSpaceWidth(), dotWidth = mFont->getDotWidth(), charWidth = mFont->getCharWidth();
+	uint32_t utf8;
+
+	while (*str)
+	{
+		utf8 = mFont->getUtf8(&str);
+		fontInfo = mFont->getFontInfo(utf8);
+
+		if(fontInfo == nullptr)
+		{
+			if(spaceWidth > 0)
+				size.addWidth(spaceWidth);
+			else
+				size.addWidth(DEFAULT_SPACE_WIDTH);
+
+			continue;
+		}
+
+		if(utf8 == '.')
+		{
+			if(dotWidth > 0)
+			{
+				if(fontInfo->width + (int8_t)fontInfo->xpos > charWidth)
+					size.addWidth(fontInfo->width + (int8_t)fontInfo->xpos);
+				else
+					size.addWidth(dotWidth);
+			}
+			else
+				size.addWidth(fontInfo->width + (int8_t)fontInfo->xpos);
+		}
+		else if(utf8 == ' ')
+		{
+			if(spaceWidth > 0)
+				size.addWidth(spaceWidth);
+			else
+				size.addWidth(DEFAULT_SPACE_WIDTH);
+		}
+		else 
+		{
+			if(charWidth > 0)
+			{
+				if(fontInfo->width + (int8_t)fontInfo->xpos > charWidth)
+					size.addWidth(fontInfo->width + (int8_t)fontInfo->xpos);
+				else
+					size.addWidth(charWidth);
+			}
+			else
+				size.addWidth(fontInfo->width + (int8_t)fontInfo->xpos);
+		}
+
+		if(fontInfo->xpos == 0) 
+			size.addWidth(1); 
+
+		if(size.getHeight() < (int8_t)fontInfo->ypos + fontInfo->height)
+		{
+			size.setHeight((int8_t)fontInfo->ypos + fontInfo->height);
+		}
+	}
+
+	return size;
+}
+
 uint8_t Brush::drawChar(Position pos, uint32_t utf8)
 {
 	if (mFont == 0)
@@ -459,7 +531,7 @@ uint8_t Brush::drawChar(Position pos, uint32_t utf8)
 		if(spaceWidth > 0)
 			return spaceWidth;
 		else
-			return 4;
+			return DEFAULT_SPACE_WIDTH;
 	}
 
 	if(fontInfo == 0)
@@ -547,20 +619,59 @@ Font* Brush::getFont(void)
 	return mFont;
 }
 
-uint16_t Brush::drawString(Position pos, const char *str)
+Position Brush::drawString(Position pos, const char *str)
 {
 	if(mFont == 0)
-		return 0;
+		return pos;
 
-	uint8_t width, charWidth = mFont->getCharWidth(), spaceWidth = mFont->getSpaceWidth(), dotWidth = mFont->getDotWidth();
+	while (*str)
+		pos.addX(drawChar(pos, mFont->getUtf8(&str)));
 
-	if (charWidth)
+	return pos;
+}
+
+Position Brush::drawString(align_t align, const char *str)
+{
+	Position pos;
+	Size size = calculateStringArea(str), csize = getCanvasSize();
+
+	if(size.getWidth() == 0)
+		return pos;
+	
+	switch(align & 0x7)
 	{
-		while (*str)
-			pos.addX(drawChar(pos, mFont->getUtf8(&str)));
+	default :
+	case 0x01 : // LEFT
+		break;
+	
+	case 0x02 : // CENTER
+		pos.setX(((int32_t)csize.getWidth() - (int32_t)size.getWidth()) / 2);
+		break;
+	
+	case 0x04 : // RIGHT
+		pos.setX((int32_t)csize.getWidth() - (int32_t)size.getWidth());
+		break;
 	}
 
-	return pos.getX();
+	switch(align >> 3)
+	{
+	default :
+	case 0x01 : // TOP
+		break;
+	
+	case 0x02 : // MID
+		pos.setY(((int32_t)csize.getHeight() - (int32_t)size.getHeight()) / 2);
+		break;
+	
+	case 0x04 : // BOT
+		pos.setY((int32_t)csize.getHeight() - (int32_t)size.getHeight());
+		break;
+	}
+
+	while (*str)
+		pos.addX(drawChar(pos, mFont->getUtf8(&str)));
+	
+	return pos;
 }
 
 void Brush::drawBitmap(Position pos, const bitmap_t bitmap)

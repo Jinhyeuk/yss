@@ -8,18 +8,18 @@
 #ifndef YSS_MOD_BRUSH_TFT_LCD_RGB_565LE__H_
 #define YSS_MOD_BRUSH_TFT_LCD_RGB_565LE__H_
 
-#include <gui/Brush.h>
+#include "BrushTftLcdRgb565.h"
 #include <gui/ColorRgb565LE.h>
 #include <gui/FrameBufferRgb565LE.h>
 
-class BrushTftLcdRgb565LE : public Brush
+class BrushTftLcdRgb565LE : public BrushTftLcdRgb565
 {
 public :
 	BrushTftLcdRgb565LE(void);
 
-	void setFrameBuffer(FrameBufferRgb565LE &obj);
-
 	virtual ~BrushTftLcdRgb565LE(void);
+
+	void setFrameBuffer(FrameBufferRgb565LE &obj);
 
 	virtual void setBrushColor(Color color);
 
@@ -33,12 +33,6 @@ protected :
 	ColorRgb565LE mBrushColor, mBgColor, mFontColor;
 	uint16_t mBrushColorCode;
 	FrameBufferRgb565LE *mFb;
-
-	virtual void fillDotArray(uint32_t offset, uint32_t count, Color color);
-
-	virtual Size getCanvasSize(void);
-
-	virtual uint8_t getPixelCapacity(void);
 };
 
 #endif

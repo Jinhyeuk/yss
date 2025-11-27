@@ -8,20 +8,15 @@
 #ifndef YSS_GUI_FRAME_BUFFER_RGB565LE__H_
 #define YSS_GUI_FRAME_BUFFER_RGB565LE__H_
 
-#include "FrameBuffer.h"
-#include "Brush.h"
+#include "FrameBufferRgb565.h"
 #include "ColorRgb565LE.h"
 
-class FrameBufferRgb565LE : public FrameBuffer, public Brush
+class FrameBufferRgb565LE : public FrameBufferRgb565
 {
 public :
 	FrameBufferRgb565LE(void);
 
 	virtual ~FrameBufferRgb565LE(void);
-
-	virtual uint8_t getPixelCapacity(void);
-
-	virtual void drawDot(int16_t x, int16_t y);
 
 	virtual void blendDot(int16_t x, int16_t y, uint8_t alpha);
 	
@@ -33,22 +28,10 @@ public :
 
 	virtual Color getBackgroundColor(void);
 
-	virtual bitmap_t getBitmap(void);
-
 protected :
-	virtual void fillDotArray(uint32_t offset, uint32_t count, Color color);
-
-	virtual void drawBitmapBase(Size canvasSize, Rectangular canvasDesArea, Position bitmapPos, const bitmap_t bitmap);
-
-	virtual Size getCanvasSize(void);
 
 private :
 	ColorRgb565LE mBrushColor, mBgColor, mFontColor;
-	uint16_t mBrushColorCode;
-
-	void drawBitmapRgb565(Size canvasSize, Rectangular canvasDesArea, Position bitmapPos, const bitmap_t bitmap);
-
-	void drawBitmapArgb1555(Size canvasSize, Rectangular canvasDesArea, Position bitmapPos, const bitmap_t bitmap);
 };
 
 #endif

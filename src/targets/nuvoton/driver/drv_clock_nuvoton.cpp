@@ -394,7 +394,7 @@ void Clock::enableAhb0Clock(uint32_t position, bool en)
 	else
 		CLK->AHBCLK0 &= ~(1 << position);		
 	__enable_irq();
-#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
+#elif defined(__M480_FAMILY) || defined(__M43x_SUBFAMILY) || defined(__M2xx_FAMILY)
 	__disable_irq();	
 	if(en)
 		CLK->AHBCLK |= 1 << position;
@@ -413,7 +413,7 @@ void Clock::enableAhb1Clock(uint32_t position, bool en)
 	else
 		CLK->AHBCLK1 &= ~(1 << position);		
 	__enable_irq();
-#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
+#elif defined(__M480_FAMILY) || defined(__M43x_SUBFAMILY) || defined(__M2xx_FAMILY)
 #endif
 }
 
@@ -439,12 +439,14 @@ void Clock::enableApb1Clock(uint32_t position, bool en)
 
 void Clock::enableApb2Clock(uint32_t position, bool en)
 {
+#if defined(__M46x_SUBFAMILY)
 	__disable_irq();	
 	if(en)
 		CLK->APBCLK2 |= 1 << position;
 	else
 		CLK->APBCLK2 &= ~(1 << position);		
 	__enable_irq();
+#endif
 }
 
 uint32_t Clock::getHclkClockFrequency(void)

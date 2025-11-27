@@ -13,6 +13,12 @@
 #include "config.h"
 #include "FrameBufferRgb565LE.h"
 
+#if USE_GUI
+
+#ifndef YSS_GUI_FRAME_BUFFER
+#define YSS_GUI_FRAME_BUFFER			FrameBufferRgb565LE
+#endif
+
 typedef YSS_GUI_FRAME_BUFFER GuiFrameBuffer;
 
 class Container;
@@ -73,6 +79,8 @@ protected:
 
 	virtual void update(void);
 };
+
+#endif
 
 #endif
 

@@ -7,7 +7,7 @@
 
 #include <drv/peripheral.h>
 
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
+#if defined(__M46x_SUBFAMILY)
 
 #include <targets/nuvoton/NuvotonHbi.h>
 #include <config.h>

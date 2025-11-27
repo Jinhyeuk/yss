@@ -10,17 +10,7 @@
 
 ColorRgb565BE::ColorRgb565BE(void)
 {
-	setColorBase(0x00, 0x00, 0x00);
-}
 
-ColorRgb565BE::ColorRgb565BE(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
-{
-	setColorBase(red, green, blue, alpha);
-}
-
-ColorRgb565BE::ColorRgb565BE(Color obj)
-{
-	Color::setColor(obj);
 }
 
 void  ColorRgb565BE::setColorBase(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)

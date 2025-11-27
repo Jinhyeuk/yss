@@ -15,12 +15,6 @@ class ColorRgb565LE : public Color
 public:
 	ColorRgb565LE(void);
 
-	ColorRgb565LE(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 0xFF);
-
-	ColorRgb565LE(Color obj);
-
-	void setColor(Color &obj);
-
 	virtual void setColorBase(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 0xFF);
 
 protected:

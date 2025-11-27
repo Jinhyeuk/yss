@@ -7,14 +7,12 @@
 
 #include <config.h>
 
-#if YSS_L_HEAP_USE
+#if USE_GUI && YSS_L_HEAP_USE
 
 #include <yss/instance.h>
 #include <config.h>
 #include <yss/gui.h>
 #include <std_ext/malloc.h>
-
-//typedef YSS_GUI_FRAME_BUFFER			GuiFrameBuffer					
 
 Container::Container()
 {

@@ -173,50 +173,5 @@ void ST6201_with_Brush_RGB565::drawBitmapArgb1555(Size canvasSize, Rectangular c
 
 	setWindows(bdc.getTrimedCanvasDesArea());
 	sendData((uint16_t*)mFb->getFrameBuffer(), bdc.getTrimedCanvasDesAreaValue());
-
-	//if(checkDrawingAble(canvasSize, canvasRect, bitmapArea) == false)
-	//	return;
-	
-	//if(mFb->setSize(srcR.getSize()) == false)
-	//	return;
-
-	//mFb->drawBitmap({{0, 0}, srcR.getSize()}, bitmapPos, bitmap); 
-
-	//uint16_t *des = (uint16_t*)mFb->getFrameBuffer(), *sdes;
-	//uint16_t buf, offset = 0, trans;
-	//uint16_t bwidth = srcR.getSize().getWidth(), bheight = srcR.getSize().getHeight(), cwidth = canvasRect.getSize().getWidth();
-	
-	//srcR.setHeight(1);
-
-	//for(uint16_t i = 0; i < bheight; i++)
-	//{
-	//	sdes = des;
-	//	for(uint16_t j = 0; j < bwidth; j++)
-	//	{
-	//		trans = *src++;
-	//		if(trans & 0x8000)
-	//		{
-	//			buf = trans;
-	//			trans <<= 1;
-	//			trans &= ~0x003F;
-	//			trans |= buf & 0x1F;
-	//			if(trans & 0x0400)
-	//				trans |= 0x0020;
-	//			*des = trans;
-	//		}
-	//		else
-	//		{
-	//			*des = 0x0000;
-	//		}
-	//		des++;
-	//	}
-
-	//	setWindows(srcR);
-	//	sendData((uint16_t*)sdes, bwidth);
-	//	srcR.addY(1);
-
-	//	des += cwidth - bwidth;
-	//	src += bitmap.width - bwidth;
-	//}
 }
 

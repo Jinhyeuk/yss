@@ -8,6 +8,8 @@
 #ifndef YSS_DRV_LTDC__H_
 #define YSS_DRV_LTDC__H_
 
+#if 0
+
 #include "peripheral.h"
 #include <stdint.h>
 
@@ -51,6 +53,8 @@ public:
 private:
 	const specification_t *mSpec;
 };
+
+#endif
 
 #endif
 

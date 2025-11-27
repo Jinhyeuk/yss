@@ -33,8 +33,6 @@ public :
 	
 	virtual void releaseBuffer(int32_t count) __attribute__((optimize("-O1")));
 
-	virtual uint32_t getChannelFrameSize(void) __attribute__((optimize("-O1")));
-
 	virtual wordWidth_t getWordWidth(void)  __attribute__((optimize("-O1")));
 
 	virtual std_t getI2sStandard(void)  __attribute__((optimize("-O1")));

@@ -15,6 +15,7 @@
 #include "yss/Trigger.h"
 #include "std_ext/malloc.h"
 #include "drv/mcu.h"
+#include <config.h>
 
 #define YSS_VERSION		2404
 
@@ -60,6 +61,8 @@ namespace system
 		.
 		@ return : 프로젝트에 등록된 TFT LCD의 포인터를 반환합니다.
 	*/
+
+#if USE_GUI
 	TftLcdDriver* getSystemTftLcd(void);
 
 	void drawBitmap(Frame *obj, Position pos, const bitmap_t bitmap);
@@ -71,6 +74,7 @@ namespace system
 	void setSystemPointerDevice(PointerDevice *obj);
 
 	void setSystemPointerDevice(PointerDevice &obj);
+#endif
 
 #if defined(YSS__DMA_ALLOCATION)
 	/*

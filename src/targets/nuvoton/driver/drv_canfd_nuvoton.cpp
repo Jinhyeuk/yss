@@ -7,7 +7,7 @@
 
 #include <drv/mcu.h>
 
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M25x_SUBFAMILY)
+#if defined(__M46x_SUBFAMILY)
 
 #include <yss.h>
 #include <drv/peripheral.h>

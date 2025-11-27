@@ -10,6 +10,8 @@
 
 #include "Container.h"
 
+#if USE_GUI
+
 class OutputFrameBuffer;
 class PointerDevice;
 
@@ -51,6 +53,8 @@ private :
 	OutputFrameBuffer *mOutputFrameBuffer;
 	PointerDevice *mPointerDevice;
 };
+
+#endif
 
 #endif
 

@@ -8,6 +8,8 @@
 #include <util/GuiTask.h>
 #include <gui/Frame.h>
 
+#if USE_GUI
+
 GuiTask::GuiTask(uint32_t stackSize)
 {
 	mStackSize = stackSize;
@@ -18,7 +20,6 @@ GuiTask::~GuiTask(void)
 {
 	if(mFrame != nullptr)
 		delete mFrame;
-
 }
 
 void GuiTask::activate(void)
@@ -29,7 +30,6 @@ void GuiTask::activate(void)
 	mFrame->setAsSystemFrame();
 
 	runThread(mStackSize);
-
 }
 
 void GuiTask::deactivate(void)
@@ -47,4 +47,6 @@ Frame *GuiTask::getFrame(void)
 {
 	return mFrame;
 }
+
+#endif
 

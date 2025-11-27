@@ -96,13 +96,13 @@ extern Gpio gpioI;
 extern Gpio gpioJ;
 #endif
 
-#include "NuvotonHbi.h"
 #if defined(HBI)
+#include "NuvotonHbi.h"
 extern NuvotonHbi hbi;
 #endif
 
-#include "NuvotonI2c.h"
 #if defined(I2C0)
+#include "NuvotonI2c.h"
 extern NuvotonI2c i2c0;
 #endif
 #if defined(I2C1)

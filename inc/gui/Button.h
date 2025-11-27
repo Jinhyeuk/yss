@@ -11,6 +11,8 @@
 #include "Object.h"
 #include "Color.h"
 
+#if USE_GUI
+
 class Font;
 
 class Button : public Object
@@ -52,6 +54,8 @@ private :
 
 	void makeButtonImage(void);
 };
+
+#endif
 
 #endif
 

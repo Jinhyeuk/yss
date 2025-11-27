@@ -5,9 +5,10 @@
  * See the file "LICENSE" in the main directory of this archive for more details.
  */
 
-#include <mod/rgb_tft_lcd/SF_TC240T_9370_T.h>
+//#include <mod/rgb_tft_lcd/SF_TC240T_9370_T.h>
 
-#if !defined(YSS_DRV_LTDC_UNSUPPORTED) && !defined(YSS_DRV_GPIO_UNSUPPORTED) && !defined(YSS_DRV_SPI_UNSUPPORTED)
+#if 0
+//#if !defined(YSS_DRV_LTDC_UNSUPPORTED) && !defined(YSS_DRV_GPIO_UNSUPPORTED) && !defined(YSS_DRV_SPI_UNSUPPORTED)
 
 SF_TC240T_9370_T::SF_TC240T_9370_T(void)
 {

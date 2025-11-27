@@ -66,7 +66,7 @@ class Spi : public Drv
 
 	typedef struct
 	{
-		mode_t mode;			// 통신 속도 (Main 전용)
+		mode_t mode;
 	}config_t;
 
 	// SPI 장치를 초기화 한다. 초기화만 했을 뿐, 장치는 활성화 되어 있지 않다.

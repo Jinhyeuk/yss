@@ -27,7 +27,7 @@ static void enableDma1Clock(bool en)
 	clock.enableAhb0Clock(CLK_AHBCLK0_PDMA0CKEN_Pos, en);
 	clock.enableAhb0Clock(CLK_AHBCLK0_PDMA1CKEN_Pos, en);
 #elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
-	clock.enableAhbClock(CLK_AHBCLK_PDMACKEN_Pos, en);
+	clock.enableAhb0Clock(CLK_AHBCLK_PDMACKEN_Pos, en);
 #endif
 }
 
