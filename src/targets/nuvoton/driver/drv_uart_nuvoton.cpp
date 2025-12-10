@@ -105,6 +105,9 @@ error_t NuvotonUart::send(void *src, int32_t  size)
 
 	mTxDma->transfer(mTxDmaInfo, src, size);
 
+	while (~mDev->INTSTS & UART_INTSTS_TXENDIF_Msk)
+		thread::yield();
+
 	return error_t::ERROR_NONE;
 }
 
