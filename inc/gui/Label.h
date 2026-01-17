@@ -1,39 +1,52 @@
-////////////////////////////////////////////////////////////////////////////////////////
-//
-// 저작권 표기 License_ver_2.0
-// 본 소스코드의 소유권은 yss Embedded Operating System 네이버 카페 관리자와 운영진에게 있습니다.
-// 운영진이 임의로 코드의 권한을 타인에게 양도할 수 없습니다.
-// 본 소스코드는 아래 사항에 동의할 경우에 사용 가능합니다.
-// 아래 사항에 대해 동의하지 않거나 이해하지 못했을 경우 사용을 금합니다.
-// 본 소스코드를 사용하였다면 아래 사항을 모두 동의하는 것으로 자동 간주 합니다.
-// 본 소스코드의 상업적 또는 비상업적 이용이 가능합니다.
-// 본 소스코드의 내용을 임의로 수정하여 재배포하는 행위를 금합니다.
-// 본 소스코드의 내용을 무단 전재하는 행위를 금합니다.
-// 본 소스코드의 사용으로 인해 발생하는 모든 사고에 대해서 어떤한 법적 책임을 지지 않습니다.
-//
-//	Home Page : http://cafe.naver.com/yssoperatingsystem
-//	Copyright 2020.	yss Embedded Operating System all right reserved.
-//  
-//  주담당자 : 아이구 (mymy49@nate.com) 2016.04.30 ~ 현재
-//  부담당자 : -
-//
-////////////////////////////////////////////////////////////////////////////////////////
+/*
+ * Copyright (c) 2015 Yoon-Ki Hong
+ *
+ * This file is subject to the terms and conditions of the MIT License.
+ * See the file "LICENSE" in the main directory of this archive for more details.
+ */
 
 #ifndef YSS_GUI_LABEL__H_
 #define YSS_GUI_LABEL__H_
 
 #include "Object.h"
 
+class Color;
+class Font;
+
 class Label : public Object
 {
-	const char *mText;
-
-protected:
-
 public:
 	Label(void);
+
 	void paint(void);
+
 	void setText(const char *text);
+
+	void setFontColor(Color color);
+
+	void setFontColor(uint8_t red, uint8_t green, uint8_t blue);
+
+	void setFont(Font &font);
+
+	// 브러쉬의 배경색을 설정한다.
+	//
+	// Color color
+	//		배경색을 설정한다.
+	void setBackgroundColor(Color color);
+	
+	// 브러쉬의 배경색을 설정한다.
+	//
+	// uint8_t red
+	//		배경색의 빨간색 농도를 설정한다.
+	// uint8_t green
+	//		배경색의 녹색 농도를 설정한다.
+	// uint8_t blue
+	//		배경색의 파랑색 농도를 설정한다.
+	void setBackgroundColor(uint8_t red, uint8_t green, uint8_t blue);
+
+private :
+	const char *mText;
 };
 
 #endif
+

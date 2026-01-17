@@ -1,61 +1,49 @@
-////////////////////////////////////////////////////////////////////////////////////////
-//
-// 저작권 표기 License_ver_2.0
-// 본 소스코드의 소유권은 yss Embedded Operating System 네이버 카페 관리자와 운영진에게 있습니다.
-// 운영진이 임의로 코드의 권한을 타인에게 양도할 수 없습니다.
-// 본 소스코드는 아래 사항에 동의할 경우에 사용 가능합니다.
-// 아래 사항에 대해 동의하지 않거나 이해하지 못했을 경우 사용을 금합니다.
-// 본 소스코드를 사용하였다면 아래 사항을 모두 동의하는 것으로 자동 간주 합니다.
-// 본 소스코드의 상업적 또는 비상업적 이용이 가능합니다.
-// 본 소스코드의 내용을 임의로 수정하여 재배포하는 행위를 금합니다.
-// 본 소스코드의 내용을 무단 전재하는 행위를 금합니다.
-// 본 소스코드의 사용으로 인해 발생하는 모든 사고에 대해서 어떤한 법적 책임을 지지 않습니다.
-//
-//	Home Page : http://cafe.naver.com/yssoperatingsystem
-//	Copyright 2020.	yss Embedded Operating System all right reserved.
-//  
-//  주담당자 : 아이구 (mymy49@nate.com) 2016.04.30 ~ 현재
-//  부담당자 : -
-//
-////////////////////////////////////////////////////////////////////////////////////////
+/*
+ * Copyright (c) 2015 Yoon-Ki Hong
+ *
+ * This file is subject to the terms and conditions of the MIT License.
+ * See the file "LICENSE" in the main directory of this archive for more details.
+ */
 
 #ifndef YSS_MOD_QSFLASH_N25QXXX__H_
 #define YSS_MOD_QSFLASH_N25QXXX__H_
 
-#include <drv/peripherals.h>
+#include <drv/Quadspi.h>
+
+#if !defined(YSS_DRV_QUADSPI_UNSUPPORTED)
+
 #include <sac/MassStorage.h>
 #include <sac/QuadspiFlash.h>
 
-#if defined(QUADSPI)
-
-struct N25qxxx_port_
+class N25Q128A1 : public MassStorage
 {
-	bool flashMemorySelect;
-	unsigned char flashMemorySize;
+public:
+	struct config_t
+	{
+		Quadspi &dev;
+		uint8_t bank;
+	};
+
+	N25Q128A1(void);
+
+	virtual uint32_t getBlockSize(void);	// pure
+
+	virtual uint32_t getNumOfBlock(void);	// pure
+
+	virtual error_t write(uint32_t block, void *src);	// pure
+
+	virtual error_t read(uint32_t block, void *des);	// pure
+
+	virtual bool isConnected(void);	// pure
+
+	void setConfig(const config_t &config);
+
+	error_t initialize(void);
+
+private :
+	Quadspi *mDev;
+	uint8_t mBank;
 };
 
-typedef const N25qxxx_port_ N25qxxx_port;
-
-namespace mod
-{
-namespace qsflash
-{
-	class N25q128a1 : public sac::MassStorage, public sac::QuadspiFlash
-	{
-		bool writeBlock(unsigned long block, void *src);
-		bool readBlock(unsigned long block, void *des);
-		drv::Quadspi *mPeri;
-
-	public:
-		config::quadspi::Config* getConfig(void);
-		unsigned long getBlockSize(void);
-		unsigned long getNumOfBlock(void);
-		N25q128a1(drv::Quadspi &peri);
-		bool init(void);
-	};
-}
-}
-
 #endif
 #endif
-

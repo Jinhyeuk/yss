@@ -1,48 +1,55 @@
-////////////////////////////////////////////////////////////////////////////////////////
-//
-// 저작권 표기 License_ver_2.0
-// 본 소스코드의 소유권은 yss Embedded Operating System 네이버 카페 관리자와 운영진에게 있습니다.
-// 운영진이 임의로 코드의 권한을 타인에게 양도할 수 없습니다.
-// 본 소스코드는 아래 사항에 동의할 경우에 사용 가능합니다.
-// 아래 사항에 대해 동의하지 않거나 이해하지 못했을 경우 사용을 금합니다.
-// 본 소스코드를 사용하였다면 아래 사항을 모두 동의하는 것으로 자동 간주 합니다.
-// 본 소스코드의 상업적 또는 비상업적 이용이 가능합니다.
-// 본 소스코드의 내용을 임의로 수정하여 재배포하는 행위를 금합니다.
-// 본 소스코드의 내용을 무단 전재하는 행위를 금합니다.
-// 본 소스코드의 사용으로 인해 발생하는 모든 사고에 대해서 어떤한 법적 책임을 지지 않습니다.
-//
-//	Home Page : http://cafe.naver.com/yssoperatingsystem
-//	Copyright 2020.	yss Embedded Operating System all right reserved.
-//  
-//  주담당자 : 아이구 (mymy49@nate.com) 2016.04.30 ~ 현재
-//  부담당자 : -
-//
-////////////////////////////////////////////////////////////////////////////////////////
+/*
+ * Copyright (c) 2015 Yoon-Ki Hong
+ *
+ * This file is subject to the terms and conditions of the MIT License.
+ * See the file "LICENSE" in the main directory of this archive for more details.
+ */
 
-#ifndef YSS_GUI_FRAME_BUFFER__H_
-#define YSS_GUI_FRAME_BUFFER__H_
+#ifndef YSS_GUI_FRAME_BUFFER___H_
+#define YSS_GUI_FRAME_BUFFER___H_
 
 #include "util.h"
-#include "Brush.h"
+#include <yss/error.h>
 
-class FrameBuffer : public Brush
+class FrameBuffer
 {
-protected:
-	Size mSize;
-	void *mFrameBuffer;
-	unsigned char mDotSize, mColorMode, mAlpha;
+public :
+	enum
+	{
+		COLOR_MODE_ARGB8888 = 0,
+		COLOR_MODE_RGB888,
+		COLOR_MODE_RGB565,
+		COLOR_MODE_ARGB1555,
+	};
 
-public:
 	FrameBuffer(void);
-	~FrameBuffer(void);
-	void setSize(Size size);
-   	void setSize(unsigned short width, unsigned short height);
+
+	virtual ~FrameBuffer(void);
+	
+	error_t setColorMode(uint8_t colorMode);
+
+	void enableMemoryAlloc(bool en = true);
+
+	void setFrameBuffer(void *frameBuffer);
+
 	void* getFrameBuffer(void);
-	Size getSize(void);
-	unsigned char getDotSize(void);
-	unsigned char getColorMode(void);
-	void setAlpha(unsigned char alpha);
-	unsigned char getAlpha(void);
+
+	uint8_t getColorMode(void);
+
+	uint8_t getDotSize(void);
+
+	virtual error_t setSize(uint16_t width, uint16_t height);
+
+	virtual error_t setSize(Size_t size);
+
+	Size_t getSize(void);
+
+protected :
+	uint8_t mColorMode, mDotSize;
+	uint8_t *mFrameBuffer;
+	Size_t mSize;
+	bool mMemAllocFlag;
 };
 
 #endif
+

@@ -1,43 +1,57 @@
-////////////////////////////////////////////////////////////////////////////////////////
-//
-// 저작권 표기 License_ver_2.0
-// 본 소스코드의 소유권은 yss Embedded Operating System 네이버 카페 관리자와 운영진에게 있습니다.
-// 운영진이 임의로 코드의 권한을 타인에게 양도할 수 없습니다.
-// 본 소스코드는 아래 사항에 동의할 경우에 사용 가능합니다.
-// 아래 사항에 대해 동의하지 않거나 이해하지 못했을 경우 사용을 금합니다.
-// 본 소스코드를 사용하였다면 아래 사항을 모두 동의하는 것으로 자동 간주 합니다.
-// 본 소스코드의 상업적 또는 비상업적 이용이 가능합니다.
-// 본 소스코드의 내용을 임의로 수정하여 재배포하는 행위를 금합니다.
-// 본 소스코드의 내용을 무단 전재하는 행위를 금합니다.
-// 본 소스코드의 사용으로 인해 발생하는 모든 사고에 대해서 어떤한 법적 책임을 지지 않습니다.
-//
-//	Home Page : http://cafe.naver.com/yssoperatingsystem
-//	Copyright 2020.	yss Embedded Operating System all right reserved.
-//  
-//  주담당자 : 아이구 (mymy49@nate.com) 2016.04.30 ~ 현재
-//  부담당자 : -
-//
-////////////////////////////////////////////////////////////////////////////////////////
+/*
+ * Copyright (c) 2015 Yoon-Ki Hong
+ *
+ * This file is subject to the terms and conditions of the MIT License.
+ * See the file "LICENSE" in the main directory of this archive for more details.
+ */
 
 #ifndef YSS_DRV__H_
 #define YSS_DRV__H_
 
 #include <yss/Mutex.h>
+#include <drv/mcu.h>
 
-class Drv
+class Dma;
+
+class Drv : public Mutex
 {
+  public:
+	// 앞으로 Config 대신에 Setup을 사용할 예정
+	struct setup_t
+	{
+		void (*clockFunc)(bool en);
+		void (*nvicFunc)(bool en);
+		void (*resetFunc)(void);
+		uint32_t (*getClockFunc)(void);
+	};
+
+	void enableClock(bool en = true);
+
+	void enableInterrupt(bool en = true);
+
+	void reset(void);
+
+	uint32_t getClockFrequency(void);
+
+#if defined(YSS__UART_RX_DMA)
+	Dma* getOccupancyDma(void);
+
+	Dma* getIdleDma(void);
+#endif
+	
+	// 아래 함수는 시스템 함수로 사용자 호출을 금한다.
+	Drv(void (*clockFunc)(bool en), void (*nvicFunc)(bool en), void (*resetFunc)(void) = 0);
+
+	Drv(const setup_t &setup);
+
+	Drv(void);
+
+private :
 	void (*mClockFunc)(bool en);
 	void (*mNvicFunc)(bool en);
 	void (*mResetFunc)(void);
-	Mutex mMutex;
-
-public :
-	Drv(void (*clockFunc)(bool en), void (*nvicFunc)(bool en), void (*resetFunc)(void) = 0);
-	void setClockEn(bool en);
-	void setIntEn(bool en);
-	void reset(void);
-    void lock(void);
-    void unlock(void);
+	uint32_t (*mGetClockFunc)(void);
 };
 
 #endif
+

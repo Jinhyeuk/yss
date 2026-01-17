@@ -1,39 +1,51 @@
-////////////////////////////////////////////////////////////////////////////////////////
-//
-// 저작권 표기 License_ver_2.0
-// 본 소스코드의 소유권은 yss Embedded Operating System 네이버 카페 관리자와 운영진에게 있습니다.
-// 운영진이 임의로 코드의 권한을 타인에게 양도할 수 없습니다.
-// 본 소스코드는 아래 사항에 동의할 경우에 사용 가능합니다.
-// 아래 사항에 대해 동의하지 않거나 이해하지 못했을 경우 사용을 금합니다.
-// 본 소스코드를 사용하였다면 아래 사항을 모두 동의하는 것으로 자동 간주 합니다.
-// 본 소스코드의 상업적 또는 비상업적 이용이 가능합니다.
-// 본 소스코드의 내용을 임의로 수정하여 재배포하는 행위를 금합니다.
-// 본 소스코드의 내용을 무단 전재하는 행위를 금합니다.
-// 본 소스코드의 사용으로 인해 발생하는 모든 사고에 대해서 어떤한 법적 책임을 지지 않습니다.
-//
-//	Home Page : http://cafe.naver.com/yssoperatingsystem
-//	Copyright 2020.	yss Embedded Operating System all right reserved.
-//  
-//  주담당자 : 아이구 (mymy49@nate.com) 2016.04.30 ~ 현재
-//  부담당자 : -
-//
-////////////////////////////////////////////////////////////////////////////////////////
+/*
+ * Copyright (c) 2015 Yoon-Ki Hong
+ *
+ * This file is subject to the terms and conditions of the MIT License.
+ * See the file "LICENSE" in the main directory of this archive for more details.
+ */
 
-#ifndef YSS_MUTEX_H_
-#define YSS_MUTEX_H_
+#ifndef YSS_MUTEX__H_
+#define YSS_MUTEX__H_
+
+#include <stdint.h>
+#include <drv/peripheral.h>
 
 class Mutex
 {
-	volatile unsigned long mWaitNum, mCurrentNum;
-	static bool mInit;
 public:
-	Mutex(void);
-	void init(void);
-	unsigned long lock(void);
-	void wait(unsigned long key);
+
+	// 뮤텍스를 잠그고 다른 쓰레드의 진입을 막는다.
+	//
+	// 반환
+	//		현재 lock key 값을 반환한다.
+	uint32_t lock(void);
+
+	// 뮤텍스를 잠글 수 있는지 확인한다. 만약 잠글 수 있다면 잠근다.
+	//
+	// 반환
+	//		잠금 상태를 반환한다. 다른 쓰레드에 의해 잠겨지지 않았다면 잠그고 true를 반환한다. 다른 쓰레드에 의해 잠겨 있어, 잠글 수 없다면 false를 반환한다.
+	bool check(void);
+	
+	// 현재 잠궈놓은 뮤텍스의 잠금을 해제한다. 만약 잠그지 않은 뮤텍스를 해제할 경우 의도치 않은 동작을 일으킨다. 
 	void unlock(void);
-	void unlock(unsigned short num);
-	unsigned long getCurrentNum(void);
+	
+	// 현재 뮤텍스가 lock()을 할 경우, 동시에 잠글 인터럽트의 IRQ를 등록한다.
+	// unlock()을 호출 할 경우, IRQ도 동시에 잠금이 해제된다.
+	//
+	// IRQn_Type irq
+	//		뮤텍스가 같이 잠글 IRQ의 번호를 설정한다.
+	void setIrq(IRQn_Type irq);
+
+	// 아래 함수는 시스템 함수로 사용자 호출을 금한다.
+	Mutex(void);
+
+	void initializeMutex(void);
+
+private:
+	uint32_t mWaitNum, mCurrentNum;
+	IRQn_Type mIrqNum;
+	static bool mInit;
 };
 
 #endif
