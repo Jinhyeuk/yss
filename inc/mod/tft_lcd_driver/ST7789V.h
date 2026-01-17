@@ -12,7 +12,12 @@
 
 class ST7789V : public TftLcdDriver
 {
-  protected:
+public:
+	ST7789V(void);
+
+	void setDirection(bool xMirror, bool yMirror, bool rotate);
+
+protected:
 	typedef enum
 	{
 		NOP = 0x00,
@@ -91,14 +96,31 @@ class ST7789V : public TftLcdDriver
 		PRC = 0xf7
 	}cmd_t;
 
+	typedef enum
+	{
+		TYPE_REG = 0,
+		TYPE_DATA
+	}type_t;
+
 	bool mRotateFlag;
 
-  public:
-	ST7789V(void);
+	void setWindows(int16_t x, int16_t y, uint16_t width = 1, uint16_t height = 1);
 
-	void setDirection(bool xMirror, bool yMirror, bool rotate);
+	void setWindows(Rectangular rect);
 
-	void setWindows(uint16_t x, uint16_t y, uint16_t width = 1, uint16_t height = 1);
+	virtual void enable(type_t type = TYPE_REG) = 0;
+
+	virtual void disable(void) = 0;
+
+	virtual void updateLcdSize(void) = 0;
+
+	virtual void sendReg(cmd_t cmd) = 0;
+
+	virtual void sendReg(cmd_t cmd, uint8_t data) = 0;
+
+	virtual void sendReg(cmd_t cmd, uint8_t *data, uint32_t count) = 0;
+	
+	virtual void sendData(uint16_t *data, uint32_t count) = 0;
 };
 
 #endif

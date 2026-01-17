@@ -9,7 +9,8 @@
 #define YSS_MOD_EEPROM_CAT24C256__H_
 
 #include <sac/Memory.h>
-#include <yss/instance.h>
+#include <drv/I2c.h>
+#include <drv/Gpio.h>
 
 #if !(defined(YSS_DRV_I2C_UNSUPPORTED) || defined(YSS_DRV_GPIO_UNSUPPORTED))
 

@@ -8,6 +8,8 @@
 #ifndef YSS_SAC_RGB_BUS_TFT_LCD__H_
 #define YSS_SAC_RGB_BUS_TFT_LCD__H_
 
+#if 0
+
 #include <drv/Ltdc.h>
 
 #if !defined(YSS_DRV_LTDC_UNSUPPORTED)
@@ -17,6 +19,8 @@ class RgbBusTftLcd
   public:
 	virtual const Ltdc::specification_t* getSpecification(void) = 0;
 };
+
+#endif
 
 #endif
 

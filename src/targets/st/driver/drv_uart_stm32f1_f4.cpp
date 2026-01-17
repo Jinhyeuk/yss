@@ -93,7 +93,7 @@ error_t Uart::changeBaudrate(int32_t baud)
 		mDev->CR1 &= ~USART_CR1_UE_Msk;
 	
 	// 보레이트 설정
-	setTwoFieldData(mDev->BRR,	USART_BRR_DIV_Mantissa_Msk, man, USART_BRR_DIV_Mantissa_Pos, 
+	setTwoFieldsData(mDev->BRR,	USART_BRR_DIV_Mantissa_Msk, man, USART_BRR_DIV_Mantissa_Pos, 
 								USART_BRR_DIV_Fraction_Msk, fra, USART_BRR_DIV_Fraction_Pos);
 
 	if(enableFlag)

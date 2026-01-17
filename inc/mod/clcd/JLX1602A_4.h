@@ -9,7 +9,8 @@
 #define YSS_MOD_CLCD_JLX1602A_4__H_
 
 #include <sac/Clcd.h>
-#include <yss/instance.h>
+#include <drv/I2c.h>
+#include <drv/Gpio.h>
 
 #if !(defined(YSS_DRV_I2C_UNSUPPORTED) || defined(YSS_DRV_GPIO_UNSUPPORTED))
 

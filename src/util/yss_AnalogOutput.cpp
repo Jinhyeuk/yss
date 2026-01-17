@@ -7,17 +7,26 @@
 
 #include <util/AnalogOutput.h>
 
-AnalogOutput::AnalogOutput(float maxDac, float referenceValueP1, float referenceValueP2, float minValue, float maxValue)
+AnalogOutput::AnalogOutput(void)
 {
-	mDacMax = maxDac;
+	mDacMax = 1 << 14;
+	mErrorP1 = mValueP1 = 4;
+	mErrorP2 = mValueP2 = 20;
+	mErrorOffset = mErrorP2 - mErrorP1;
+	mReferenceDacP1 = (mValueP1 - 4) / (float)(20 - 4) * mDacMax;
+	mReferenceDacP2 = (mValueP2 - 4) / (float)(20 - 4) * mDacMax;
+	mReferenceOffset = mReferenceDacP2 - mReferenceDacP1;
+}
+
+void AnalogOutput::setup(uint8_t dacBit, float referenceValueP1, float referenceValueP2, float minValue, float maxValue)
+{
+	mDacMax = 1 << dacBit;
 	mErrorP1 = mValueP1 = referenceValueP1;
 	mErrorP2 = mValueP2 = referenceValueP2;
 	mErrorOffset = mErrorP2 - mErrorP1;
-
-	mReferenceDacP1 = (referenceValueP1 - minValue) / (maxValue - minValue) * maxDac;
-	mReferenceDacP2 = (referenceValueP2 - minValue) / (maxValue - minValue) * maxDac;
-
-	mRefrenceOffset = mReferenceDacP2 - mReferenceDacP1;
+	mReferenceDacP1 = (referenceValueP1 - minValue) / (maxValue - minValue) * mDacMax;
+	mReferenceDacP2 = (referenceValueP2 - minValue) / (maxValue - minValue) * mDacMax;
+	mReferenceOffset = mReferenceDacP2 - mReferenceDacP1;
 }
 
 void AnalogOutput::setErrorP1(float val)
@@ -32,9 +41,9 @@ void AnalogOutput::setErrorP2(float val)
 	mErrorOffset = mErrorP2 - mErrorP1;
 }
 
-uint32_t AnalogOutput::calculate(float voltage)
+float AnalogOutput::calculate(float voltage)
 {
-	return (voltage - mErrorP1) / (mErrorOffset) * (mRefrenceOffset) + mReferenceDacP1;
+	return (voltage - mErrorP1) / (mErrorOffset) * (mReferenceOffset) + mReferenceDacP1;
 }
 
 uint32_t AnalogOutput::getReferenceDacP1(void)

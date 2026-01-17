@@ -119,7 +119,7 @@ error Gpio::setAsAltFunc(uint8_t pin, uint8_t altFunc, uint8_t alttype)
 		return error::WRONG_CONFIG;
 	}
 
-	setTwoFieldData(*des,	_GPIO_PIN_MASK, pin, _GPIO_PIN_SHIFT,
+	setTwoFieldsData(*des,	_GPIO_PIN_MASK, pin, _GPIO_PIN_SHIFT,
 							_GPIO_PORT_MASK, mPort, _GPIO_PORT_SHIFT);
 
 	if(pin < 7)

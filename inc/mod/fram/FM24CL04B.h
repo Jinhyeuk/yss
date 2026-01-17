@@ -9,8 +9,9 @@
 #define YSS_MOD_FRAM_FM24CL04B__H_
 
 #include <sac/Memory.h>
-#include <yss/instance.h>
 #include <yss/error.h>
+#include <drv/I2c.h>
+#include <drv/Gpio.h>
 
 #if !(defined(YSS_DRV_I2C_UNSUPPORTED) || defined(YSS_DRV_GPIO_UNSUPPORTED))
 

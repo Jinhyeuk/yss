@@ -13,7 +13,6 @@
 #include <config.h>
 #include <yss.h>
 #include <yss/reg.h>
-#include <targets/nuvoton/bitfield_m4xx.h>
 
 #if PWM0_ENABLE && defined(TIMER0)
 #if YSS_TIMER == RUNTIME_TIMER0

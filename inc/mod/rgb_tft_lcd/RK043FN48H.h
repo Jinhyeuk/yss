@@ -11,7 +11,8 @@
 #include <drv/Ltdc.h>
 #include <sac/RgbBusTftLcd.h>
 
-#if !defined(YSS_DRV_LTDC_UNSUPPORTED)
+#if 0
+//#if !defined(YSS_DRV_LTDC_UNSUPPORTED)
 
 class RK043FN48H : public RgbBusTftLcd
 {

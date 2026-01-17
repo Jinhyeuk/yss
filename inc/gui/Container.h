@@ -10,6 +10,8 @@
 
 #include "Object.h"
 
+#if USE_GUI
+
 class Container : public Object
 {
   public:
@@ -25,25 +27,27 @@ class Container : public Object
 
 	void add(Object *obj);
 
-	void setBackgroundColor(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 0xFF);
+	void update(Rectangular rect);
 
-	void update(Position_t pos, Size_t size);
-
-	void update(Position_t beforePos, Size_t beforeSize, Position_t currentPos, Size_t currentSize);
+	void update(Rectangular before, Rectangular current);
 
 	void update(void);
 
-	Object *handlerPush(Position_t pos);
+	Object *handlerPush(Position pos);
 
-	Object *handlerDrag(Position_t pos);
+	Object *handlerDrag(Position pos);
 
 	Object *handlerUp(void);
+
+	void setBackgroundColor(Color color);
 
   protected:
 	uint16_t mNumOfObj, mMaxObj;
 	Object **mObjArr, *mLastEventObj;
 	bool mValidFlag;
 };
+
+#endif
 
 #endif
 

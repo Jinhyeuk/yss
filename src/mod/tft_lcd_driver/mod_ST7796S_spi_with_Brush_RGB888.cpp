@@ -7,7 +7,8 @@
 
 #include <config.h>
 
-#if USE_GUI == true
+#if 0
+//#if USE_GUI == true
 
 #include <mod/tft_lcd_driver/ST7796S_spi_with_Brush_RGB888.h>
 
@@ -15,7 +16,7 @@
 
 static const Spi::specification_t gLcdSpec =
 {
-	Spi::MODE_MODE0,	//uint8_t mode;
+	Spi::CLOCK_MODE_MODE0,	//uint8_t mode;
 	500000,					//uint32_t maxFreq;
 	Spi::BIT_BIT8		//uint8_t bit;
 };

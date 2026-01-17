@@ -8,12 +8,16 @@
 #ifndef YSS_MOD_CTOUCH_GT911__H_
 #define YSS_MOD_CTOUCH_GT911__H_
 
-#include <yss/instance.h>
-#include <sac/Touch.h>
+#include <drv/I2c.h>
+#include <drv/Gpio.h>
+#include <util/ElapsedTime.h>
+#include <sac/PointerDevice.h>
 
 #if !(defined(YSS_DRV_I2C_UNSUPPORTED) || defined(YSS_DRV_GPIO_UNSUPPORTED))
 
-class GT911 : public sac::Touch
+class ElapsedTime;
+
+class GT911 : public PointerDevice
 {
 public :
 	struct config_t
@@ -21,31 +25,38 @@ public :
 		I2c &peri;
 		pin_t isrPin;
 		pin_t resetPin;
-		Size_t size;
 	};
+
+	GT911(void);
 
 	error_t initialize(const config_t config);
 
-	int8_t getByte(uint16_t addr);
+	void process(void);
 
-	error_t setByte(uint16_t addr, uint8_t data);
+	void isr(void);
+
+private :
+
+	I2c *mPeri;
+	pin_t mIsr;
+	triggerId_t mTriggerId;
+	threadId_t mThreadId;
+	bool mPenDownFlag;
+	Mutex mMutex;
+	ElapsedTime mLastUpdateTime;
+	uint16_t mX, mY;
+
+	uint8_t calculateChksum(void *src);
+
+	uint16_t translateAddress(uint16_t);
 
 	error_t getMultiByte(uint16_t addr, void *des, uint8_t size);
 
 	error_t setMultiByte(uint16_t addr, void *src, uint8_t size);
 
-	error_t setCommand(uint8_t cmd);
+	int8_t getByte(uint16_t addr);
 
-	uint8_t getCommand(void);
-
-	void isr(void);
-
-private :
-	I2c *mPeri;
-	pin_t mIsr;
-	int32_t mTriggerId;
-
-	uint8_t calculateChksum(void *src);
+	error_t setByte(uint16_t addr, uint8_t data);
 };
 
 #endif

@@ -19,7 +19,7 @@ const static Drv::setup_t gDrvSetupGpio =
 
 
 
-#if defined(PA)
+#if defined(PA) && defined(PA_EXIST)
 static void enableGpioAInterrupt(bool en)
 {
 	// enableInterrupt() 함수 내부에서 인터럽트를 끄기 때문에 Mutex lock(), unlock()을 하지 않음.
@@ -37,7 +37,12 @@ const static Drv::setup_t gDrvSetupGpioA =
 const static Gpio::setup_t gConfigGpioA =
 {
 	PA,				// YSS_GPIO_Peri *dev;
+#if defined(__M46x_SUBFAMILY)
+	&SYS->GPA_MFP0	// volatile uint32_t *mfp;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	&SYS->GPA_MFPL	// volatile uint32_t *mfp;
+#endif
+
 };
 
 Gpio gpioA(gDrvSetupGpioA, gConfigGpioA);
@@ -53,7 +58,7 @@ extern "C"
 
 
 
-#if defined(PB)
+#if defined(PB) && defined(PB_EXIST)
 static void enableGpioBInterrupt(bool en)
 {
 	// enableInterrupt() 함수 내부에서 인터럽트를 끄기 때문에 Mutex lock(), unlock()을 하지 않음.
@@ -71,7 +76,11 @@ const static Drv::setup_t gDrvSetupGpioB =
 const static Gpio::setup_t gConfigGpioB =
 {
 	PB,				// YSS_GPIO_Peri *dev;
+#if defined(__M46x_SUBFAMILY)
+	&SYS->GPB_MFP0	// volatile uint32_t *mfp;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	&SYS->GPB_MFPL	// volatile uint32_t *mfp;
+#endif
 };
 
 Gpio gpioB(gDrvSetupGpioB, gConfigGpioB);
@@ -87,7 +96,7 @@ extern "C"
 
 
 
-#if defined(PC)
+#if defined(PC) && defined(PC_EXIST)
 static void enableGpioCInterrupt(bool en)
 {
 	// enableInterrupt() 함수 내부에서 인터럽트를 끄기 때문에 Mutex lock(), unlock()을 하지 않음.
@@ -105,7 +114,11 @@ const static Drv::setup_t gDrvSetupGpioC =
 const static Gpio::setup_t gConfigGpioC =
 {
 	PC,				// YSS_GPIO_Peri *dev;
+#if defined(__M46x_SUBFAMILY)
+	&SYS->GPC_MFP0	// volatile uint32_t *mfp;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	&SYS->GPC_MFPL	// volatile uint32_t *mfp;
+#endif
 };
 
 Gpio gpioC(gDrvSetupGpioC, gConfigGpioC);
@@ -121,7 +134,7 @@ extern "C"
 
 
 
-#if defined(PD)
+#if defined(PD) && defined(PD_EXIST)
 static void enableGpioDInterrupt(bool en)
 {
 	// enableInterrupt() 함수 내부에서 인터럽트를 끄기 때문에 Mutex lock(), unlock()을 하지 않음.
@@ -139,7 +152,11 @@ const static Drv::setup_t gDrvSetupGpioD =
 const static Gpio::setup_t gConfigGpioD =
 {
 	PD,				// YSS_GPIO_Peri *dev;
+#if defined(__M46x_SUBFAMILY)
+	&SYS->GPD_MFP0	// volatile uint32_t *mfp;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	&SYS->GPD_MFPL	// volatile uint32_t *mfp;
+#endif
 };
 
 Gpio gpioD(gDrvSetupGpioD, gConfigGpioD);
@@ -155,7 +172,7 @@ extern "C"
 
 
 
-#if defined(PE)
+#if defined(PE) && defined(PE_EXIST)
 static void enableGpioEInterrupt(bool en)
 {
 	// enableInterrupt() 함수 내부에서 인터럽트를 끄기 때문에 Mutex lock(), unlock()을 하지 않음.
@@ -173,7 +190,11 @@ const static Drv::setup_t gDrvSetupGpioE =
 const static Gpio::setup_t gConfigGpioE =
 {
 	PE,				// YSS_GPIO_Peri *dev;
+#if defined(__M46x_SUBFAMILY)
+	&SYS->GPE_MFP0	// volatile uint32_t *mfp;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	&SYS->GPE_MFPL	// volatile uint32_t *mfp;
+#endif
 };
 
 Gpio gpioE(gDrvSetupGpioE, gConfigGpioE);
@@ -189,7 +210,7 @@ extern "C"
 
 
 
-#if defined(PF)
+#if defined(PF) && defined(PF_EXIST)
 static void enableGpioFInterrupt(bool en)
 {
 	// enableInterrupt() 함수 내부에서 인터럽트를 끄기 때문에 Mutex lock(), unlock()을 하지 않음.
@@ -199,7 +220,7 @@ static void enableGpioFInterrupt(bool en)
 const static Drv::setup_t gDrvSetupGpioF =
 {
 	0,						// void (*clockFunc)(bool en);
-	enableGpioEInterrupt,	// void (*nvicFunc)(bool en);
+	enableGpioFInterrupt,	// void (*nvicFunc)(bool en);
 	0,						// void (*resetFunc)(void);
 	0						// uint32_t (*getClockFunc)(void);
 };
@@ -207,7 +228,11 @@ const static Drv::setup_t gDrvSetupGpioF =
 const static Gpio::setup_t gConfigGpioF =
 {
 	PF,				// YSS_GPIO_Peri *dev;
+#if defined(__M46x_SUBFAMILY)
+	&SYS->GPF_MFP0	// volatile uint32_t *mfp;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	&SYS->GPF_MFPL	// volatile uint32_t *mfp;
+#endif
 };
 
 Gpio gpioF(gDrvSetupGpioF, gConfigGpioF);
@@ -223,7 +248,7 @@ extern "C"
 
 
 
-#if defined(PG)
+#if defined(PG) && defined(PG_EXIST)
 static void enableGpioGInterrupt(bool en)
 {
 	// enableInterrupt() 함수 내부에서 인터럽트를 끄기 때문에 Mutex lock(), unlock()을 하지 않음.
@@ -241,7 +266,11 @@ const static Drv::setup_t gDrvSetupGpioG =
 const static Gpio::setup_t gConfigGpioG =
 {
 	PG,				// YSS_GPIO_Peri *dev;
+#if defined(__M46x_SUBFAMILY)
+	&SYS->GPG_MFP0	// volatile uint32_t *mfp;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	&SYS->GPG_MFPL	// volatile uint32_t *mfp;
+#endif
 };
 
 Gpio gpioG(gDrvSetupGpioG, gConfigGpioG);
@@ -257,7 +286,7 @@ extern "C"
 
 
 
-#if defined(PH)
+#if defined(PH) && defined(PH_EXIST)
 static void enableGpioHInterrupt(bool en)
 {
 	// enableInterrupt() 함수 내부에서 인터럽트를 끄기 때문에 Mutex lock(), unlock()을 하지 않음.
@@ -275,7 +304,11 @@ const static Drv::setup_t gDrvSetupGpioH =
 const static Gpio::setup_t gConfigGpioH =
 {
 	PH,				//YSS_GPIO_Peri *dev;
+#if defined(__M46x_SUBFAMILY)
+	&SYS->GPH_MFP0	// volatile uint32_t *mfp;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
 	&SYS->GPH_MFPL	// volatile uint32_t *mfp;
+#endif
 };
 
 Gpio gpioH(gDrvSetupGpioH, gConfigGpioH);
@@ -283,6 +316,82 @@ Gpio gpioH(gDrvSetupGpioH, gConfigGpioH);
 extern "C"
 {
 	void GPH_IRQHandler(void)
+	{
+		gpioH.isr();
+	}
+}
+#endif
+
+
+
+#if defined(PI) && defined(PI_EXIST)
+static void enableGpioIInterrupt(bool en)
+{
+	// enableInterrupt() 함수 내부에서 인터럽트를 끄기 때문에 Mutex lock(), unlock()을 하지 않음.
+	nvic.enableInterrupt(GPI_IRQn, en);
+}
+
+const static Drv::setup_t gDrvSetupGpioI =
+{
+	0,						// void (*clockFunc)(bool en);
+	enableGpioIInterrupt,	// void (*nvicFunc)(bool en);
+	0,						// void (*resetFunc)(void);
+	0						// uint32_t (*getClockFunc)(void);
+};
+
+const static Gpio::setup_t gConfigGpioI =
+{
+	PH,				//YSS_GPIO_Peri *dev;
+#if defined(__M46x_SUBFAMILY)
+	&SYS->GPI_MFP0	// volatile uint32_t *mfp;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
+	&SYS->GPI_MFPL	// volatile uint32_t *mfp;
+#endif
+};
+
+Gpio gpioI(gDrvSetupGpioH, gConfigGpioH);
+
+extern "C"
+{
+	void GPI_IRQHandler(void)
+	{
+		gpioH.isr();
+	}
+}
+#endif
+
+
+
+#if defined(PJ) && defined(PJ_EXIST)
+static void enableGpioJInterrupt(bool en)
+{
+	// enableInterrupt() 함수 내부에서 인터럽트를 끄기 때문에 Mutex lock(), unlock()을 하지 않음.
+	nvic.enableInterrupt(GPJ_IRQn, en);
+}
+
+const static Drv::setup_t gDrvSetupGpioJ =
+{
+	0,						// void (*clockFunc)(bool en);
+	enableGpioJInterrupt,	// void (*nvicFunc)(bool en);
+	0,						// void (*resetFunc)(void);
+	0						// uint32_t (*getClockFunc)(void);
+};
+
+const static Gpio::setup_t gConfigGpioJ =
+{
+	PJ,				//YSS_GPIO_Peri *dev;
+#if defined(__M46x_SUBFAMILY)
+	&SYS->GPJ_MFP0	// volatile uint32_t *mfp;
+#elif defined(__M480_FAMILY) || defined(__M43x_FAMILY) || defined(__M2xx_FAMILY)
+	&SYS->GPJ_MFPL	// volatile uint32_t *mfp;
+#endif
+};
+
+Gpio gpioJ(gDrvSetupGpioH, gConfigGpioH);
+
+extern "C"
+{
+	void GPJ_IRQHandler(void)
 	{
 		gpioH.isr();
 	}

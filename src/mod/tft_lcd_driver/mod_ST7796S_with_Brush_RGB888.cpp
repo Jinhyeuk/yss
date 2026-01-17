@@ -7,15 +7,14 @@
 
 #include <config.h>
 
-#if USE_GUI == true
+#if 0
+//#if USE_GUI == true
 
 #include <mod/tft_lcd_driver/ST7796S_with_Brush_RGB888.h>
 
 ST7796S_with_Brush_RGB888::ST7796S_with_Brush_RGB888(void)
 {
-	mRotateFlag = false;
-	mBmp888Buffer = 0;
-	mBmp888BufferSize = 0;
+
 }
 
 void ST7796S_with_Brush_RGB888::drawDot(int16_t x, int16_t y)

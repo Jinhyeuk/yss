@@ -10,7 +10,7 @@
 
 #include <config.h>
 
-#if USE_GUI
+#if 0
 
 #include <gui/MonoBrush.h>
 #include <yss/Mutex.h>

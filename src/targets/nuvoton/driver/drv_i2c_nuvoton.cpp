@@ -5,45 +5,42 @@
  * See the file "LICENSE" in the main directory of this archive for more details.
  */
 
-#include <drv/mcu.h>
-
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
 
 #include <yss.h>
 #include <stdint.h>
 #include <drv/peripheral.h>
-#include <drv/I2c.h>
+#include <targets/nuvoton/NuvotonI2c.h>
 #include <yss/thread.h>
 #include <yss/reg.h>
 #include <yss/debug.h>
-#include <targets/nuvoton/bitfield_m4xx.h>
 #include <util/Timeout.h>
 
-I2c::I2c(const Drv::setup_t drvSetup, const setup_t setup) : Drv(drvSetup)
+NuvotonI2c::NuvotonI2c(const Drv::setup_t drvSetup, const setup_t setup) : I2c(drvSetup)
 {
 	mDev = setup.dev;
 }
 
-error_t I2c::initialize(config_t config)
+error_t NuvotonI2c::initialize(mainConfig_t config)
 {
-	int32_t div = getClockFrequency() / 4;
+	uint32_t busClock;
+	int32_t div = getClockFrequency();
 	
 	switch(config.speed)
 	{
 	case SPEED_STANDARD :
-		div /= 100000;
-		div -= 1;
+		busClock = 100000;
 		break;
 	
 	case SPEED_FAST :
-		div /= 400000;
-		div -= 1;
+		busClock = 400000;
 		break;
 
 	default :
 		return error_t::NOT_SUPPORTED_YET;
 	}
-
+	
+	div = (uint32_t)(((div * 10) / (busClock * 4) + 5) / 10 - 1);;
 	if(div < 4)
 		return error_t::WRONG_CLOCK_FREQUENCY;
 
@@ -54,7 +51,7 @@ error_t I2c::initialize(config_t config)
 	return error_t::ERROR_NONE;
 }
 
-error_t I2c::send(uint8_t addr, void *src, uint32_t size, uint32_t timeout)
+error_t NuvotonI2c::send(uint8_t addr, void *src, uint32_t size, uint32_t timeout)
 {
 	Timeout tout(timeout);
 
@@ -84,7 +81,7 @@ error_t I2c::send(uint8_t addr, void *src, uint32_t size, uint32_t timeout)
 		return mError;
 }
 
-error_t I2c::receive(uint8_t addr, void *des, uint32_t size, uint32_t timeout)
+error_t NuvotonI2c::receive(uint8_t addr, void *des, uint32_t size, uint32_t timeout)
 {
 	Timeout tout(timeout);
 
@@ -109,7 +106,7 @@ error_t I2c::receive(uint8_t addr, void *des, uint32_t size, uint32_t timeout)
 		return mError;
 }
 
-void I2c::stop(void)
+void NuvotonI2c::stop(void)
 {
 	if(mDev->STATUS1 & I2C_STATUS1_ONBUSY_Msk)
 	{
@@ -117,7 +114,7 @@ void I2c::stop(void)
 	}
 }
 
-void I2c::isr(void)
+void NuvotonI2c::isr(void)
 {
 	switch(mDev->STATUS0)
 	{
@@ -138,12 +135,13 @@ void I2c::isr(void)
 		{
 			mDataCount--;
 			mDev->DAT = *mDataBuf++;
+			mDev->CTL0 |= I2C_CTL0_SI_Msk;
 		}
 		else
 		{
 			mComplete = true;
+			mDev->CTL0 |= I2C_CTL0_SI_Msk | I2C_CTL0_STO_Msk;
 		}
-		mDev->CTL0 |= I2C_CTL0_SI_Msk;
 		break;
 
 	case 0x40 : // Master Receive Address ACK
@@ -152,14 +150,20 @@ void I2c::isr(void)
 	
 	case 0x50 : // Master Receive Data ACK
 		*mDataBuf++ = mDev->DAT;
+		mDataCount--;
 		if(mDataCount == 1)
 			mDev->CTL0 &= ~I2C_CTL0_AA_Msk;
+		mDev->CTL0 |= I2C_CTL0_SI_Msk;
 		break;
 	
 	case 0x58 : // Master Receive Data NACK
-		*mDataBuf++ = mDev->DAT;
+		if(mDataCount)
+		{
+			mDataCount--;
+			*mDataBuf++ = mDev->DAT;
+		}
 		mComplete = true;
-		mDev->CTL0 |= I2C_CTL0_SI_Msk;
+		mDev->CTL0 |= I2C_CTL0_SI_Msk | I2C_CTL0_STO_Msk;
 		break;
 
 	case 0x00 : // Bus error

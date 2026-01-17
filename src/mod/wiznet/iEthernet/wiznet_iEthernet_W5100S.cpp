@@ -10,7 +10,8 @@
 #include <mod/wiznet/WiznetSocket.h>
 #include <yss/reg.h>
 
-#if !defined(YSS_DRV_SPI_UNSUPPORTED) && !defined(YSS_DRV_EXTI_UNSUPPORTED)
+// 충돌로 인한 지원 중단
+#if 0
 
 #define calculateSocketAddress(socketNum, itemAddr)		(socketNum * 0x100 + (0x400 + itemAddr))
 

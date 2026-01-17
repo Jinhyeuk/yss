@@ -5,35 +5,30 @@
  * See the file "LICENSE" in the main directory of this archive for more details.
  */
 
-#include <drv/mcu.h>
-
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
 
 #include <yss.h>
 #include <stdint.h>
 #include <drv/peripheral.h>
-#include <drv/Spi.h>
+#include <targets/nuvoton/NuvotonSpi.h>
 #include <yss/thread.h>
 #include <yss/reg.h>
-#include <targets/nuvoton/bitfield_m4xx.h>
 
-Spi::Spi(const Drv::setup_t drvSetup, const setup_t setup) : Drv(drvSetup)
+NuvotonSpi::NuvotonSpi(const Drv::setup_t drvSetup, const setup_t setup) : Spi(drvSetup)
 {
 	mDev = setup.dev;
 	mTxDmaInfo = setup.txDmaInfo;
 	mRxDmaInfo = setup.rxDmaInfo;
-	mLastSpec = nullptr;
 	mTxDma = nullptr;
 	mRxDma = nullptr;
 }
 
-error_t Spi::setSpecification(const specification_t &spec)
+error_t NuvotonSpi::setSpecification(const specification_t &spec)
 {
 	if (mLastSpec == &spec)
 		return error_t::ERROR_NONE;
-	mLastSpec = &spec;
 
-	uint32_t reg;
+	uint32_t reg, bit;
 	uint32_t div, clk = Drv::getClockFrequency(), mode = 0;
 	
 	div = clk / spec.maxFreq;
@@ -46,42 +41,75 @@ error_t Spi::setSpecification(const specification_t &spec)
 	switch(spec.mode)
 	{
 	case 0 :
-		mode = 0x0 << SPI_CTL_RXNEG_Pos;
-		break;
-
-	case 1 :
 		mode = 0x3 << SPI_CTL_RXNEG_Pos;
 		break;
 
+	case 1 :
+		mode = 0x0 << SPI_CTL_RXNEG_Pos;
+		break;
+
 	case 2 :
-		mode = 0x4 << SPI_CTL_RXNEG_Pos;
+		mode = 0x7 << SPI_CTL_RXNEG_Pos;
 		break;
 
 	case 3 :
-		mode = 0x7 << SPI_CTL_RXNEG_Pos;
+		mode = 0x4 << SPI_CTL_RXNEG_Pos;
 		break;
 	}
+
+	mTxDmaInfo.ctl &= ~(PDMA_WIDTH_16 | PDMA_WIDTH_32);
+	mRxDmaInfo.ctl &= ~(PDMA_WIDTH_16 | PDMA_WIDTH_32);
 	
+	if(spec.bit < BIT_BIT8)
+	{
+		return error_t::UNSUPPORTED_CONFIG;
+	}
+	else if(spec.bit == BIT_BIT8)
+	{
+	}
+	else if(spec.bit <= BIT_BIT16)
+	{
+		mTxDmaInfo.ctl |= PDMA_WIDTH_16;
+		mRxDmaInfo.ctl |= PDMA_WIDTH_16;
+	}
+	else 
+	{
+		mTxDmaInfo.ctl |= PDMA_WIDTH_32;
+		mRxDmaInfo.ctl |= PDMA_WIDTH_32;
+	}
+
+	bit = (spec.bit + 4) & 0x1F;
 	reg = mDev->CTL;
 	reg &= ~(SPI_CTL_DWIDTH_Msk | SPI_CTL_RXNEG_Msk | SPI_CTL_TXNEG_Msk | SPI_CTL_CLKPOL_Msk);
-	reg |= (spec.bit << SPI_CTL_DWIDTH_Pos) | mode;
+	reg |= (bit << SPI_CTL_DWIDTH_Pos) | mode;
 	mDev->CTL = reg;
-
 	mDev->CLKDIV = div;
+
+	mLastSpec = &spec;
 
 	return error_t::ERROR_NONE;
 }
 
-error_t Spi::initializeAsMain(void)
+error_t NuvotonSpi::initialize(config_t config)
 {
-	mDev->CTL = 0x00000034;	// Reset Value
-	mDev->PDMACTL = SPI_PDMACTL_RXPDMAEN_Msk | SPI_PDMACTL_TXPDMAEN_Msk;
+	mMode = config.mode;
 
-	mTxDma = allocateDma();
+	switch(mMode)
+	{
+	case Spi::MODE_MAIN :	
+		mDev->CTL = 0x00000034;	// Reset Value
+		mDev->PDMACTL = SPI_PDMACTL_RXPDMAEN_Msk | SPI_PDMACTL_TXPDMAEN_Msk;
+		break;
+	
+	default:
+		return error_t::NOT_SUPPORTED_YET;
+	}
+
+	mTxDma = system::allocateDma();
 	if(mTxDma == nullptr)
 		return error_t::DMA_ALLOCATION_FAILED;
 
-	mRxDma = allocateDma();
+	mRxDma = system::allocateDma();
 	if(mRxDma == nullptr)
 		return error_t::DMA_ALLOCATION_FAILED;
 
@@ -91,23 +119,16 @@ error_t Spi::initializeAsMain(void)
 	return error_t::ERROR_NONE;
 }
 
-error_t Spi::initializeAsSub(void)
-{
-
-	return error_t::ERROR_NONE;
-}
-
-void Spi::enable(bool en)
+void NuvotonSpi::enable(bool en)
 {
 	setBitData(mDev->CTL, en, SPI_CTL_SPIEN_Pos);
 }
 
-error_t Spi::send(void *src, int32_t  size)
+error_t NuvotonSpi::send(void *src, int32_t  size)
 {
 	if(size == 0)
 		return error_t::ERROR_NONE;
 	
-	mRxDma->ready(mRxDmaInfo, src, size);
 	mTxDma->transfer(mTxDmaInfo, src, size);
 
 	while (mDev->STATUS & SPI_STATUS_BUSY_Msk)
@@ -116,17 +137,24 @@ error_t Spi::send(void *src, int32_t  size)
 	return error_t::ERROR_NONE;
 }
 
-error_t Spi::exchange(void *des, int32_t  size)
+error_t NuvotonSpi::exchange(void *des, int32_t  size)
 {
+	if(size == 0)
+		return error_t::ERROR_NONE;
+
+	while(~mDev->STATUS & SPI_STATUS_RXEMPTY_Msk)
+		mDev->RX;
+	
+	mRxDma->ready(mRxDmaInfo, des, size);
+	mTxDma->transfer(mTxDmaInfo, des, size);
+
+	while (mDev->STATUS & SPI_STATUS_BUSY_Msk)
+		thread::yield();
+
 	return error_t::ERROR_NONE;
 }
 
-void Spi::receiveAsCircularMode(void *src, uint16_t count)
-{
-
-}
-
-uint8_t Spi::exchange(uint8_t data)
+uint8_t NuvotonSpi::exchange(uint8_t data)
 {
 	*(uint8_t*)&mDev->TX = data;
 
@@ -136,17 +164,16 @@ uint8_t Spi::exchange(uint8_t data)
 	return mDev->RX;
 }
 
-void Spi::send(uint8_t data)
+void NuvotonSpi::send(uint8_t data)
 {
-	*(int8_t*)&mDev->TX = data;
+	*(uint8_t*)&mDev->TX = data;
 	while (mDev->STATUS & SPI_STATUS_BUSY_Msk)
 		thread::yield();
 }
 
-void Spi::isr(void)
+void NuvotonSpi::isr(void)
 {
 
-	thread::signal(mThreadId);
 }
 
 #endif

@@ -14,12 +14,6 @@
 #include <yss.h>
 #include <yss/reg.h>
 
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
-#include <targets/nuvoton/bitfield_m4xx.h>
-#elif defined(__M2xx_FAMILY)
-#include <targets/nuvoton/bitfield_m2xx.h>
-#endif
-
 #if BPWM0_ENABLE && defined(BPWM0)
 
 static void enableBpwm0Clock(bool en)
@@ -60,12 +54,12 @@ static const Drv::setup_t gDrvBpwm0Setup =
 };
 
 
-static const Bpwm::setup_t gBpwm0Setup = 
+static const NuvotonBpwm::setup_t gBpwm0Setup = 
 {
 	BPWM0			//YSS_BPWM_Dev *dev;
 };
 
-Bpwm bpwm0(gDrvBpwm0Setup, gBpwm0Setup);
+NuvotonBpwm bpwm0(gDrvBpwm0Setup, gBpwm0Setup);
 
 #endif
 
@@ -111,12 +105,12 @@ static const Drv::setup_t gDrvBpwm1Setup =
 };
 
 
-static const Bpwm::setup_t gBpwm1Setup = 
+static const NuvotonBpwm::setup_t gBpwm1Setup = 
 {
 	BPWM1			//YSS_BPWM_Dev *dev;
 };
 
-Bpwm bpwm1(gDrvBpwm1Setup, gBpwm1Setup);
+NuvotonBpwm bpwm1(gDrvBpwm1Setup, gBpwm1Setup);
 
 #endif
 

@@ -8,6 +8,8 @@
 #ifndef	YSS_SAC_RTOUCH__H_
 #define	YSS_SAC_RTOUCH__H_
 
+#if 0
+
 #include "Touch.h"
 
 namespace sac
@@ -40,3 +42,6 @@ namespace sac
 }
 
 #endif
+
+#endif
+

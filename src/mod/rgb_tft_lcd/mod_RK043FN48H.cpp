@@ -11,7 +11,8 @@
 
 #include <drv/Ltdc.h>
 
-#if !defined(YSS_DRV_LTDC_UNSUPPORTED)
+#if 0
+//#if !defined(YSS_DRV_LTDC_UNSUPPORTED)
 
 #include <mod/rgb_tft_lcd/RK043FN48H.h>
 

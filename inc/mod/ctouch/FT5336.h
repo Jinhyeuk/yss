@@ -8,6 +8,8 @@
 #ifndef YSS_MOD_CTOUCH_FT5336__H_
 #define YSS_MOD_CTOUCH_FT5336__H_
 
+#if 0
+
 #include <yss/instance.h>
 #include <sac/Touch.h>
 
@@ -36,6 +38,8 @@ private :
 	pin_t mIsr;
 	int32_t mTriggerId;
 };
+
+#endif
 
 #endif
 

@@ -8,28 +8,10 @@
 #ifndef YSS_DRV_ADC__H_
 #define YSS_DRV_ADC__H_
 
-#include "peripheral.h"
-
-#if defined(GD32F1)
-
-#define YSS_DRV_ADC_MAX_CH	18
-typedef ADC_TypeDef			YSS_ADC_Dev;
-
-#elif defined(STM32F4) || defined(STM32F7) || defined(STM32F0) || defined(STM32F1)
-
-#define YSS_DRV_ADC_MAX_CH	18
-typedef ADC_TypeDef			YSS_ADC_Dev;
-
-#else
-
-#define YSS_DRV_ADC_UNSUPPORTED
-#define YSS_DRV_ADC_MAX_CH	0
-typedef volatile uint32_t	YSS_ADC_Dev;
-
-#endif
+#include "Drv.h"
+#include <yss/error.h>
 
 #include <drv/Drv.h>
-#include <targets/common/define_adc_common.h>
 #include <yss/error.h>
 
 /*
@@ -43,13 +25,6 @@ typedef volatile uint32_t	YSS_ADC_Dev;
 class Adc : public Drv
 {
 public :
-	/*
-		ADC 장치를 초기화 합니다. 초기화만 했을 뿐, 장치는 정상적인 활성화가 되어 있지 않습니다.
-		.
-		@ return : 발생한 에러를 반환합니다.
-	*/
-	error_t initialize(void);
-	
 	typedef enum
 	{
 		LPF_LV0 = 0,
@@ -77,68 +52,63 @@ public :
 
 	typedef enum
 	{
-		BIT12 = 19,
-		BIT13 = 18,
-		BIT14 = 17,
-		BIT15 = 16,
-		BIT16 = 15,
+		RES_BIT12 = 19,
+		RES_BIT13 = 18,
+		RES_BIT14 = 17,
+		RES_BIT15 = 16,
+		RES_BIT16 = 15,
 	}bit_t;
+
+	typedef struct
+	{
+		int32_t result;
+		lpfLv_t lpfLevel;
+		bit_t bit;
+	}channel_t;
+
+	/*
+		ADC 장치를 초기화 합니다. 초기화만 했을 뿐, 장치는 정상적인 활성화가 되어 있지 않습니다.
+		.
+		@ return : 발생한 에러를 반환합니다.
+		.
+		@ numOfChannel : 동작할 ADC 채널의 개수를 설정합니다. 설정된 개수만큼 heap에서 메모리를 할당합니다.
+	*/
+	virtual error_t initialize(uint8_t numOfChannel) = 0;
 
 	/*
 		ADC 입력 채널을 추가합니다. 한번에 하나의 입력 채널이 추가됩니다.
 		.
-		@ chaanel : ADC 입력 채널의 번호를 설정합니다.
-		@ lpfLv : Low Pass Filter 레벨을 설정합니다. LPF_LV0은 Low Pass Filter가 적용되지 않은 상태입니다.
-		@ bit : ADC의 해상도를 설정합니다.
+		@ ch : 동작시킬 채널의 설정입니다.
 	*/
-	void add(uint8_t channel, lpfLv_t lpfLv = LPF_LV0, bit_t bit = BIT12);
+	virtual error_t add(uint8_t ch, lpfLv_t lpflv, bit_t bit) = 0;
 	
+	/*
+		ADC 변환을 동작하거나 중단하게 만듭니다.
+		.
+		@ return : 발생한 에러를 반환합니다.
+		.
+		@ en : true일 경우 변환 동작, false일 경우 변환 중지됩니다.
+	*/
+	virtual error_t convert(bool en) = 0;
+
 	/*
 		설정된 channel의 ADC 결과 값을 반환합니다.
 		.
-		@ result : ADC 결과 값을 반환합니다.
+		@ return : ADC 결과 값을 반환합니다.
 		.
-		@ channel : 결과값을 가져올 ADC의 채널을 설정합니다.
+		@ index : ADC 결과값을 가져올 채널의 등록 순번을 설정합니다.
 	*/
-	uint16_t getResult(uint8_t channel);
+	int32_t getResult(uint8_t index);
 
-#if defined(STM32F0)
-	// 샘플 시간을 설정한다.
-	// 
-	// uint8_t sampleTime
-	//		샘플 시간을 설정한다. 설정 값은 MCU의 개별 설정에 따라 각기 다르다.
-	void setSampleTime(uint8_t sampleTime);
-#elif defined(STM32F1) || defined(STM32F4) || defined(STM32F7) || defined(GD32F1)
-	/*
-		샘플링 시간을 설정합니다.
-		시분할 하여 ADC 하기 때문에 하나의 채널의 샘플링 시간을 조절하는 것은 전체 샘플링 주기에 영향을 줍니다.
-		.
-		@ channel : 샘플 시간을 설정할 ADC Channel을 설정합니다. 
-		@ sampleTime : 샘플 시간을 설정합니다. 설정 값은 MCU의 개별 설정에 따라 각기 다릅니다.
-	*/
-	void setSampleTime(uint8_t channel, uint8_t sampleTime);
-#endif
 
-	// 아래 함수들은 시스템 함수로 사용자 호출을 권장하지 않습니다.
-	struct setup_t
-	{
-		YSS_ADC_Dev *dev;
-	};
+	Adc(const Drv::setup_t drvSetup);
 
-	Adc(YSS_ADC_Dev *dev, void (*clockFunc)(bool en), void (*nvicFunc)(bool en), void (*resetFunc)(void));
+protected :
+	channel_t *mChannel;
+	uint8_t mConvertingIndex;
+	uint8_t mChCount, mMaxChCount;
 
-	Adc(const Drv::setup_t drvSetup, const setup_t setup);
-
-	void isr(void);
-
-private :
-	YSS_ADC_Dev *mDev;
-	int32_t mResult[YSS_DRV_ADC_MAX_CH];
-	uint8_t mIndex;
-	uint8_t mLpfLv[YSS_DRV_ADC_MAX_CH];
-	uint8_t mChannel[YSS_DRV_ADC_MAX_CH];
-	uint8_t mBit[YSS_DRV_ADC_MAX_CH];
-	uint8_t mNumOfCh;
+	error_t malloc(uint8_t numOfCh);
 };
 
 #endif

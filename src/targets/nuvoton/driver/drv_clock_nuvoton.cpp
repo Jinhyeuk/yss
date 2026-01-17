@@ -5,52 +5,70 @@
  * See the file "LICENSE" in the main directory of this archive for more details.
  */
 
-#include <drv/peripheral.h>
-
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
 
-#include <drv/Clock.h>
+#include <targets/nuvoton/NuvotonClock.h>
 #include <yss/reg.h>
-
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
-#include <targets/nuvoton/bitfield_m4xx.h>
-#elif defined(__M2xx_FAMILY)
-#include <targets/nuvoton/bitfield_m2xx.h>
-#endif
 
 #include <util/runtime.h>
 
 #if defined(__M480_FAMILY)
 #define MAX_HCLK_FREQ	192000000
-#define MAX_PCLK0_FREQ	96000000
-#define MAX_PCLK1_FREQ	96000000
-#define HIRC_CLK_FREQ	12000000
-#define LIRC_CLK_FREQ	10000
+#define MAX_PCLK0_FREQ	 96000000
+#define MAX_PCLK1_FREQ	 96000000
+#define HIRC_CLK_FREQ	 12000000
+#define LIRC_CLK_FREQ	    10000
 #define FVCO_MIN_FREQ	200000000
 #define FVCO_MAX_FREQ	500000000
-#define FOUT_MIN_FREQ	50000000
+#define FOUT_MIN_FREQ	 50000000
+#define FOUT_MAX_FREQ	500000000
+#elif defined(__M46x_SUBFAMILY)
+#define MAX_HCLK_FREQ	200000000
+#define MAX_PCLK0_FREQ	 96000000
+#define MAX_PCLK1_FREQ	 96000000
+#define MIN_HXT_FREQ	  4000000
+#define MAX_HXT_FREQ	 24000000
+#define HIRC_CLK_FREQ	 12000000
+#define LIRC_CLK_FREQ	    10000
+#define FVCO_MIN_FREQ	200000000
+#define FVCO_MAX_FREQ	500000000
+#define FOUT_MIN_FREQ	 50000000
 #define FOUT_MAX_FREQ	500000000
 #elif defined(__M4xx_FAMILY)
 #define MAX_HCLK_FREQ	144000000
-#define MAX_PCLK0_FREQ	72000000
-#define MAX_PCLK1_FREQ	72000000
-#define MAX_HXT_FREQ	24000000
-#define HIRC_CLK_FREQ	12000000
-#define LIRC_CLK_FREQ	10000
+#define MAX_PCLK0_FREQ	 72000000
+#define MAX_PCLK1_FREQ	 72000000
+#define MIN_HXT_FREQ	  4000000
+#define MAX_HXT_FREQ	 24000000
+#define HIRC_CLK_FREQ	 12000000
+#define LIRC_CLK_FREQ	    10000
 #define FVCO_MIN_FREQ	200000000
 #define FVCO_MAX_FREQ	500000000
-#define FOUT_MIN_FREQ	50000000
+#define FOUT_MIN_FREQ	 50000000
 #define FOUT_MAX_FREQ	500000000
-#elif defined(__M2xx_FAMILY)
-#define MAX_HCLK_FREQ	48000000
-#define MAX_PCLK0_FREQ	48000000
-#define MAX_PCLK1_FREQ	48000000
-#define MAX_HXT_FREQ	32000000
-#define HIRC_CLK_FREQ	48000000
-#define LIRC_CLK_FREQ	10000
-#define FVCO_MIN_FREQ	64000000
+#elif defined(__M25x_SUBFAMILY)
+#define MAX_HCLK_FREQ	 48000000
+#define MAX_PCLK0_FREQ	 48000000
+#define MAX_PCLK1_FREQ	 48000000
+#define MIN_HXT_FREQ	  4000000
+#define MAX_HXT_FREQ	 32000000
+#define HIRC_CLK_FREQ	 48000000
+#define LIRC_CLK_FREQ	    10000
+#define FVCO_MIN_FREQ	 64000000
 #define FVCO_MAX_FREQ	100000000
-#define FOUT_MIN_FREQ	16000000
+#define FOUT_MIN_FREQ	 16000000
+#define FOUT_MAX_FREQ	100000000
+#elif defined(__M2xx_FAMILY)
+#define MAX_HCLK_FREQ	 48000000
+#define MAX_PCLK0_FREQ	 48000000
+#define MAX_PCLK1_FREQ	 48000000
+#define MIN_HXT_FREQ	  4000000
+#define MAX_HXT_FREQ	 32000000
+#define HIRC_CLK_FREQ	 48000000
+#define LIRC_CLK_FREQ	    10000
+#define FVCO_MIN_FREQ	 64000000
+#define FVCO_MAX_FREQ	100000000
+#define FOUT_MIN_FREQ	 16000000
 #define FOUT_MAX_FREQ	100000000
 #endif
 
@@ -58,7 +76,7 @@ static uint32_t gHxtFreq __attribute__((section(".non_init")));
 
 error_t Clock::enableHxt(uint32_t hseHz)
 {
-	if(hseHz > MAX_HXT_FREQ)
+	if(hseHz > MAX_HXT_FREQ || hseHz < MIN_HXT_FREQ)
 		return error_t::OUT_OF_RANGE;
 
 	gHxtFreq = hseHz;
@@ -118,6 +136,13 @@ uint32_t Clock::getLircFrequency(void)
 {
 	return LIRC_CLK_FREQ;
 }
+
+#if defined(__M25x_SUBFAMILY)
+uint32_t Clock::getMircFrequency(void)
+{
+	return 4000000;
+}
+#endif
 
 error_t Clock::enablePll(pllSrc_t src, uint8_t indiv, uint16_t fbdiv, uint8_t outdiv)
 {
@@ -217,8 +242,8 @@ error_t Clock::enablePll(pllSrc_t src, uint8_t indiv, uint16_t fbdiv, uint8_t ou
 	SYS->REGLCTL = 0x16;
 	SYS->REGLCTL = 0x88;
 	
-	reg &= ~(CLK_PLLCTL_BP_Msk | CLK_PLLCTL_OE_Msk | CLK_PLLCTL_OUTDIV_Msk | CLK_PLLCTL_INDIV_Msk | CLK_PLLCTL_FBDIV_Msk);
-	reg |= (indiv << CLK_PLLCTL_INDIV_Pos) | (fbdiv << CLK_PLLCTL_FBDIV_Pos) | (outdiv << CLK_PLLCTL_OUTDIV_Pos);
+	reg &= ~(CLK_PLLCTL_BP_Msk | CLK_PLLCTL_OE_Msk | CLK_PLLCTL_OUTDIV_Msk | CLK_PLLCTL_INDIV_Msk | CLK_PLLCTL_FBDIV_Msk | CLK_PLLCTL_PLLSRC_Msk);
+	reg |= (indiv << CLK_PLLCTL_INDIV_Pos) | (fbdiv << CLK_PLLCTL_FBDIV_Pos) | (outdiv << CLK_PLLCTL_OUTDIV_Pos) | (src << CLK_PLLCTL_PLLSRC_Pos);
 
 	CLK->PLLCTL = reg;
 	CLK->PLLCTL &= ~(CLK_PLLCTL_PD_Msk);
@@ -252,7 +277,11 @@ uint32_t Clock::getPllFrequency(void)
 		clk = getHircFrequency() / 4;
 #endif
 		break;		
-	
+#if defined(__M2xx_FAMILY)
+	case PLL_SRC_MIRC :
+		clk = getMircFrequency();
+		break;
+#endif
 	case PLL_SRC_HXT :
 		clk = gHxtFreq;
 		break;
@@ -316,6 +345,10 @@ error_t Clock::setHclkClockSource(hclkSrc_t src, uint8_t hclkDiv, uint8_t pclk0D
 
 	switch(src)
 	{
+	case HCLK_SRC_HIRC :
+		clk = HIRC_CLK_FREQ;
+		break;
+
 	case HCLK_SRC_HXT :
 		clk = gHxtFreq;
 		break;
@@ -324,6 +357,18 @@ error_t Clock::setHclkClockSource(hclkSrc_t src, uint8_t hclkDiv, uint8_t pclk0D
 		clk = getPllFrequency();
 		if(hclkDiv != 0)
 			return error_t::WRONG_CONFIG;
+		break;
+#if defined(__M25x_SUBFAMILY)
+	case HCLK_SRC_MIRC :
+		clk = getMircFrequency();
+		break;
+#endif
+	case HCLK_SRC_LRIC :
+		clk = getLircFrequency();
+		break;
+	
+	case HCLK_SRC_LXT :
+		clk = getLircFrequency();
 		break;
 
 	default :
@@ -379,14 +424,36 @@ error_t Clock::setHclkClockSource(hclkSrc_t src, uint8_t hclkDiv, uint8_t pclk0D
 	return error_t::ERROR_NONE;
 }
 
-void Clock::enableAhbClock(uint32_t position, bool en)
+void Clock::enableAhb0Clock(uint32_t position, bool en)
 {
+#if defined(__M46x_SUBFAMILY)
+	__disable_irq();	
+	if(en)
+		CLK->AHBCLK0 |= 1 << position;
+	else
+		CLK->AHBCLK0 &= ~(1 << position);		
+	__enable_irq();
+#elif defined(__M480_FAMILY) || defined(__M43x_SUBFAMILY) || defined(__M2xx_FAMILY)
 	__disable_irq();	
 	if(en)
 		CLK->AHBCLK |= 1 << position;
 	else
 		CLK->AHBCLK &= ~(1 << position);		
 	__enable_irq();
+#endif
+}
+
+void Clock::enableAhb1Clock(uint32_t position, bool en)
+{
+#if defined(__M46x_SUBFAMILY)
+	__disable_irq();	
+	if(en)
+		CLK->AHBCLK1 |= 1 << position;
+	else
+		CLK->AHBCLK1 &= ~(1 << position);		
+	__enable_irq();
+#elif defined(__M480_FAMILY) || defined(__M43x_SUBFAMILY) || defined(__M2xx_FAMILY)
+#endif
 }
 
 void Clock::enableApb0Clock(uint32_t position, bool en)
@@ -407,6 +474,18 @@ void Clock::enableApb1Clock(uint32_t position, bool en)
 	else
 		CLK->APBCLK1 &= ~(1 << position);		
 	__enable_irq();
+}
+
+void Clock::enableApb2Clock(uint32_t position, bool en)
+{
+#if defined(__M46x_SUBFAMILY)
+	__disable_irq();	
+	if(en)
+		CLK->APBCLK2 |= 1 << position;
+	else
+		CLK->APBCLK2 &= ~(1 << position);		
+	__enable_irq();
+#endif
 }
 
 uint32_t Clock::getHclkClockFrequency(void)
@@ -431,7 +510,11 @@ uint32_t Clock::getHclkClockFrequency(void)
 	case 3 : // LIRC
 		clk = LIRC_CLK_FREQ;
 		break;
-	
+#if defined(__M25x_SUBFAMILY)	
+	case 5 : // MIRC
+		clk = getMircFrequency();
+		break;
+#endif
 	case 7 : // HIRC
 		clk = HIRC_CLK_FREQ;
 		break;
@@ -485,6 +568,28 @@ void Clock::enterPowerDownMode(void)
 	__WFI();
 	runtime::start();
 }
+
+error_t Clock::enableHirc(bool en)
+{
+	// Unlock
+	SYS->REGLCTL = 0x59;
+	SYS->REGLCTL = 0x16;
+	SYS->REGLCTL = 0x88;
+	
+	setBitData(CLK->PWRCTL, en, CLK_PWRCTL_HIRCEN_Pos);
+	
+	// lock
+	SYS->REGLCTL = 0x00;
+	
+	if(en)
+	{
+		while(~CLK->STATUS & CLK_STATUS_HIRCSTB_Msk)
+			;
+	}
+
+	return error_t::ERROR_NONE;
+}
+
 
 #endif
 

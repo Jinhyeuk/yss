@@ -8,7 +8,8 @@
 #include <config.h>
 #include <yss/debug.h>
 
-#if USE_GUI
+#if 0
+//#if USE_GUI
 
 #include <mod/spi_tft_lcd/P028B052_V3_IPS.h>
 

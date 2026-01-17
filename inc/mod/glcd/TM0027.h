@@ -10,7 +10,7 @@
 
 #include <config.h>
 
-#if USE_GUI
+#if 0
 
 #include <gui/Font.h>
 #include <gui/util.h>

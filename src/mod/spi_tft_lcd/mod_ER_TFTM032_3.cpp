@@ -8,13 +8,14 @@
 #include <config.h>
 #include <drv/Spi.h>
 
-#if USE_GUI && !defined(YSS_DRV_SPI_UNSUPPORTED)
+#if 0
+//#if USE_GUI && !defined(YSS_DRV_SPI_UNSUPPORTED)
 
 #include <mod/spi_tft_lcd/ER_TFTM032_3.h>
 
 static const Spi::specification_t gLcdSpec =
 {
-	Spi::MODE_MODE0,	//uint8_t mode;
+	Spi::CLOCK_MODE_MODE0,	//uint8_t mode;
 	40000000,					//uint32_t maxFreq;
 	Spi::BIT_BIT8		//uint8_t bit;
 };

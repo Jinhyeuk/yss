@@ -11,10 +11,10 @@
 
 #include <config.h>
 #include <yss/instance.h>
-#include <targets/nuvoton/bitfield_m2xx.h>
 
-#if defined(__M2xx_FAMILY)
-#define FBDIV_VALUE		24
+#if defined(__M25x_SUBFAMILY)
+#define FBDIV_VALUE		(24)
+#define EADC_MAX_CLK	(14000000)
 #endif
 
 void __WEAK initializeSystem(void)
@@ -44,23 +44,28 @@ void __WEAK initializeSystem(void)
 	clock.setHclkClockSource(Clock::HCLK_SRC_PLL, 0, 1, 1); 
 
 	// UART0, UART1의 클럭 소스를 PLL로 변경
-	reg = CLK->CLKSEL1;
-	reg &= ~(CLK_CLKSEL1_UART0SEL_Msk | CLK_CLKSEL1_UART1SEL_Msk);
-	reg |= (1 << CLK_CLKSEL1_UART0SEL_Pos) | (1 << CLK_CLKSEL1_UART1SEL_Pos);
-	CLK->CLKSEL1 = reg;
+	setTwoFieldsData(CLK->CLKSEL1,	CLK_CLKSEL1_UART0SEL_Msk, 1, CLK_CLKSEL1_UART0SEL_Pos, 
+									CLK_CLKSEL1_UART1SEL_Msk, 1, CLK_CLKSEL1_UART1SEL_Pos);
 
 	// UART2, UART3의 클럭 소스를 PLL로 변경
-	reg = CLK->CLKSEL3;
-	reg &= ~(CLK_CLKSEL3_UART2SEL_Msk | CLK_CLKSEL3_UART3SEL_Msk);
-	reg |= (1 << CLK_CLKSEL3_UART2SEL_Pos) | (1 << CLK_CLKSEL3_UART3SEL_Pos);
-	CLK->CLKSEL3 = reg;
-/*
-	// TIMER0, TIMER1, TIMER2, TIMER3의 클럭 소스를 PCLK로 변경
-	reg = CLK->CLKSEL1;
-	reg &= ~(CLK_CLKSEL1_TMR0SEL_Msk | CLK_CLKSEL1_TMR1SEL_Msk | CLK_CLKSEL1_TMR2SEL_Msk | CLK_CLKSEL1_TMR3SEL_Msk);
-	reg |= (2 << CLK_CLKSEL1_TMR0SEL_Pos) | (2 << CLK_CLKSEL1_TMR1SEL_Pos) | (2 << CLK_CLKSEL1_TMR2SEL_Pos) | (2 << CLK_CLKSEL1_TMR3SEL_Pos);
-	CLK->CLKSEL1 = reg;
+	setTwoFieldsData(CLK->CLKSEL3,	CLK_CLKSEL3_UART2SEL_Msk, 1, CLK_CLKSEL3_UART2SEL_Pos, 
+									CLK_CLKSEL3_UART3SEL_Msk, 1, CLK_CLKSEL3_UART3SEL_Pos);
 
+	// EADC 클럭 주파수를 동작 최대 주파수 이하로 변경
+	srcClk = clock.getApb0ClockFrequency();
+	srcClk = (srcClk + EADC_MAX_CLK - 1) / EADC_MAX_CLK;
+	if(srcClk > 0)
+		srcClk--;
+
+	setFieldData(CLK->CLKDIV0, CLK_CLKDIV0_EADCDIV_Msk, srcClk, CLK_CLKDIV0_EADCDIV_Pos);
+	
+
+	// TIMER0, TIMER1, TIMER2, TIMER3의 클럭 소스를 PCLK로 변경
+	setTwoFieldsData(CLK->CLKSEL1,	CLK_CLKSEL1_TMR0SEL_Msk, 2, CLK_CLKSEL1_TMR0SEL_Pos, 
+									CLK_CLKSEL1_TMR1SEL_Msk, 2, CLK_CLKSEL1_TMR1SEL_Pos);
+	setTwoFieldsData(CLK->CLKSEL1,	CLK_CLKSEL1_TMR2SEL_Msk, 2, CLK_CLKSEL1_TMR2SEL_Pos, 
+									CLK_CLKSEL1_TMR3SEL_Msk, 2, CLK_CLKSEL1_TMR3SEL_Pos);
+/*
 	// SPI0, SPI1, SPI2, SPI3의 클럭 소스를 PLL로 변경
 	reg = CLK->CLKSEL2;
 	reg &= ~(CLK_CLKSEL2_SPI0SEL_Msk | CLK_CLKSEL2_SPI1SEL_Msk | CLK_CLKSEL2_SPI2SEL_Msk | CLK_CLKSEL2_SPI3SEL_Msk);

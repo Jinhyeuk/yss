@@ -10,7 +10,10 @@
 
 #include "Container.h"
 
+#if USE_GUI
+
 class OutputFrameBuffer;
+class PointerDevice;
 
 class Frame : public Container
 {
@@ -19,7 +22,7 @@ public :
 
 	virtual ~Frame(void);
 
-	void setPosition(Position_t pos);
+	void setPosition(Position pos);
 
 	void setPosition(int16_t x, int16_t y);
 
@@ -29,21 +32,29 @@ public :
 
 	void add(Object *obj);
 
-	void update(Position_t pos, Size_t size);
+	Object *handlerPush(Position pos);
 
-	void update(Position_t beforePos, Size_t beforeSize, Position_t currentPos, Size_t currentSize);
-
-	void update(void);
-
-	Object *handlerPush(Position_t pos);
-
-	Object *handlerDrag(Position_t pos);
+	Object *handlerDrag(Position pos);
 
 	Object *handlerUp(void);
 
+	void setAsSystemFrame(void);
+
+	virtual void update(void);
+
+	void setPointerDevice(PointerDevice &obj);
+
+protected:
+	virtual void update(Rectangular rect);
+
+	virtual void update(Rectangular before , Rectangular current);
+
 private :
 	OutputFrameBuffer *mOutputFrameBuffer;
+	PointerDevice *mPointerDevice;
 };
+
+#endif
 
 #endif
 

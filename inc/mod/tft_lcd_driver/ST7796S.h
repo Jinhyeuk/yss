@@ -12,8 +12,8 @@
 
 class ST7796S : public TftLcdDriver
 {
-  protected:
-	enum
+protected:
+	typedef enum
 	{
 		NOP = 0x00,
 		SOFTWARE_RESET = 0x01,
@@ -83,15 +83,35 @@ class ST7796S : public TftLcdDriver
 		SET_CONFIG = 0xF0,
 		GAMMA3_FUNC_DIS = 0xf2,
 		PRC = 0xf7
-	};
+	}cmd_t;
 
-	bool mRotateFlag;
-
-  public:
+public:
 	ST7796S(void);
 
 	void setDirection(bool xMirror, bool yMirror, bool rotate);
-	void setWindows(uint16_t x, uint16_t y, uint16_t width = 1, uint16_t height = 1);
+
+	void setWindows(int16_t x, int16_t y, uint16_t width = 1, uint16_t height = 1);
+
+	void setWindows(Rectangular rect);
+
+	virtual void enable(void) = 0;
+
+	virtual void disable(void) = 0;
+
+	virtual void sendCmd(cmd_t cmd) = 0;
+
+	virtual void sendCmd(cmd_t cmd, uint8_t data) = 0;
+
+	virtual void sendCmd(cmd_t cmd, uint8_t *data, uint32_t count) = 0;
+
+	virtual void sendData(uint8_t *data, uint32_t count) = 0;
+
+	virtual void sendData(uint16_t *data, uint32_t count) = 0;
+
+	virtual void sendData(uint32_t *data, uint32_t count) = 0;
+
+protected :
+	bool mRotateFlag;
 };
 
 #endif

@@ -12,17 +12,24 @@
 
 class AnalogOutput
 {
-	float mDacMax, mRef, mErrorP1, mErrorP2, mValueP1, mValueP2, mReferenceDacP1, mReferenceDacP2, mRefrenceOffset, mErrorOffset;
+	float mDacMax, mRef, mErrorP1, mErrorP2, mValueP1, mValueP2, mReferenceDacP1, mReferenceDacP2, mReferenceOffset, mErrorOffset;
 public:
-	AnalogOutput(float maxDac, float referenceValueP1, float referenceValueP2, float minValue, float maxValue);
+	AnalogOutput(void);
+
+	void setup(uint8_t dacBit, float referenceValueP1, float referenceValueP2, float minValue, float maxValue);
 	
 	void setErrorP1(float val);
+
 	void setErrorP2(float val);
 
 	uint32_t getReferenceDacP1(void);
+
 	uint32_t getReferenceDacP2(void);
 
-	uint32_t calculate(float value);
+	float calculate(float value);
+
+private :
+	void update(void);
 };
 
 #endif

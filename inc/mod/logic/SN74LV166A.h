@@ -8,7 +8,8 @@
 #ifndef YSS_MOD_LOGIC_SN74LV166A__H_
 #define YSS_MOD_LOGIC_SN74LV166A__H_
 
-#include <yss/instance.h>
+#include <drv/Spi.h>
+#include <drv/Gpio.h>
 
 #if !(defined(YSS_DRV_SPI_UNSUPPORTED) || defined(YSS_DRV_GPIO_UNSUPPORTED))
 

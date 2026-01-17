@@ -8,121 +8,104 @@
 #ifndef YSS_DRV_QUADSPI__H_
 #define YSS_DRV_QUADSPI__H_
 
-#include "peripheral.h"
-
-#if defined(STM32F7)
-
-typedef QUADSPI_TypeDef		YSS_QUADSPI_Peri;
-
-#else
-
-#define YSS_DRV_QUADSPI_UNSUPPORTED
-
-#endif
-
-#ifndef YSS_DRV_QUADSPI_UNSUPPORTED
-
 #include "Drv.h"
-#include <drv/Dma.h>
+#include <yss/error.h>
 
 class Quadspi : public Drv
 {
 public :
-	struct specification_t
+	typedef enum
+	{
+		MODE_MAIN = 0,
+		MODE_SUB
+	}mode_t;
+
+	typedef enum
+	{
+		CLOCK_MODE_MODE0 = 0,
+		CLOCK_MODE_MODE1,
+		CLOCK_MODE_MODE2,
+		CLOCK_MODE_MODE3,
+	}clockMode_t;
+
+	typedef enum
+	{
+		BIT_WIDTH_SINGLE = 0,
+		BIT_WIDTH_DOUBLE,
+		BIT_WIDTH_QUAD,
+	}bitWidth_t;
+
+	typedef enum
+	{
+		DATA_WIDTH_8BIT = 0,
+		DATA_WIDTH_9BIT,
+		DATA_WIDTH_10BIT,
+		DATA_WIDTH_11BIT,
+		DATA_WIDTH_12BIT,
+		DATA_WIDTH_13BIT,
+		DATA_WIDTH_14BIT,
+		DATA_WIDTH_15BIT,
+		DATA_WIDTH_16BIT,
+		DATA_WIDTH_17BIT,
+		DATA_WIDTH_18BIT,
+		DATA_WIDTH_19BIT,
+		DATA_WIDTH_20BIT,
+		DATA_WIDTH_21BIT,
+		DATA_WIDTH_22BIT,
+		DATA_WIDTH_23BIT,
+		DATA_WIDTH_24BIT,
+		DATA_WIDTH_25BIT,
+		DATA_WIDTH_26BIT,
+		DATA_WIDTH_27BIT,
+		DATA_WIDTH_28BIT,
+		DATA_WIDTH_29BIT,
+		DATA_WIDTH_30BIT,
+		DATA_WIDTH_31BIT,
+		DATA_WIDTH_32BIT
+	}dataWidth_t;
+
+	typedef enum
+	{
+		BIT_ORDER_MSB = 0,
+		BIT_ORDER_LSB
+	}bitOrder_t;
+
+	typedef struct 
 	{
 		uint32_t maxFrequncy;
-		uint32_t flashSize;
-		uint8_t chipSelectHighTime;
-		uint8_t clockMode;
-		bool sampleShift;
-	};
+		uint32_t capacity;
+		clockMode_t clockMode;
+	}specification_t;
 
-	struct Waveform_t
+	typedef struct 
 	{
-		uint8_t dataMode;
-		uint8_t alternateByteMode;
-		uint8_t alternateByteSize;
-		uint8_t addressMode;
-		uint8_t addressSize;
-		uint8_t instructionMode;
-		uint8_t dummyCycle;
-		bool statusSendInstructionOnlyOnce;
-	};
+		bitWidth_t bitWidth;
+		dataWidth_t dataWidth;
+	}dataform_t;
 
-	// Quadspi 장치를 초기화 한다. 초기화만 했을 뿐, 아직 실제 사용 가능한 상태는 아니다.
-	// setSpecification() 함수를 사용해 사용할 플래시 메모리의 사양을 설정하고 사용 가능하다.
-	// 
-	// 반환
-	//		에러를 반환한다.
-	error_t initialize(void);
-
-	// Quadspi 장치의 기본 사양을 설정한다. 
-	// 설정 전에 반드시 enable(false) 를 호출하여 장치를 먼저 비활성화 시키는게 필요하다.
-	// 세부 설정 사항은 구조체 specification_t를 사용한다.
-	// 
-	// 반환
-	//		에러를 반환한다.
-	error_t setSpecification(const specification_t &spec);
-
-	// Quadspi 장치의 전송 세부 사양을 설정한다.
-	// 설정 전에 반드시 enable(false) 를 호출하여 장치를 먼저 비활성화 시키는게 필요하다.
-	// 세부 설정 사항은 구조체 specification_t를 사용한다.
-	// 
-	// 반환
-	//		에러를 반환한다.
-	error_t setWaveform(const Waveform_t &waveform);
-
-	error_t setBank(uint8_t bank);
-
-	// Quadspi 장치를 활성화/비활성화 시킨다.
-	// 정상적인 전송을 위해 enable(true)를 하기 전에 setSpecification()를 사용하여 타겟 장치에 맞는 
-	// 올바른 전송 사양 설정이 먼저 이뤄져야 한다.
-	//
-	// bool en
-	//		활성화(true)/비활성화(false)로 설정한다.
-	void enable(bool en);
-
-	error_t readRegister(uint8_t cmd, void *des, uint32_t size, uint32_t timeout);
-
-	error_t writeCommand(uint8_t cmd);
-
-	error_t wait(uint8_t cmd, uint32_t mask, uint32_t status, uint8_t size, uint8_t pollingMatchMode, uint32_t timeOut);
-
-	error_t writeAddress(uint8_t cmd, uint32_t addr);
-
-	error_t write(uint8_t cmd, uint32_t addr, void *src, uint32_t size, uint32_t timeout);
-
-	error_t read(uint8_t cmd, uint32_t addr, void *des, uint32_t size, uint32_t timeout);
-
-	//Quadspi(YSS_QUADSPI_Peri *peri, void (*clockFunc)(bool en), void (*nvicFunc)(bool en), Stream *stream, uint8_t channel, uint16_t priority);
-	//void setWaveform(config::quadspi::Waveform &waveform);
-	//bool writeRegister(uint8_t cmd, void *src, uint32_t size, uint32_t timeout);
-	//void lock(void);
-	//void unlock(void);
-
-	struct setup_t
+	typedef struct
 	{
-		YSS_QUADSPI_Peri *dev;
-		Dma &txDma;
-		Dma::dmaInfo_t txDmaInfo;
-		Dma &rxDma;
-		Dma::dmaInfo_t rxDmaInfo;
-	};
+		mode_t mode;
+	}config_t;
 
-	Quadspi(const Drv::setup_t drvSetup, const setup_t setup);
+	virtual error_t initialize(config_t config) = 0;
 
-private :
-	YSS_QUADSPI_Peri *mDev;
-	const specification_t *mSpec;
-	const Waveform_t *mWaveform;
-#if defined(STM32F7)
-	Dma *mTxDma, *mRxDma;
-	Dma::dmaInfo_t mTxDmaInfo, mRxDmaInfo;
-	uint32_t mCcr;
-#endif
+	virtual error_t setSpecification(const specification_t &spec) = 0;
+
+	virtual error_t transmit(dataform_t dataform, uint32_t data) = 0;
+
+	virtual error_t receive(dataform_t dataform, uint32_t &data) = 0;
+
+	virtual error_t transmit(dataform_t dataform, void *data, uint32_t size) = 0;
+
+	uint32_t getCapacity(void);
+
+	// 여기부터 아래 내용들은 사용자가 호출할 필요가 없는 함수입니다.
+	Quadspi(const Drv::setup_t drvSetup);
+
+protected :
+	uint32_t mCapacity;
 };
-
-#endif
 
 #endif
 

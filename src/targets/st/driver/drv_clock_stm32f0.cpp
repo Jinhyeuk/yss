@@ -195,7 +195,7 @@ bool Clock::setSysclk(uint8_t sysclkSrc, uint8_t ahb, uint8_t apb1, uint8_t apb2
 	//}
 	
 	// 버스 클럭 프리스케일러 설정
-	setTwoFieldData(RCC->CFGR, RCC_CFGR_PPRE_Msk, apb1, RCC_CFGR_PPRE_Pos, RCC_CFGR_HPRE_Msk, ahb, RCC_CFGR_HPRE_Pos);
+	setTwoFieldsData(RCC->CFGR, RCC_CFGR_PPRE_Msk, apb1, RCC_CFGR_PPRE_Pos, RCC_CFGR_HPRE_Msk, ahb, RCC_CFGR_HPRE_Pos);
 	
 	// 클럭 소스 변경
 	setFieldData(RCC->CFGR, RCC_CFGR_SW_Msk, sysclkSrc, RCC_CFGR_SW_Pos);

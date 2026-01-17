@@ -8,6 +8,8 @@
 #ifndef YSS_DRV_LTDC__H_
 #define YSS_DRV_LTDC__H_
 
+#if 0
+
 #include "peripheral.h"
 #include <stdint.h>
 
@@ -20,7 +22,7 @@ typedef volatile uint32_t	YSS_LTDC_Peri;
 
 #endif
 
-#include <yss/gui.h>
+//#include <yss/gui.h>
 #include <yss/error.h>
 #include "Drv.h"
 
@@ -51,6 +53,8 @@ public:
 private:
 	const specification_t *mSpec;
 };
+
+#endif
 
 #endif
 

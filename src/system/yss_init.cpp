@@ -14,7 +14,7 @@
 #include <yss/instance.h>
 #include <std_ext/malloc.h>
 #include <drv/peripheral.h>
-
+#include <string.h>
 #include <yss/instance.h>
 
 #define YSS_L_HEAP_TOTAL_CLUSTER_SIZE		(YSS_L_HEAP_SIZE / YSS_L_HEAP_CLUSTER_SIZE / 32)
@@ -30,9 +30,8 @@ void initializeLheap(void)
 {
 #if YSS_L_HEAP_USE == true
 	uint32_t *sdram = (uint32_t *)YSS_SDRAM_ADDR;
-
-	while ((uint32_t)sdram < YSS_L_HEAP_BASE_ADDR)
-		*sdram++ = 0;
+	
+	memset(sdram, 0x00, YSS_L_HEAP_BASE_ADDR - YSS_SDRAM_ADDR);
 #endif
 }
 
@@ -84,7 +83,7 @@ void initializeYss(void)
 	event::init();
 #endif
 
-#if !defined(YSS_DRV_EXTI_UNSUPPORTED)
+#if defined(EXTI)
 	exti.enableClock(true);
 	exti.enableInterrupt(true);
 #endif

@@ -8,6 +8,8 @@
 #ifndef YSS_EVENT__H_
 #define YSS_EVENT__H_
 
+#if 0
+
 #include <gui/util.h>
 #include <sac/Rtouch.h>
 
@@ -27,5 +29,7 @@ namespace event
 	void trigger(void);
 	void flush(void);
 };
+
+#endif
 
 #endif

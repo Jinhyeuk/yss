@@ -8,35 +8,7 @@
 #ifndef YSS_DRV_UART__H_
 #define YSS_DRV_UART__H_
 
-#include "peripheral.h"
-
-#if defined(NRF52840_XXAA)
-
-typedef NRF_UART_Type		YSS_USART_Typedef;
-
-#elif defined(EFM32PG22) || defined(EFR32BG22) || defined(STM32F4) || defined(STM32F0) || defined(STM32F7) || defined(STM32F1) || defined(GD32F1) || defined(STM32G4)
-
-typedef USART_TypeDef		YSS_USART_Typedef;
-
-#elif defined(W7500)
-
-typedef UART_TypeDef		YSS_USART_Typedef;
-
-#elif defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
-
-typedef UART_T				YSS_USART_Typedef;
-
-#else
-
-#include <stdint.h>
-typedef volatile uint32_t	YSS_USART_Typedef;
-
-#define YSS_DRV_UART_UNSUPPORTED
-
-#endif
-
 #include "Drv.h"
-#include "Dma.h"
 #include <yss/error.h>
 
 class Uart : public Drv
@@ -44,30 +16,27 @@ class Uart : public Drv
 public:
 	typedef enum
 	{
-		MODE_NORMAL,	// 일반적인 Tx, Rx가 가능한 모드입니다.
-		MODE_TX_ONLY,	// Tx만 가능한 모드 입니다.
-		MODE_RX_ONLY,	// Rx만 가능한 모드 입니다.
-		MODE_ONE_WIRE	// 1선으로 반이중 전송을 위한 모드입니다.
+		UART_MODE_NORMAL,	// 일반적인 Tx, Rx가 가능한 모드입니다.
+		UART_MODE_TX_ONLY,	// Tx만 가능한 모드 입니다.
+		UART_MODE_RX_ONLY,	// Rx만 가능한 모드 입니다.
+		UART_MODE_ONE_WIRE	// 1선으로 반이중 전송을 위한 모드입니다.
 	}mode_t;
 
 	typedef enum
 	{
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
-		STOP_1BIT = 0,
-		STOP_2BIT = 1
-#elif defined(STM32F0) || defined(STM32F4)
-		STOP_1BIT = 0,
-		STOP_2BIT = 2
-#endif
+		UART_STOP_1BIT = 0,
+		UART_STOP_2BIT = 1
 	}stopbit_t;
 
 	typedef struct
 	{
-		mode_t mode;			// 동작 모드의 종류를 설정합니다.
-		uint32_t baudrate;		// 보레이트를 설정합니다.
-		stopbit_t stopbit;		// Stop Bit의 종류를 설정합니다.
-		void *rcvBuf;			// 수신 버퍼를 지정합니다.
-		uint32_t rcvBufSize;	// 수신 버퍼의 크기를 지정합니다.
+		mode_t mode;						// 동작 모드의 종류를 설정합니다.
+		uint32_t baudrate;					// 보레이트를 설정합니다.
+		stopbit_t stopbit;					// Stop Bit의 종류를 설정합니다.
+		void *rcvBuf;						// 수신 버퍼를 지정합니다.
+		uint32_t rcvBufSize;				// 수신 버퍼의 크기를 지정합니다.
+		void (*isrRxData)(uint8_t rxData);	// 수신 인터럽트 ISR 함수 포인터
+		void (*isrFrameError)(void);		// 프레임 에러 ISR 함수 포인터
 	}config_t;
 	
 	/*	
@@ -86,7 +55,7 @@ public:
 		@ return : 에러를 반환합니다.
 		@ buadrate : 변경할 통신 보레이트를 설정합니다.
 	*/
-	error_t changeBaudrate(int32_t buadrate) __attribute__((optimize("-O1")));
+	virtual error_t changeBaudrate(int32_t buadrate) __attribute__((optimize("-O1"))) = 0;
 	
 	/*
 		수신된 바이트를 얻습니다.
@@ -142,26 +111,6 @@ public:
 	void flush(void) __attribute__((optimize("-O1")));
 	
 	/*
-		Frame Error에 대한 ISR 함수를 등록합니다.
-		ISR 함수에서는 문맥전환을 유발하는 모든 함수의 호출을 금지합니다.
-		yss.h 파일에서 문맥전환을 유발하는 함수 유형의 설명을 참고하세요.
-		yss.h 파일에서 ISR 함수와 Callback 함수에 대한 구분 설명을 참고하세요. 
-		.
-		@ isr : ISR 함수의 포인터를 설정합니다.
-	*/
-	void setIsrForFrameError(void (*isr)(void)) __attribute__((optimize("-O1")));
-	
-	/*
-		데이터 수신에 대한 ISR 함수를 등록합니다.
-		ISR 함수에서는 문맥전환을 유발하는 모든 함수의 호출을 금지합니다.
-		yss.h 파일에서 문맥전환을 유발하는 함수 유형의 설명을 참고하세요.
-		yss.h 파일에서 ISR 함수와 Callback 함수에 대한 구분 설명을 참고하세요. 
-		.
-		@ isr : ISR 함수의 포인터를 설정합니다.
-	*/
-	void setIsrForRxData(void (*isr)(uint8_t rxData)) __attribute__((optimize("-O1")));
-	
-	/*
 		복수의 데이터를 송신합니다.
 		.
 		@ return : 에러를 반환합니다.
@@ -169,73 +118,28 @@ public:
 		@ src : 송신할 데이터 버퍼의 포인터를 설정합니다.
 		@ size : 송신할 데이터의 크기를 설정합니다.
 	*/
-	error_t send(void *src, int32_t  size) __attribute__((optimize("-O1")));
-	
-	/*
-		복수의 데이터를 송신합니다.
-		.
-		@ return : 에러를 반환합니다.
-		.
-		@ src : 송신할 데이터 버퍼의 포인터를 설정합니다.
-		@ size : 송신할 데이터의 크기를 설정합니다.
-	*/
-	error_t send(const void *src, int32_t  size) __attribute__((optimize("-O1")));
+	virtual error_t send(void *src, int32_t  size) __attribute__((optimize("-O1"))) = 0;
 	
 	/*
 		한 바이트를 송신합니다.
 		.
 		@ data : 송신할 데이터 바이트를 설정합니다.
 	*/
-	void send(int8_t data) __attribute__((optimize("-O1")));
-
-	/*	
-		UART를 일시적으로 활성화/비활성화 시킬 수 있게 합니다.
-		intialize() 함수를 호출하면 기본 상태가 활성화입니다.
-		.
-		@ en : 활성화(true)/비활성화(false)로 설정합니다.
-	*/
-	void enable(bool en) __attribute__((optimize("-O1")));
+	virtual void send(int8_t data) __attribute__((optimize("-O1"))) = 0;
 
 	// 아래 함수들은 시스템 함수로 사용자의 호출을 금지합니다.
-	struct setup_t
-	{
-		YSS_USART_Typedef *dev;
-#if defined(GD32F1) || defined(STM32F1) || defined(GD32F4)  || defined(STM32F7) || defined(STM32F4) || defined(STM32F0)
-		Dma &txDma;
-		Dma::dmaInfo_t txDmaInfo;
-#elif defined(EFM32PG22) || defined(EFR32BG22) || defined(STM32G4)
-		Dma::dmaInfo_t txDmaInfo;
-		Dma::dmaInfo_t rxDmaInfo;
-#elif  defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M2xx_FAMILY)
-		Dma::dmaInfo_t txDmaInfo;
-#endif
-	};
-
-	Uart(const Drv::setup_t drvSetup, const Uart::setup_t setup) __attribute__((optimize("-O1")));
+	Uart(const Drv::setup_t drvSetup);
 
 	void push(int8_t data) __attribute__((optimize("-O1")));
 
-	void isr(void) __attribute__((optimize("-O1")));
-
 protected:
-	YSS_USART_Typedef *mDev;
 	int8_t *mRcvBuf;
 	int32_t  mRcvBufSize;
+	int32_t  mTail, mHead;
 	mode_t mMode;
 
-	void (*mIsrForFrameError)(void);
-	void (*mIsrForRxData)(uint8_t rxData);
-
-#if defined(YSS__UART_RX_DMA)
-	int32_t  mTail;
-	Dma *mRxDma;
-	Dma::dmaInfo_t mTxDmaInfo;
-	Dma::dmaInfo_t mRxDmaInfo;
-#else
-	int32_t  mTail, mHead;
-	Dma *mTxDma;
-	Dma::dmaInfo_t mTxDmaInfo;
-#endif
+	void (*mIsrFrameError)(void);
+	void (*mIsrRxData)(uint8_t rxData);
 };
 
 #endif

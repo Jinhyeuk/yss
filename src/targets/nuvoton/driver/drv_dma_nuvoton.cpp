@@ -15,12 +15,6 @@
 #include <yss/reg.h>
 #include <yss/thread.h>
 
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
-#include <targets/nuvoton/bitfield_m4xx.h>
-#elif defined(__M2xx_FAMILY)
-#include <targets/nuvoton/bitfield_m2xx.h>
-#endif
-
 Dma::Dma(const Drv::setup_t drvSetup, const setup_t dmaSetup) : Drv(drvSetup)
 {
 	mDma = dmaSetup.dma;
@@ -137,6 +131,7 @@ error_t Dma::ready(dmaInfo_t &dmaInfo, void *src, int32_t count)
 	}
 
 	mChannel->CTL = ctl;
+	mDma->SWREQ |= 1 << mChNum;
 
 	return error_t::ERROR_NONE;
 }

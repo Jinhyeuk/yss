@@ -13,13 +13,13 @@
 
 ST7796S::ST7796S(void)
 {
-
+	mRotateFlag = false;
 }
 
 void ST7796S::setDirection(bool xMirror, bool yMirror, bool rotate)
 {
 	enable();
-	int8_t memAccCtrl[] = {0x00};
+	uint8_t memAccCtrl[] = {0x00};
 	if(rotate)
 	{
 		memAccCtrl[0] |= 0x20;
@@ -39,11 +39,11 @@ void ST7796S::setDirection(bool xMirror, bool yMirror, bool rotate)
 
 	mRotateFlag = rotate;
 
-	sendCmd(MEMORY_ACCESS_CONTROL, (int8_t *)memAccCtrl, sizeof(memAccCtrl));
+	sendCmd(MEMORY_ACCESS_CONTROL, (uint8_t *)memAccCtrl, sizeof(memAccCtrl));
 	disable();
 }
 
-void ST7796S::setWindows(uint16_t x, uint16_t y, uint16_t width, uint16_t height)
+void ST7796S::setWindows(int16_t x, int16_t y, uint16_t width, uint16_t height)
 {
 	uint8_t data[4];
 	uint16_t end;

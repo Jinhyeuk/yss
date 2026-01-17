@@ -8,6 +8,8 @@
 #ifndef YSS_MOD_RTOUCH_STMPE811__H_
 #define YSS_MOD_RTOUCH_STMPE811__H_
 
+#if 0
+
 #include <sac/Rtouch.h>
 #include <yss/instance.h>
 #include <util/ElapsedTime.h>
@@ -39,6 +41,8 @@ class STMPE811 : public sac::Rtouch
 	void readGroup(void);
 	void isr(void);
 };
+
+#endif
 
 #endif
 

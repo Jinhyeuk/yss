@@ -39,6 +39,10 @@ public:
 
 	void setCharWidth(uint8_t width);
 
+	uint8_t getDotWidth(void);
+
+	void setDotWidth(uint8_t width);
+
 	uint16_t getStringWidth(const char *str);
 
 	uint16_t getStringHeight(void);
@@ -46,7 +50,7 @@ public:
 	uint32_t getUtf8(const char **src);
 
 protected:
-	uint8_t mSpaceWidth, mCharWidth, mSize;
+	uint8_t mSpaceWidth, mCharWidth, mSize, mDotWidth;
 };
 
 #endif

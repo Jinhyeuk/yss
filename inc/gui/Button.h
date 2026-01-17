@@ -9,6 +9,9 @@
 #define YSS_GUI_BUTTON__H_
 
 #include "Object.h"
+#include "Color.h"
+
+#if USE_GUI
 
 class Font;
 
@@ -29,20 +32,30 @@ public:
 
 	void setColor(Color color);
 
-	void setColor(uint8_t red, uint8_t green, uint8_t blue);
+	void setSize(Size size);
+
+	void setSize(uint16_t width, uint16_t height);
+
+	void setFontColor(Color color);
 
 	virtual void paint(void);
 
-	virtual Object *handlerPush(Position_t pos);
+	virtual Object *handlerPush(Position pos);
 
 	virtual Object *handlerUp(void);
 
 private :
 	void (*mPushHandler)(void);
 	void (*mUpHandler)(void);
-	bool mState;
+	bool mState, mButtonModifiedFlag;
 	const char *mText;
+	Color mFontColor;
+	GuiFrameBuffer *mPushedFb, *mPulledFb;
+
+	void makeButtonImage(void);
 };
+
+#endif
 
 #endif
 

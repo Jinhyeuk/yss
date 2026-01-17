@@ -12,37 +12,17 @@
 #include <yss.h>
 #include <stdint.h>
 #include <drv/peripheral.h>
-#include <drv/Timer.h>
+#include <targets/nuvoton/NuvotonTmr.h>
 #include <yss/thread.h>
 #include <yss/reg.h>
-#include <targets/nuvoton/bitfield_m4xx.h>
 
-Timer::Timer(const Drv::setup_t drvSetup, const setup_t setup) : Drv(drvSetup)
+NuvotonTmr::NuvotonTmr(const Drv::setup_t drvSetup, const setup_t setup) : Timer(drvSetup)
 {
 	mDev = setup.dev;
 	mIsrUpdate = 0;
 }
 
-error_t Timer::initialize(uint32_t psc, uint32_t top)
-{
-	register uint32_t reg;
-
-	mDev->CMP = top;
-
-	if(psc > 0xFF)
-	{
-		return error_t::OVERFLOW;
-	}
-
-	reg = mDev->CTL;
-	reg &= ~TIMER_CTL_PSC_Msk;
-	reg |= (psc << TIMER_CTL_PSC_Pos) | TIMER_CTL_CNTEN_Msk | (1 << TIMER_CTL_OPMODE_Pos) | TIMER_CTL_INTEN_Msk;
-	mDev->CTL = reg;
-
-	return error_t::ERROR_NONE;
-}
-
-error_t Timer::initialize(uint32_t freq)
+error_t NuvotonTmr::initialize(uint32_t freq)
 {
 	register uint32_t reg;
 	error_t result;
@@ -58,7 +38,7 @@ error_t Timer::initialize(uint32_t freq)
 	return error_t::ERROR_NONE;
 }
 
-error_t Timer::changeFrequency(uint32_t freq)
+error_t NuvotonTmr::changeFrequency(uint32_t freq)
 {
 	int32_t psc, cmp, clk = getClockFrequency();
 
@@ -83,17 +63,25 @@ error_t Timer::changeFrequency(uint32_t freq)
 	return error_t::ERROR_NONE;
 }
 
-void Timer::start(void)
+void NuvotonTmr::start(void)
 {
 	mDev->CNT = 1;
 	setBitData(mDev->CTL, true, TIMER_CTL_CNTEN_Pos);	// Timer Enable
 }
 
-void Timer::stop(void)
+void NuvotonTmr::stop(void)
 {
 	setBitData(mDev->CTL, false, TIMER_CTL_CNTEN_Pos);	// Timer Disable
 }
 
+void NuvotonTmr::setOnePulse(bool en)
+{
+	setBitData(mDev->PWMCTL, en, TIMER_PWMCTL_CNTMODE_Pos);
+}
 
+uint32_t NuvotonTmr::getCounterValue(void)
+{
+	return mDev->CNT;
+}
 #endif
 

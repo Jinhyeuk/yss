@@ -11,7 +11,7 @@
 #include <drv/Ltdc.h>
 #include <sac/RgbBusTftLcd.h>
 
-#if !defined(YSS_DRV_LTDC_UNSUPPORTED)
+#if 0
 
 class AT070TN90 : public RgbBusTftLcd
 {

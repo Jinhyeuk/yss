@@ -14,46 +14,92 @@
 #include <yss/thread.h>
 #include <yss/instance.h>
 #include <yss/debug.h>
-#include <gui/OutputFrameBuffer.h>
+//#include <gui/OutputFrameBuffer.h>
 #include <yss.h>
 #include <sac/TftLcdDriver.h>
+#include <sac/PointerDevice.h>
 
-static OutputFrameBuffer *gFrameBuf;
-static Frame *gCurrentFrame;
-static Object *gLastSelectedObj;
+//static OutputFrameBuffer *gFrameBuf;
+//static Frame *gCurrentFrame;
+//static Object *gLastSelectedObj;
 static TftLcdDriver *gTftLcd;
 
 void initOutputFrameBuffer(void)
 {
-	gFrameBuf = new OutputFrameBuffer();
-	gFrameBuf->setLcdSize(ltdc.getLcdSize());
-	ltdc.setFrameBuffer(gFrameBuf->getFrameBuffer());
+#warning "복원 필요"
+	//gFrameBuf = new OutputFrameBuffer();
+	//gFrameBuf->setLcdSize(ltdc.getLcdSize());
+	//ltdc.setFrameBuffer(gFrameBuf->getFrameBuffer());
 }
 
-void setSystemTftLcd(TftLcdDriver &lcd)
+namespace system 
 {
-	gTftLcd = &lcd;
+	Frame *gSystemFrame;
+	PointerDevice *gPointerDevice;
+
+	void setSystemTftLcd(TftLcdDriver &lcd)
+	{
+		gTftLcd = &lcd;
+	}
+
+	TftLcdDriver* getSystemTftLcd(void)
+	{
+		return gTftLcd;
+	}
+
+	Size getSystemTftLcdSize(void)
+	{
+		if(gTftLcd)
+			return gTftLcd->getLcdSize();
+		else
+			return {0, 0};
+	}
+
+	void drawBitmap(Frame *obj, Position pos, const bitmap_t bitmap)
+	{
+		if(gTftLcd && gSystemFrame == obj)
+			gTftLcd->drawBitmapBase(gTftLcd->getLcdSize(), {{0, 0}, gTftLcd->getLcdSize()}, pos, bitmap);
+	}
+
+	void drawBitmap(Frame *obj, Rectangular rect, Position bitmapPos, const bitmap_t bitmap)
+	{
+		if(gTftLcd && gSystemFrame == obj)
+			gTftLcd->drawBitmapBase(gTftLcd->getLcdSize(), rect, bitmapPos, bitmap);
+	}
+
+	void setSystemFrame(Frame *obj)
+	{
+		gSystemFrame = obj;
+		obj->update();
+		if(gPointerDevice)
+			gPointerDevice->setFrame(obj);
+	}
+
+	void setSystemPointerDevice(PointerDevice *obj)
+	{
+		gPointerDevice = obj;
+	}
+
+	void setSystemPointerDevice(PointerDevice &obj)
+	{
+		gPointerDevice = &obj;
+	}
 }
 
-TftLcdDriver* getSystemTftLcd(void)
-{
-	return gTftLcd;
-}
+//void setActiveFrame(Frame *obj)
+//{
+//	if(gFrameBuf == 0)
+//		initOutputFrameBuffer();
 
-void setActiveFrame(Frame *obj)
-{
-	if(gFrameBuf == 0)
-		initOutputFrameBuffer();
+//	gCurrentFrame = obj;
+//	gFrameBuf->setFrame(obj);
+//	obj->setOutputFrameBuffer(gFrameBuf);
+//}
 
-	gCurrentFrame = obj;
-	gFrameBuf->setFrame(obj);
-	obj->setOutputFrameBuffer(gFrameBuf);
-}
-
-void clearActiveFrame(void)
-{
-	gLastSelectedObj = 0;
-}
+//void clearActiveFrame(void)
+//{
+//	gLastSelectedObj = 0;
+//}
 
 #if USE_GUI && USE_EVENT
 void setEvent(Position_t pos, uint8_t event)

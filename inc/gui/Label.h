@@ -10,6 +10,8 @@
 
 #include "Object.h"
 
+#if USE_GUI
+
 class Color;
 class Font;
 
@@ -25,8 +27,6 @@ public:
 	void setFontColor(Color color);
 
 	void setFontColor(uint8_t red, uint8_t green, uint8_t blue);
-
-	void setFont(Font &font);
 
 	// 브러쉬의 배경색을 설정한다.
 	//
@@ -47,6 +47,8 @@ public:
 private :
 	const char *mText;
 };
+
+#endif
 
 #endif
 

@@ -8,7 +8,8 @@
 #ifndef YSS_MOD_DAC_DAC7574__H_
 #define YSS_MOD_DAC_DAC7574__H_
 
-#include <yss/instance.h>
+#include <drv/Spi.h>
+#include <drv/Gpio.h>
 
 #if !(defined(YSS_DRV_SPI_UNSUPPORTED) || defined(YSS_DRV_GPIO_UNSUPPORTED))
 

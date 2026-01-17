@@ -26,16 +26,16 @@ error_t Ltdc::initialize(const Ltdc::specification_t *spec)
 	
 	v = spec->vsyncWidth - 1;
 	h = spec->hsyncWidth - 1;
-	setTwoFieldData(LTDC->SSCR, 0xFFF << 16, h, 16, 0xFFF, v, 0);
+	setTwoFieldsData(LTDC->SSCR, 0xFFF << 16, h, 16, 0xFFF, v, 0);
 	v += spec->vbp;
 	h += spec->hbp;
-	setTwoFieldData(LTDC->BPCR, 0xFFF << 16, h, 16, 0xFFF, v, 0);
+	setTwoFieldsData(LTDC->BPCR, 0xFFF << 16, h, 16, 0xFFF, v, 0);
 	v += spec->height;
 	h += spec->width;
-	setTwoFieldData(LTDC->AWCR, 0xFFF << 16, h, 16, 0xFFF, v, 0);
+	setTwoFieldsData(LTDC->AWCR, 0xFFF << 16, h, 16, 0xFFF, v, 0);
 	v += spec->vfp;
 	h += spec->hfp;
-	setTwoFieldData(LTDC->TWCR, 0xFFF << 16, h, 16, 0xFFF, v, 0);
+	setTwoFieldsData(LTDC->TWCR, 0xFFF << 16, h, 16, 0xFFF, v, 0);
 
 	switch (spec->pixelFormat)
 	{

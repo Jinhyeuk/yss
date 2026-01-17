@@ -7,7 +7,8 @@
 
 #include <config.h>
 
-#if USE_GUI
+#if 0
+//#if USE_GUI
 
 #include <sac/TftLcdDriver.h>
 

@@ -127,9 +127,9 @@
 #define YSS__RUNTIME_SUPPORT
 #define YSS__DMA_ALLOCATION
 
-#if defined(__M480_FAMILY)
+#if defined(__M480_FAMILY) || defined(__M46x_SUBFAMILY)
 #define YSS__NUM_OF_DMA_CH		16
-#elif defined(__M4xx_FAMILY)
+#elif defined(__M43x_SUBFAMILY)
 #define YSS__NUM_OF_DMA_CH		9
 #endif
 
@@ -138,8 +138,10 @@
 #define YSS__RUNTIME_SUPPORT
 #define YSS__DMA_ALLOCATION
 
-#if defined(__M25x_SUBFAMILY)
+#if defined(__M251KG6AE__)
 #define YSS__NUM_OF_DMA_CH		8
+#elif defined(__M251FC2AE__)
+#define YSS__NUM_OF_DMA_CH		5
 #endif
 
 #else

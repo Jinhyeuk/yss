@@ -9,8 +9,18 @@
 #define YSS_GUI_OBJSYS__H_
 
 #include "util.h"
+#include "Rectangular.h"
+#include "config.h"
+#include "FrameBufferRgb565LE.h"
 
-class Brush;
+#if USE_GUI
+
+#ifndef YSS_GUI_FRAME_BUFFER
+#define YSS_GUI_FRAME_BUFFER			FrameBufferRgb565LE
+#endif
+
+typedef YSS_GUI_FRAME_BUFFER GuiFrameBuffer;
+
 class Container;
 
 class Object
@@ -20,23 +30,25 @@ public:
 
 	virtual ~Object(void);
 
-	void setPosition(Position_t pos);
+	void setPosition(Position pos);
 
 	void setPosition(int16_t x, int16_t y);
 
-	void setSize(Size_t size);
+	void setSize(Size size);
 
 	void setSize(uint16_t width, uint16_t height);
 
-	Size_t getSize(void);
+	Size getSize(void);
 
-	Position_t getPosition(void);
+	Rectangular getRectangular(void);
 
-	Position_t getAbsolutePos(void);
+	Position getPosition(void);
 
-	virtual Object *handlerPush(Position_t pos);
+	Position getAbsolutePos(void);
 
-	virtual Object *handlerDrag(Position_t pos);
+	virtual Object *handlerPush(Position pos);
+
+	virtual Object *handlerDrag(Position pos);
 
 	virtual Object *handlerUp(void);
 
@@ -48,23 +60,34 @@ public:
 
 	void setParent(Container *parent);
 
-	Brush* getFrameBuffer(void);
+	FrameBuffer* getFrameBuffer(void);
+
+	void setFont(Font &font);
+
+	bool isModified(void);
+
+	void clearModifyFlag(void);
 
 protected:
 	bool mVisibleFlag;
 	bool mResizeAble;
-	Position_t mPos;
+	bool mModifiedFlag;
+	Position mPos;
 	Container *mParent;
-	Brush *mFrameBuffer;
+	GuiFrameBuffer *mFrameBuffer;
 
-	virtual void eventSizeChanged(Size_t size);
+	virtual void eventSizeChanged(Size size);
 
-	virtual void update(Position_t pos, Size_t size);
+	virtual void update(Rectangular rect);
 
-	virtual void update(Position_t beforePos, Size_t beforeSize, Position_t currentPos, Size_t currentSize);
+	virtual void update(Rectangular before , Rectangular current);
 
 	virtual void update(void);
+
+	void touch(void);
 };
+
+#endif
 
 #endif
 

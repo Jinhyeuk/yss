@@ -5,7 +5,8 @@
  * See the file "LICENSE" in the main directory of this archive for more details.
  */
 
-#include <yss/instance.h>
+#include <drv/Spi.h>
+#include <drv/Gpio.h>
 #include <mod/wiznet/W5100.h>
 #include <yss/reg.h>
 
@@ -116,7 +117,7 @@ enum
 
 static const Spi::specification_t gSpiConfig =
 {
-	Spi::MODE_MODE0,	//uint8_t mode;
+	Spi::CLOCK_MODE_MODE0,	//uint8_t mode;
 	15000000,					//uint32_t maxFreq;
 	Spi::BIT_BIT8		//uint8_t bit;
 };  

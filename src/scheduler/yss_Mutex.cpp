@@ -9,8 +9,15 @@
 #include <drv/peripheral.h>
 #include <yss/thread.h>
 #include <cmsis/cmsis_compiler.h>
+#include <config.h>
+#include <util/runtime.h>
 
 bool Mutex::mInit = false;
+
+void  __WEAK mutexWatchdogHandler(void)
+{
+	__NVIC_SystemReset();
+}
 
 void Mutex::initializeMutex(void)
 {
@@ -29,6 +36,9 @@ uint32_t Mutex::lock(void)
 #if !defined(__MCU_SMALL_SRAM_NO_SCHEDULE)
 	thread::protect();
 	__disable_irq();
+#if THREAD_WATCHDOG_ENABLE
+	uint64_t timeout = runtime::getMsec() + THREAD_WATCHDOG_OVERFLOW_TIME;
+#endif
 	uint32_t num = mWaitNum;
 	mWaitNum++;
 	if(mIrqNum >= 0)
@@ -37,6 +47,10 @@ uint32_t Mutex::lock(void)
 
 	while (num != mCurrentNum)
 	{
+#if THREAD_WATCHDOG_ENABLE
+		if(timeout > runtime::getMsec())
+			mutexWatchdogHandler();
+#endif
 		thread::yield();
 	}
 

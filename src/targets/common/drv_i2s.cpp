@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include <drv/peripheral.h>
 #include <drv/I2s.h>
+#include <drv/Dma.h>
 #include <yss/thread.h>
 #include <yss/reg.h>
 
@@ -58,11 +59,6 @@ void __WEAK I2s::releaseBuffer(int32_t count)
 	mLastTransferIndex -= count;
 	if(mLastTransferIndex == 0)
 		mLastTransferIndex = mTransferBufferSize;
-}
-
-uint32_t __WEAK I2s::getChannelFrameSize(void)
-{
-	return mDataSize;
 }
 
 #endif

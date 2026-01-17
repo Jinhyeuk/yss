@@ -9,6 +9,14 @@
 
 #if defined(__M480_FAMILY) || defined(__M4xx_FAMILY) || defined(__M25x_SUBFAMILY)
 
+#if !defined(USBD_ATTR_PWRDN_Pos)
+#define USBD_ATTR_PWRDN_Pos              (9)                                               /*!< USBD_T::ATTR: PWRDN Position          */
+#endif
+#if !defined(USBD_ATTR_PWRDN_Msk)
+#define USBD_ATTR_PWRDN_Msk              (0x1ul << USBD_ATTR_PWRDN_Pos)                    /*!< USBD_T::ATTR: PWRDN Mask              */
+#endif
+
+
 #include <yss.h>
 #include <drv/peripheral.h>
 #include <drv/Usbd.h>
@@ -17,12 +25,6 @@
 #include <yss/debug.h>
 #include <util/Timeout.h>
 #include <string.h>
-
-#if defined(__M480_FAMILY) || defined(__M4xx_FAMILY)
-#include <targets/nuvoton/bitfield_m4xx.h>
-#elif defined(__M25x_SUBFAMILY)
-#include <targets/nuvoton/bitfield_m2xx.h>
-#endif
 
 Usbd::Usbd(const Drv::setup_t drvSetup, const setup_t setup) : Drv(drvSetup)
 {
@@ -114,7 +116,7 @@ error_t Usbd::initialize(UsbClass &obj)
 		mMaxPayload[index++] = maxPayload;
 	}
 
-	if(index < USBD_MAX_EP_BUF)
+	if(index < USBD_MAX_EP)
 	{
 		offset += maxPayload;
 		mDev->EP[index].BUFSEG = offset;
@@ -204,7 +206,7 @@ error_t Usbd::send(uint8_t ep, void *src, uint16_t size, bool response)
 
 	ep = mInEpAllocTable[ep];
 
-	if(ep >= USBD_MAX_EP_BUF)
+	if(ep >= USBD_MAX_EP)
 		return error_t::UNSUPPORTED_EP_BUF;
 	
 	if(size >= mMaxPayload[ep])
@@ -257,7 +259,7 @@ error_t Usbd::stall(uint8_t ep)
 	}
 	else
 	{
-		if(ep >= USBD_MAX_EP_BUF)
+		if(ep >= USBD_MAX_EP)
 			return error_t::UNSUPPORTED_EP_BUF;
 
 		if(mInEpAllocTable[ep] > 0)
@@ -347,7 +349,7 @@ uint32_t Usbd::getOutRxDataSize(uint8_t ep)
 
 	ep = mOutEpAllocTable[ep];
 
-	if(ep >= USBD_MAX_EP_BUF)
+	if(ep >= USBD_MAX_EP)
 		return 0;
 
 	return mOutRxSize[ep];
@@ -360,7 +362,7 @@ error_t Usbd::getOutRxData(uint8_t ep, void* des, uint8_t size)
 
 	ep = mOutEpAllocTable[ep];
 
-	if(ep >= USBD_MAX_EP_BUF)
+	if(ep >= USBD_MAX_EP)
 		return error_t::UNSUPPORTED_EP_BUF;
 
 	copyBuffer((uint8_t*)des, (uint8_t*)mSetupRxBuffer + mDev->EP[ep].BUFSEG, size);
@@ -384,7 +386,7 @@ void Usbd::isr(void)
 		{
 			mDev->ATTR = USBD_ATTR_BYTEM_Msk | USBD_ATTR_DPPUEN_Msk | USBD_ATTR_PWRDN_Msk | USBD_ATTR_USBEN_Msk | USBD_ATTR_PHYEN_Msk; // 0x7D0
 
-			for(uint32_t i = 0; i < USBD_MAX_EP_BUF; i++)
+			for(uint32_t i = 0; i < USBD_MAX_EP; i++)
 			{
 				mDev->EP[i].CFG &= ~USBD_CFG_DSQSYNC_Msk;
 			}
